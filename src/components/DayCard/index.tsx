@@ -14,6 +14,7 @@ import ExerciseAccordion from 'components/ExerciseAccordion';
 import { Context } from 'context';
 import { title } from 'lib/utils';
 import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { Props } from './types';
 
 const DayCard = ({ day }: Props) => {
@@ -22,7 +23,7 @@ const DayCard = ({ day }: Props) => {
   return (
     <Card sx={{ m: 1, pb: 6, flex: '1 0 18%', position: 'relative' }}>
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
+        <Typography gutterBottom variant="h6" component="div" color="text.primary">
           {title(day.locale('ru').format('dddd'))} ({day?.format('DD.MM.yyyy')})
         </Typography>
         {workouts.filter((workout) => workout.date === day.format('YYYY-MM-DD')).map((workout) => (
@@ -30,10 +31,15 @@ const DayCard = ({ day }: Props) => {
             <AccordionSummary
               expandIcon={<ExpandMore/>}
             >
-              <Typography variant="body2" color="text.primary">Тренировка</Typography>
+              <Typography variant="body1" component="div" color="text.primary">
+                Тренировка
+              </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography variant="body2" color="text.secondary">
+              <Typography gutterBottom variant="body2" color="text.secondary">
+                Упражнения
+              </Typography>
+              <Typography variant="body2" color="text.secondary" component="div">
                 {workout.exercises.map((exercise) => (
                   <ExerciseAccordion key={exercise.id} exercise={exercise}/>
                 ))}
@@ -51,6 +57,8 @@ const DayCard = ({ day }: Props) => {
           }}
           size="small"
           color="primary"
+          component={Link}
+          to="/workouts/add"
         >
           <Add/>
         </Fab>

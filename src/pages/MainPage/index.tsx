@@ -1,8 +1,8 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
-import { AppBar, Box, Fab, Theme, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Fab, Theme, Toolbar, Typography, Zoom } from '@mui/material';
 import DayCard from 'components/DayCard';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Weeks } from './types';
 import getWeek from './utils';
 
@@ -12,6 +12,10 @@ const MainPage = () => {
     current: [],
     next: [],
   });
+
+  const isCurrentWeek = useMemo(() => (
+    weeks.current[0]?.isSame(getWeek(weeks, 'current').current[0])
+  ), [weeks]);
 
   /** Effect for calculating weeks */
   useEffect(() => {
@@ -43,23 +47,25 @@ const MainPage = () => {
         }}
         color="primary"
         variant="extended"
-        onClick={() => setWeeks(getWeek(weeks, 'previous'))}
+        onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'previous'))}
       >
         <ChevronLeft/>
         Предыдущая неделя
       </Fab>
-      <Fab
-        sx={{
-          position: 'absolute',
-          bottom: (theme: Theme) => theme.spacing(2),
-          left: '50%',
-        }}
-        color="primary"
-        variant="extended"
-        onClick={() => setWeeks(getWeek(weeks, 'current'))}
-      >
-        Текущая неделя
-      </Fab>
+      <Zoom in={!isCurrentWeek}>
+        <Fab
+          sx={{
+            position: 'absolute',
+            bottom: (theme: Theme) => theme.spacing(2),
+            left: '50%',
+          }}
+          color="primary"
+          variant="extended"
+          onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'current'))}
+        >
+          Текущая неделя
+        </Fab>
+      </Zoom>
       <Fab
         sx={{
           position: 'absolute',
@@ -68,7 +74,7 @@ const MainPage = () => {
         }}
         color="primary"
         variant="extended"
-        onClick={() => setWeeks(getWeek(weeks, 'next'))}
+        onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'next'))}
       >
         Следующая неделя
         <ChevronRight/>
