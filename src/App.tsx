@@ -1,4 +1,5 @@
 import ContextProvider from 'context';
+import 'moment/locale/ru';
 import MainPage from 'pages/Main';
 import React from 'react';
 
