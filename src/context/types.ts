@@ -8,7 +8,7 @@ export interface ContextActions {
 
 export interface Workout {
   readonly id?: number;
-  date: Date | string;
+  date: string;
   start: string | null;
   end: string | null;
   exercises: Exercise[];
