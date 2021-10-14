@@ -3,8 +3,8 @@ import session from './session';
 class API {
   get = <T>(url: string, params?: unknown) => session.get<T>(url, { params })
 
-  post = (url: string, data: unknown, headers?: Record<string, string>) => (
-    session.post(url, data, { headers })
+  post = <T>(url: string, data: unknown, headers?: Record<string, string>) => (
+    session.post<T>(url, data, { headers })
   )
 
   put = (url: string, data: unknown, headers?: Record<string, string>) => (

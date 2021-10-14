@@ -25,8 +25,9 @@ export const getErrorMessage = (error: AxiosError<Record<string, string>>) => {
   return message;
 };
 
-export const isAxiosError = (error: unknown): error is AxiosError<Record<string, string>> => (
-  (error as AxiosError<Record<string, string>>).isAxiosError
-);
+export const isAxiosError = <T = Record<string, string>>(error: unknown):
+  error is AxiosError<T> => (
+    (error as AxiosError<T>).isAxiosError
+  );
 
 export const title = (str: string) => str[0].toUpperCase() + str.substr(1).toLowerCase();

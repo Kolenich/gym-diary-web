@@ -1,10 +1,11 @@
 import api from 'lib/api';
+import { Moment } from 'moment';
 import React, { createContext, FC, useCallback, useEffect, useReducer } from 'react';
 import initialState from './constants';
 import reducer, { Workouts } from './reducer';
-import { ContextActions, ContextState } from './types';
+import { ContextActions, ContextState, Workout } from './types';
 
-export const Context = createContext({} as ContextState & Partial<ContextActions>);
+export const Context = createContext({} as ContextState & ContextActions);
 
 const ContextProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState as never);
@@ -22,6 +23,24 @@ const ContextProvider: FC = ({ children }) => {
     });
   }, []);
 
+  /**
+   * Action for opening edit/create window for workout
+   * @type {(day: (moment.Moment | null)) => void}
+   */
+  const editWorkout = useCallback((day: Moment | null) => dispatch({
+    type: Workouts.EDIT,
+    payload: day,
+  }), []);
+
+  /**
+   * Action for adding newly created workout
+   * @type {(workout: Workout) => void}
+   */
+  const addWorkout = useCallback((workout: Workout) => dispatch({
+    type: Workouts.ADD,
+    payload: workout,
+  }), []);
+
   useEffect(() => {
     (async () => {
       await loadWorkouts();
@@ -33,6 +52,8 @@ const ContextProvider: FC = ({ children }) => {
       value={{
         ...state as ContextState,
         loadWorkouts,
+        editWorkout,
+        addWorkout,
       }}
     >
       {children}

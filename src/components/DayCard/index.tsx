@@ -16,11 +16,10 @@ import { Context } from 'context';
 import { today } from 'lib/constants';
 import { title } from 'lib/utils';
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
 import { Props } from './types';
 
 const DayCard = ({ day }: Props) => {
-  const { workouts } = useContext(Context);
+  const { workouts, editWorkout } = useContext(Context);
 
   const currentWorkouts = workouts.filter((workout) => (
     workout.date === day.format('YYYY-MM-DD')
@@ -85,8 +84,7 @@ const DayCard = ({ day }: Props) => {
           }}
           size="small"
           color="primary"
-          component={Link}
-          to="/workouts/add"
+          onClick={() => editWorkout(day)}
         >
           <Add/>
         </Fab>

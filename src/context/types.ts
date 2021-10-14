@@ -1,9 +1,14 @@
+import { Moment } from 'moment';
+
 export interface ContextState {
   workouts: Workout[];
+  workoutDay: Moment | null;
 }
 
 export interface ContextActions {
   loadWorkouts: () => void;
+  editWorkout: (day: Moment | null) => void;
+  addWorkout: (workout: Workout) => void;
 }
 
 export interface Workout {
