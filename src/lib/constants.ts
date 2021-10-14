@@ -1,4 +1,6 @@
 // Status messages
+import moment from 'moment';
+
 export const SERVER_RESPONSES: Record<number, string> = {
   200: 'Сохранение прошло успешно!',
   201: 'Создание прошло успешно!',
@@ -14,3 +16,5 @@ export const SERVER_RESPONSES: Record<number, string> = {
 };
 
 export const SERVER_NOT_AVAILABLE = 'Сервер не доступен, попробуйте позже';
+
+export const today = moment();

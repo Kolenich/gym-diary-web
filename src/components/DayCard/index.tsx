@@ -5,6 +5,7 @@ import {
   AccordionSummary,
   Card,
   CardContent,
+  Chip,
   Fab,
   Theme,
   Tooltip,
@@ -12,6 +13,7 @@ import {
 } from '@mui/material';
 import ExerciseAccordion from 'components/ExerciseAccordion';
 import { Context } from 'context';
+import { today } from 'lib/constants';
 import { title } from 'lib/utils';
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
@@ -20,13 +22,24 @@ import { Props } from './types';
 const DayCard = ({ day }: Props) => {
   const { workouts } = useContext(Context);
 
+  const currentWorkouts = workouts.filter((workout) => (
+    workout.date === day.format('YYYY-MM-DD')
+  ));
+
   return (
-    <Card sx={{ m: 1, pb: 6, flex: '1 0 18%', position: 'relative' }}>
-      <CardContent>
-        <Typography gutterBottom variant="h6" component="div" color="text.primary">
+    <Card
+      sx={{
+        m: 1,
+        pb: 6,
+        flex: '1 0 18%',
+        position: 'relative',
+      }}
+    >
+      <CardContent color="inherit">
+        <Typography gutterBottom variant="body1" component="h6" color="text.primary">
           {title(day.locale('ru').format('dddd'))} ({day?.format('DD.MM.yyyy')})
         </Typography>
-        {workouts.filter((workout) => workout.date === day.format('YYYY-MM-DD')).map((workout) => (
+        {currentWorkouts.length ? currentWorkouts.map((workout) => (
           <Accordion key={workout.id}>
             <AccordionSummary
               expandIcon={<ExpandMore/>}
@@ -46,8 +59,23 @@ const DayCard = ({ day }: Props) => {
               </Typography>
             </AccordionDetails>
           </Accordion>
-        ))}
+        )) : (
+          <Typography variant="body2" color="text.secondary">
+            Тренировок нет
+          </Typography>
+        )}
       </CardContent>
+      {day.format('DD.MM.yyyy') === today.format('DD.MM.yyyy') && (
+        <Chip
+          label="Сегодня"
+          color="info"
+          sx={{
+            position: 'absolute',
+            bottom: (theme: Theme) => theme.spacing(1),
+            left: (theme: Theme) => theme.spacing(1),
+          }}
+        />
+      )}
       <Tooltip title="Добавить тренировку">
         <Fab
           sx={{

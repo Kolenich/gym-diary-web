@@ -1,8 +1,9 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
-import { AppBar, Box, Fab, Theme, Toolbar, Typography, Zoom } from '@mui/material';
+import { AppBar, Box, Fab, Theme, Toolbar, Tooltip, Typography, Zoom } from '@mui/material';
 import DayCard from 'components/DayCard';
+import { today } from 'lib/constants';
 import moment from 'moment';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Weeks } from './types';
 import getWeek from './utils';
 
@@ -12,10 +13,6 @@ const MainPage = () => {
     current: [],
     next: [],
   });
-
-  const isCurrentWeek = useMemo(() => (
-    weeks.current[0]?.isSame(getWeek(weeks, 'current').current[0])
-  ), [weeks]);
 
   /** Effect for calculating weeks */
   useEffect(() => {
@@ -39,20 +36,24 @@ const MainPage = () => {
           <DayCard key={day.format('dddd')} day={day}/>
         ))}
       </Typography>
-      <Fab
-        sx={{
-          position: 'absolute',
-          bottom: (theme: Theme) => theme.spacing(2),
-          left: (theme: Theme) => theme.spacing(2),
-        }}
-        color="primary"
-        variant="extended"
-        onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'previous'))}
+      <Tooltip title="Предыдущая неделя">
+        <Fab
+          sx={{
+            position: 'absolute',
+            bottom: (theme: Theme) => theme.spacing(2),
+            left: (theme: Theme) => theme.spacing(2),
+          }}
+          color="primary"
+          onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'previous'))}
+        >
+          <ChevronLeft/>
+        </Fab>
+      </Tooltip>
+      <Zoom
+        in={!weeks.current.some((day) => (
+          day.format('DD.MM.yyyy') === today.format('DD.MM.yyyy')
+        ))}
       >
-        <ChevronLeft/>
-        Предыдущая неделя
-      </Fab>
-      <Zoom in={!isCurrentWeek}>
         <Fab
           sx={{
             position: 'absolute',
@@ -66,19 +67,19 @@ const MainPage = () => {
           Текущая неделя
         </Fab>
       </Zoom>
-      <Fab
-        sx={{
-          position: 'absolute',
-          bottom: (theme: Theme) => theme.spacing(2),
-          right: (theme: Theme) => theme.spacing(2),
-        }}
-        color="primary"
-        variant="extended"
-        onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'next'))}
-      >
-        Следующая неделя
-        <ChevronRight/>
-      </Fab>
+      <Tooltip title="Следующая неделя">
+        <Fab
+          sx={{
+            position: 'absolute',
+            bottom: (theme: Theme) => theme.spacing(2),
+            right: (theme: Theme) => theme.spacing(2),
+          }}
+          color="primary"
+          onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'next'))}
+        >
+          <ChevronRight/>
+        </Fab>
+      </Tooltip>
     </Box>
   );
 };

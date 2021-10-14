@@ -8,14 +8,14 @@ const AddWorkout = ({ history }: RouteComponentProps) => (
   <>
     {/* Keep Main page as background */}
     <MainPage/>
-    <Dialog open onClose={history.goBack}>
+    <Dialog open onClose={() => history.push({ pathname: '/workouts' })}>
       <DialogTitle>Дарова</DialogTitle>
       <DialogContent>Хеллоу</DialogContent>
       <DialogActions>
         <Button
           variant="contained"
           color="success"
-          onClick={history.goBack}
+          onClick={() => history.push({ pathname: '/workouts' })}
           startIcon={<Save/>}
         >
           Сохранить
