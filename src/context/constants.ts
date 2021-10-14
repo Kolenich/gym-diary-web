@@ -1,4 +1,6 @@
-const initialState = {
+import { ContextState } from './types';
+
+const initialState: ContextState = {
   workouts: [],
 };
 

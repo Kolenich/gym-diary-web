@@ -2,6 +2,10 @@ export interface ContextState {
   workouts: Workout[];
 }
 
+export interface ContextActions {
+  loadWorkouts: () => void;
+}
+
 export interface Workout {
   readonly id?: number;
   date: Date | string;

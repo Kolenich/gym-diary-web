@@ -1,5 +1,9 @@
 import initialState from './constants';
 
+export enum Workouts {
+  LOAD = 'LOAD_WORKOUTS'
+}
+
 interface ReducerAction {
   type: string;
   payload: unknown;
@@ -7,7 +11,7 @@ interface ReducerAction {
 
 export default (state = initialState, action: ReducerAction) => {
   switch (action.type) {
-    case 'LOAD_WORKOUTS':
+    case Workouts.LOAD:
       return { ...state, workouts: action.payload };
     default:
       return state;

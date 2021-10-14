@@ -1,27 +1,40 @@
 import api from 'lib/api';
-import React, { createContext, FC, useEffect, useReducer } from 'react';
+import React, { createContext, FC, useCallback, useEffect, useReducer } from 'react';
 import initialState from './constants';
-import reducer from './reducer';
-import { ContextState } from './types';
+import reducer, { Workouts } from './reducer';
+import { ContextActions, ContextState } from './types';
 
-export const Context = createContext({} as ContextState);
+export const Context = createContext({} as ContextState & Partial<ContextActions>);
 
 const ContextProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState as never);
 
-  useEffect(() => {
-    (async () => {
-      const response = await api.get('workout-api/workouts/');
+  /**
+   * Base action for loading workouts
+   * @type {() => Promise<void>}
+   */
+  const loadWorkouts = useCallback(async () => {
+    const response = await api.get('workout-api/workouts/');
 
-      dispatch({
-        type: 'LOAD_WORKOUTS',
-        payload: response.data,
-      });
-    })();
+    dispatch({
+      type: Workouts.LOAD,
+      payload: response.data,
+    });
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      await loadWorkouts();
+    })();
+  }, [loadWorkouts]);
+
   return (
-    <Context.Provider value={state}>
+    <Context.Provider
+      value={{
+        ...state as ContextState,
+        loadWorkouts,
+      }}
+    >
       {children}
     </Context.Provider>
   );
