@@ -17,13 +17,19 @@
     "@typescript-eslint"
   ],
   "rules": {
-    "max-classes-per-file": ["error", 2],
+    "max-classes-per-file": [
+      "error",
+      2
+    ],
     "object-curly-newline": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "indent": [
       "error",
-      2
+      2,
+      {
+        "SwitchCase": 1
+      }
     ],
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": [
