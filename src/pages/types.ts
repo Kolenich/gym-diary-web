@@ -1,6 +1,6 @@
 import { Moment } from 'moment';
 
-export interface ClosestWeeks {
+export interface Weeks {
   previous: Moment[];
   current: Moment[];
   next: Moment[];

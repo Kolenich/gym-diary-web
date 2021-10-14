@@ -10,10 +10,10 @@ import {
 import { title } from 'lib/utils';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { ClosestWeeks } from './types';
+import { Weeks } from './types';
 
 const MainPage = () => {
-  const [weeks, setWeeks] = useState<ClosestWeeks>({
+  const [weeks, setWeeks] = useState<Weeks>({
     previous: [],
     current: [],
     next: [],
