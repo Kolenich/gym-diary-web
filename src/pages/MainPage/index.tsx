@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { AppBar, Box, Fab, Theme, Toolbar, Tooltip, Typography, Zoom } from '@mui/material';
 import DayCard from 'components/DayCard';
-import { today } from 'lib/constants';
+import { DATE_DISPLAY_FORMAT, today } from 'lib/constants';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { Weeks } from './types';
@@ -51,7 +51,7 @@ const MainPage = () => {
       </Tooltip>
       <Zoom
         in={!weeks.current.some((day) => (
-          day.format('DD.MM.yyyy') === today.format('DD.MM.yyyy')
+          day.format(DATE_DISPLAY_FORMAT) === today.format(DATE_DISPLAY_FORMAT)
         ))}
       >
         <Fab

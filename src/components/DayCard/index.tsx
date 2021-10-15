@@ -13,8 +13,15 @@ import {
 } from '@mui/material';
 import ExerciseAccordion from 'components/ExerciseAccordion';
 import { Context } from 'context';
-import { today } from 'lib/constants';
+import {
+  DATE_DISPLAY_FORMAT,
+  DJANGO_DATE_FORMAT,
+  DJANGO_TIME_FORMAT,
+  TIME_DISPLAY_FORMAT,
+  today,
+} from 'lib/constants';
 import { title } from 'lib/utils';
+import moment from 'moment';
 import React, { useContext } from 'react';
 import { Props } from './types';
 
@@ -22,7 +29,7 @@ const DayCard = ({ day }: Props) => {
   const { workouts, editWorkout } = useContext(Context);
 
   const currentWorkouts = workouts.filter((workout) => (
-    workout.date === day.format('YYYY-MM-DD')
+    workout.date === day.format(DJANGO_DATE_FORMAT)
   ));
 
   return (
@@ -35,27 +42,42 @@ const DayCard = ({ day }: Props) => {
       }}
     >
       <CardContent color="inherit">
-        <Typography gutterBottom variant="body1" component="h6" color="text.primary">
-          {title(day.locale('ru').format('dddd'))} ({day?.format('DD.MM.yyyy')})
+        <Typography gutterBottom variant="body1" component="div" color="text.primary">
+          {title(day.locale('ru').format('dddd'))} ({day?.format(DATE_DISPLAY_FORMAT)})
         </Typography>
         {currentWorkouts.length ? currentWorkouts.map((workout) => (
           <Accordion key={workout.id}>
             <AccordionSummary
               expandIcon={<ExpandMore/>}
             >
-              <Typography variant="body1" component="div" color="text.primary">
+              <Typography variant="h6" component="div" color="text.primary" sx={{ flexGrow: 1 }}>
                 Тренировка
+
+                <Typography color="text.secondary">
+                  {workout.start && workout.end ? (
+                    `${moment(workout.start, DJANGO_TIME_FORMAT).format(TIME_DISPLAY_FORMAT)} - ${moment(workout.end, DJANGO_TIME_FORMAT).format(TIME_DISPLAY_FORMAT)}`
+                  ) : 'Время не указано'}
+                </Typography>
+
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography gutterBottom variant="body2" color="text.secondary">
-                Упражнения
-              </Typography>
-              <Typography variant="body2" color="text.secondary" component="div">
-                {workout.exercises.map((exercise) => (
-                  <ExerciseAccordion key={exercise.id} exercise={exercise}/>
-                ))}
-              </Typography>
+              {workout.exercises.length ? (
+                <>
+                  <Typography gutterBottom variant="body2" color="text.secondary">
+                    Упражнения
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" component="div">
+                    {workout.exercises.map((exercise) => (
+                      <ExerciseAccordion key={exercise.id} exercise={exercise}/>
+                    ))}
+                  </Typography>
+                </>
+              ) : (
+                <Typography gutterBottom variant="body2" color="text.secondary">
+                  Упражнения не указаны
+                </Typography>
+              )}
             </AccordionDetails>
           </Accordion>
         )) : (
@@ -64,7 +86,7 @@ const DayCard = ({ day }: Props) => {
           </Typography>
         )}
       </CardContent>
-      {day.format('DD.MM.yyyy') === today.format('DD.MM.yyyy') && (
+      {day.format(DATE_DISPLAY_FORMAT) === today.format(DATE_DISPLAY_FORMAT) && (
         <Chip
           label="Сегодня"
           color="info"

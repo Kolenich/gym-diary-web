@@ -1,5 +1,5 @@
 import { Cancel, Save } from '@mui/icons-material';
-import { StaticTimePicker } from '@mui/lab';
+import { TimePicker } from '@mui/lab';
 import {
   Button,
   Dialog,
@@ -8,14 +8,14 @@ import {
   DialogTitle,
   Grid,
   TextField,
-  Typography,
 } from '@mui/material';
 import { Context } from 'context';
 import { Workout } from 'context/types';
 import api from 'lib/api';
+import { DATE_DISPLAY_FORMAT, DJANGO_DATE_FORMAT, DJANGO_TIME_FORMAT } from 'lib/constants';
+import { isAxiosError } from 'lib/utils';
 import moment from 'moment';
 import React, { useContext, useState } from 'react';
-import { isAxiosError } from '../../lib/utils';
 import { FormErrors } from './types';
 
 const AddWorkout = () => {
@@ -36,7 +36,7 @@ const AddWorkout = () => {
 
   const getDateFromTime = (time: string | null) => {
     if (time) {
-      const momentTime = moment(time, 'HH:mm:ss.SSS');
+      const momentTime = moment(time, DJANGO_TIME_FORMAT);
       return new Date(0, 0, 0, momentTime.hours(), momentTime.minutes());
     }
     return time;
@@ -61,7 +61,7 @@ const AddWorkout = () => {
     try {
       const response = await api.post<Workout>('workout-api/workouts/', {
         ...workout,
-        date: workoutDay?.format('yyyy-MM-DD'),
+        date: workoutDay?.format(DJANGO_DATE_FORMAT),
       });
 
       addWorkout(response.data);
@@ -86,15 +86,13 @@ const AddWorkout = () => {
       maxWidth="md"
     >
       <DialogTitle>
-        <Typography gutterBottom variant="body2" color="text.secondary">
-          Добавить тренировку
-        </Typography>
+        Добавить тренировку
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
-              value={workoutDay?.format('DD.MM.yyyy') || ''}
+              value={workoutDay?.format(DATE_DISPLAY_FORMAT) || ''}
               label="Дата тренировки"
               error={!!errors.date}
               helperText={errors.date}
@@ -106,10 +104,10 @@ const AddWorkout = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <StaticTimePicker
+            <TimePicker
               onChange={(date) => setWorkout((oldWorkout) => ({
                 ...oldWorkout,
-                start: moment(date).format('HH:mm'),
+                start: moment(date).format(DJANGO_TIME_FORMAT),
               }))}
               value={getDateFromTime(workout.start)}
               label="Начало тренировки"
@@ -119,47 +117,29 @@ const AddWorkout = () => {
                   fullWidth
                   error={!!errors.start}
                   helperText={errors.start}
-                  value={workout.start || ''}
-                  onChange={(event) => {
-                    if (!event.target.value) {
-                      setWorkout((oldWorkout) => ({
-                        ...oldWorkout,
-                        start: null,
-                      }));
-                    }
-                  }}
-                  inputProps={{ placeholder: 'ЧЧ:ММ' }}
+                  inputProps={{ ...props.inputProps, placeholder: 'чч:мм' }}
                 />
               )}
               minutesStep={5}
             />
           </Grid>
           <Grid item xs={6}>
-            <StaticTimePicker
+            <TimePicker
               onChange={(date) => setWorkout((oldWorkout) => ({
                 ...oldWorkout,
-                end: moment(date).format('HH:mm'),
+                end: moment(date).format(DJANGO_TIME_FORMAT),
               }))}
               value={getDateFromTime(workout.end)}
               label="Конец тренировки"
-              minTime={moment(workout.start, 'HH:mm').add(5, 'minutes')}
-              maxTime={moment(workout.start, 'HH:mm').add(2, 'hours')}
+              minTime={moment(workout.start, DJANGO_TIME_FORMAT).add(5, 'minutes')}
+              maxTime={moment(workout.start, DJANGO_TIME_FORMAT).add(2, 'hours')}
               renderInput={(props) => (
                 <TextField
                   {...props}
                   fullWidth
                   error={!!errors.end}
                   helperText={errors.end}
-                  value={workout.end || ''}
-                  onChange={(event) => {
-                    if (!event.target.value) {
-                      setWorkout((oldWorkout) => ({
-                        ...oldWorkout,
-                        end: null,
-                      }));
-                    }
-                  }}
-                  inputProps={{ placeholder: 'ЧЧ:ММ' }}
+                  inputProps={{ ...props.inputProps, placeholder: 'чч:мм' }}
                 />
               )}
               onError={(reason) => {
@@ -191,6 +171,7 @@ const AddWorkout = () => {
           variant="contained"
           color="success"
           onClick={save}
+          disabled={Object.values(errors).some(Boolean)}
           startIcon={<Save/>}
         >
           Сохранить
