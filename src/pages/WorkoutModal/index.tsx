@@ -1,30 +1,26 @@
 import { Cancel, Save } from '@mui/icons-material';
 import { TimePicker } from '@mui/lab';
-import { TimeValidationError } from '@mui/lab/internal/pickers/hooks/useValidation';
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   Grid,
+  List,
   TextField,
+  Typography,
 } from '@mui/material';
-import { Context } from 'context';
+import { withContext } from 'context';
 import { Workout } from 'context/types';
 import api from 'lib/api';
 import { DATE_DISPLAY_FORMAT, DJANGO_DATE_FORMAT, DJANGO_TIME_FORMAT } from 'lib/constants';
 import { isAxiosError } from 'lib/utils';
 import { isEqual } from 'lodash';
 import moment from 'moment';
-import React, { ContextType, PureComponent } from 'react';
-import { FormErrors, State } from './types';
+import React, { PureComponent } from 'react';
+import { FormErrors, Props, State } from './types';
 
-class AddWorkout extends PureComponent<Record<string, never>, State> {
-  static contextType = Context
-
-  context!: ContextType<typeof Context>
-
+class WorkoutModal extends PureComponent<Props, State> {
   state: State = {
     workout: {
       date: '',
@@ -39,25 +35,56 @@ class AddWorkout extends PureComponent<Record<string, never>, State> {
     },
   }
 
-  componentDidUpdate(prevProps: Readonly<Record<string, never>>, prevState: Readonly<State>) {
+  /**
+   * Getter for сфдсгдфештп current workout day
+   * @return {string}
+   */
+  get workoutDate() {
+    const { context } = this.props;
+    const { workout } = this.state;
+
+    if (workout.date) {
+      return moment(workout.date, DJANGO_DATE_FORMAT).format(DATE_DISPLAY_FORMAT);
+    }
+
+    if (context!.workoutDay) {
+      return context!.workoutDay.format(DATE_DISPLAY_FORMAT);
+    }
+
+    return '';
+  }
+
+  get modalTitle() {
+    const { context } = this.props;
+
+    if (context!.selectedWorkout) {
+      return 'Редактировать тренировку';
+    }
+    return 'Добавить тренировку';
+  }
+
+  get editMode() {
+    const { context } = this.props;
+
+    return Boolean(context!.selectedWorkout);
+  }
+
+  componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>) {
+    const { context } = this.props;
     const { workout } = this.state;
 
     if (!isEqual(prevState.workout, workout)) {
       this.resetErrors();
     }
-  }
 
-  /**
-   * Parser for preparing value for TimePicker
-   * @param {string | null} time - time value
-   * @return {null | Date}
-   */
-  getDateFromTime = (time: string | null) => {
-    if (time) {
-      const momentTime = moment(time, DJANGO_TIME_FORMAT);
-      return new Date(0, 0, 0, momentTime.hours(), momentTime.minutes());
+    if (prevProps.context!.selectedWorkout !== context!.selectedWorkout) {
+      if (context!.selectedWorkout) {
+        this.setState((state) => ({
+          ...state,
+          workout: context!.selectedWorkout as Workout,
+        }));
+      }
     }
-    return null;
   }
 
   resetErrors = () => this.setState((state) => ({
@@ -80,54 +107,42 @@ class AddWorkout extends PureComponent<Record<string, never>, State> {
   }))
 
   closeModal = () => {
-    const { editWorkout } = this.context;
+    const { context } = this.props;
 
-    editWorkout(null);
+    context!.setCurrentDay(null);
+    context!.setCurrentWorkout(null);
     this.resetErrors();
     this.resetWorkout();
   }
 
-  /**
-   * Callback for picker error handling
-   * @param {TimeValidationError} reason - error reason
-   * @param {keyof FormErrors} field - TimePicker field
-   */
-  handlePickerError = (reason: TimeValidationError, field: keyof FormErrors) => {
-    switch (reason) {
-      case 'maxTime':
-        this.setState((state) => ({
-          ...state,
-          errors: {
-            ...state.errors,
-            [field]: 'Превышено максимальное время тренировки (2 часа).',
-          },
-        }));
-        break;
-      case 'minTime':
-        this.setState((state) => ({
-          ...state,
-          errors: {
-            ...state.errors,
-            [field]: 'Конец тренировки не может быть раньше начала.',
-          },
-        }));
-        break;
-      default:
-        break;
-    }
-  }
-
   save = async () => {
-    const { addWorkout, workoutDay } = this.context;
+    const { context } = this.props;
     const { workout } = this.state;
 
     try {
-      const response = await api.post<Workout>('workout-api/workouts/', {
-        ...workout,
-        date: workoutDay?.format(DJANGO_DATE_FORMAT),
-      });
+      if (!this.editMode) {
+        const response = await api.post<Workout>('workout-api/workouts/', {
+          ...workout,
+          date: context!.workoutDay?.format(DJANGO_DATE_FORMAT),
+        });
 
-      addWorkout(response.data);
+        context!.addWorkout(response.data);
+      } else {
+        const updatedData: Partial<Workout> = Object.keys(workout).reduce((prev, curr) => {
+          if (context!.selectedWorkout && !isEqual(
+            workout[curr as keyof Workout],
+            context!.selectedWorkout[curr as keyof Workout],
+          )) {
+            return { ...prev, [curr]: workout[curr as keyof Workout] };
+          }
+          return prev;
+        }, {});
+
+        const response = await api.patch<Workout>(`workout-api/workouts/${workout.id}/`, updatedData);
+
+        context!.updateWorkout(response.data);
+      }
+
       this.closeModal();
     } catch (error) {
       if (isAxiosError<FormErrors>(error)) {
@@ -145,24 +160,28 @@ class AddWorkout extends PureComponent<Record<string, never>, State> {
   }
 
   render() {
-    const { workoutDay } = this.context;
+    const { context } = this.props;
     const { errors, workout } = this.state;
 
     return (
       <Dialog
-        open={Boolean(workoutDay)}
+        open={Boolean(context!.workoutDay || context!.selectedWorkout)}
         onClose={this.closeModal}
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle>
-          Добавить тренировку
-        </DialogTitle>
+        <Typography
+          variant="h5"
+          color="text.secondary"
+          sx={{ px: 3, py: 2, fontWeight: 'bold' }}
+        >
+          {this.modalTitle}
+        </Typography>
         <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                value={workoutDay?.format(DATE_DISPLAY_FORMAT) || ''}
+                value={this.workoutDate}
                 label="Дата тренировки"
                 error={!!errors.date}
                 helperText={errors.date}
@@ -173,16 +192,21 @@ class AddWorkout extends PureComponent<Record<string, never>, State> {
                 fullWidth
               />
             </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6" color="text.secondary">
+                Интервал
+              </Typography>
+            </Grid>
             <Grid item xs={6}>
               <TimePicker
                 onChange={(date) => this.setState((state) => ({
                   ...state,
                   workout: {
                     ...state.workout,
-                    start: moment(date).format(DJANGO_TIME_FORMAT),
+                    start: date ? moment(date).format(DJANGO_TIME_FORMAT) : null,
                   },
                 }))}
-                value={this.getDateFromTime(workout.start)}
+                value={moment(workout.start, DJANGO_TIME_FORMAT)}
                 label="Начало тренировки"
                 renderInput={(props) => (
                   <TextField
@@ -193,7 +217,6 @@ class AddWorkout extends PureComponent<Record<string, never>, State> {
                     inputProps={{ ...props.inputProps, placeholder: 'чч:мм' }}
                   />
                 )}
-                onError={(reason) => this.handlePickerError(reason, 'start')}
                 minutesStep={5}
               />
             </Grid>
@@ -203,13 +226,11 @@ class AddWorkout extends PureComponent<Record<string, never>, State> {
                   ...state,
                   workout: {
                     ...state.workout,
-                    end: moment(date).format(DJANGO_TIME_FORMAT),
+                    end: date ? moment(date).format(DJANGO_TIME_FORMAT) : null,
                   },
                 }))}
-                value={this.getDateFromTime(workout.end)}
+                value={moment(workout.end, DJANGO_TIME_FORMAT)}
                 label="Конец тренировки"
-                minTime={moment(workout.start, DJANGO_TIME_FORMAT).add(5, 'minutes')}
-                maxTime={moment(workout.start, DJANGO_TIME_FORMAT).add(2, 'hours')}
                 renderInput={(props) => (
                   <TextField
                     {...props}
@@ -219,9 +240,24 @@ class AddWorkout extends PureComponent<Record<string, never>, State> {
                     inputProps={{ ...props.inputProps, placeholder: 'чч:мм' }}
                   />
                 )}
-                onError={(reason) => this.handlePickerError(reason, 'end')}
                 minutesStep={5}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="h6" color="text.secondary">
+                Упражнения
+              </Typography>
+              {workout.exercises.length ? (
+                <List>
+                  {workout.exercises.map((exercise) => (
+                    <div key={exercise.id}>Дарова</div>
+                  ))}
+                </List>
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  Упражнения не указаны
+                </Typography>
+              )}
             </Grid>
           </Grid>
         </DialogContent>
@@ -230,7 +266,6 @@ class AddWorkout extends PureComponent<Record<string, never>, State> {
             variant="contained"
             color="success"
             onClick={this.save}
-            disabled={Object.values(errors).some(Boolean)}
             startIcon={<Save/>}
           >
             Сохранить
@@ -249,4 +284,4 @@ class AddWorkout extends PureComponent<Record<string, never>, State> {
   }
 }
 
-export default AddWorkout;
+export default withContext(WorkoutModal);

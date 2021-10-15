@@ -1,9 +1,16 @@
 import api from 'lib/api';
 import { Moment } from 'moment';
-import React, { createContext, FC, useCallback, useEffect, useReducer } from 'react';
+import React, {
+  ComponentType,
+  createContext,
+  FC,
+  useCallback,
+  useEffect,
+  useReducer,
+} from 'react';
 import initialState from './constants';
 import reducer, { Workouts } from './reducer';
-import { ContextActions, ContextState, Workout } from './types';
+import { ContextActions, ContextState, ContextValue, Workout } from './types';
 
 export const Context = createContext({} as ContextState & ContextActions);
 
@@ -27,7 +34,7 @@ const ContextProvider: FC = ({ children }) => {
    * Action for opening edit/create window for workout
    * @type {(day: (moment.Moment | null)) => void}
    */
-  const editWorkout = useCallback((day: Moment | null) => dispatch({
+  const setCurrentDay = useCallback((day: Moment | null) => dispatch({
     type: Workouts.EDIT,
     payload: day,
   }), []);
@@ -38,6 +45,24 @@ const ContextProvider: FC = ({ children }) => {
    */
   const addWorkout = useCallback((workout: Workout) => dispatch({
     type: Workouts.ADD,
+    payload: workout,
+  }), []);
+
+  /**
+   * Action for editing existing workout
+   * @type {(workout: Workout) => void}
+   */
+  const setCurrentWorkout = useCallback((workout: Workout | null) => dispatch({
+    type: Workouts.SELECT,
+    payload: workout,
+  }), []);
+
+  /**
+   * Action for updating specific workout
+   * @type {(workout: Workout) => void}
+   */
+  const updateWorkout = useCallback((workout: Workout) => dispatch({
+    type: Workouts.UPDATE,
     payload: workout,
   }), []);
 
@@ -52,8 +77,10 @@ const ContextProvider: FC = ({ children }) => {
       value={{
         ...state as ContextState,
         loadWorkouts,
-        editWorkout,
+        setCurrentDay,
         addWorkout,
+        setCurrentWorkout,
+        updateWorkout,
       }}
     >
       {children}
@@ -62,3 +89,11 @@ const ContextProvider: FC = ({ children }) => {
 };
 
 export default ContextProvider;
+
+export const withContext = <T, >(Element: ComponentType<T>) => (
+  (props: T & { context?: ContextValue }) => (
+    <Context.Consumer>
+      {(context) => <Element {...props} context={context}/>}
+    </Context.Consumer>
+  )
+);

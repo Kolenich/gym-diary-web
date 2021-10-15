@@ -7,12 +7,12 @@ class API {
     session.post<T>(url, data, { headers })
   )
 
-  put = (url: string, data: unknown, headers?: Record<string, string>) => (
-    session.put(url, data, { headers })
+  put = <T>(url: string, data: unknown, headers?: Record<string, string>) => (
+    session.put<T>(url, data, { headers })
   )
 
-  patch = (url: string, data: unknown, headers?: Record<string, string>) => (
-    session.patch(url, data, { headers })
+  patch = <T>(url: string, data: unknown, headers?: Record<string, string>) => (
+    session.patch<T>(url, data, { headers })
   )
 
   delete = (url: string, headers?: Record<string, string>) => session.delete(url, { headers })

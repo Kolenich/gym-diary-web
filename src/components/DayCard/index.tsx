@@ -1,18 +1,18 @@
-import { Add, ExpandMore } from '@mui/icons-material';
+import { Add, Edit, FitnessCenter } from '@mui/icons-material';
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Card,
   CardContent,
   Chip,
   Fab,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Theme,
   Tooltip,
   Typography,
   Zoom,
 } from '@mui/material';
-import ExerciseAccordion from 'components/ExerciseAccordion';
 import { Context } from 'context';
 import {
   DATE_DISPLAY_FORMAT,
@@ -27,7 +27,7 @@ import React, { useContext } from 'react';
 import { Props } from './types';
 
 const DayCard = ({ day }: Props) => {
-  const { workouts, editWorkout } = useContext(Context);
+  const { workouts, setCurrentDay, setCurrentWorkout } = useContext(Context);
 
   const currentWorkouts = workouts.filter((workout) => (
     workout.date === day.format(DJANGO_DATE_FORMAT)
@@ -43,47 +43,61 @@ const DayCard = ({ day }: Props) => {
       }}
     >
       <CardContent color="inherit">
-        <Typography gutterBottom variant="body1" component="div" color="text.primary">
-          {title(day.locale('ru').format('dddd'))} ({day?.format(DATE_DISPLAY_FORMAT)})
-        </Typography>
-        {currentWorkouts.length ? currentWorkouts.map((workout) => (
-          <Accordion key={workout.id}>
-            <AccordionSummary
-              expandIcon={<ExpandMore/>}
+        <List
+          subheader={
+            <Typography gutterBottom variant="h6" component="div" color="text.secondary">
+              {title(day.locale('ru').format('dddd'))} ({day?.format(DATE_DISPLAY_FORMAT)})
+            </Typography>
+          }
+        >
+          {currentWorkouts.length ? currentWorkouts.map((workout) => (
+            <ListItem
+              key={workout.id}
+              secondaryAction={
+                <Tooltip title="Редактировать тренировку">
+                  <IconButton
+                    onClick={() => setCurrentWorkout(workout)}
+                    color="inherit"
+                  >
+                    <Edit/>
+                  </IconButton>
+                </Tooltip>
+              }
+              sx={{
+                cursor: 'pointer',
+                borderRadius: 1,
+                transition: (theme: Theme) => theme.transitions.create('all', {
+                  easing: theme.transitions.easing.sharp,
+                  duration: theme.transitions.duration.short,
+                }),
+                ':hover': {
+                  bgcolor: 'primary.light',
+                  color: 'common.white',
+                },
+              }}
             >
-              <Typography variant="h6" component="div" color="text.primary" sx={{ flexGrow: 1 }}>
-                Тренировка
-                <Typography color="text.secondary">
-                  {workout.start && workout.end ? (
-                    `${moment(workout.start, DJANGO_TIME_FORMAT).format(TIME_DISPLAY_FORMAT)} - ${moment(workout.end, DJANGO_TIME_FORMAT).format(TIME_DISPLAY_FORMAT)}`
-                  ) : 'Время не указано'}
-                </Typography>
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              {workout.exercises.length ? (
-                <>
-                  <Typography gutterBottom variant="body2" color="text.secondary">
-                    Упражнения
+              <FitnessCenter sx={{ mr: 4 }}/>
+              <ListItemText
+                primary={
+                  <Typography variant="h6" component="div">
+                    Тренировка
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" component="div">
-                    {workout.exercises.map((exercise) => (
-                      <ExerciseAccordion key={exercise.id} exercise={exercise}/>
-                    ))}
+                }
+                secondary={
+                  <Typography variant="body2">
+                    {workout.start && workout.end ? (
+                      `${moment(workout.start, DJANGO_TIME_FORMAT).format(TIME_DISPLAY_FORMAT)} - ${moment(workout.end, DJANGO_TIME_FORMAT).format(TIME_DISPLAY_FORMAT)}`
+                    ) : 'Время не указано'}
                   </Typography>
-                </>
-              ) : (
-                <Typography gutterBottom variant="body2" color="text.secondary">
-                  Упражнения не указаны
-                </Typography>
-              )}
-            </AccordionDetails>
-          </Accordion>
-        )) : (
-          <Typography variant="body2" color="text.secondary">
-            Тренировок нет
-          </Typography>
-        )}
+                }
+              />
+            </ListItem>
+          )) : (
+            <Typography variant="body2">
+              Тренировок нет
+            </Typography>
+          )}
+        </List>
       </CardContent>
       <Zoom in={day.format(DATE_DISPLAY_FORMAT) === TODAY.format(DATE_DISPLAY_FORMAT)}>
         <Chip
@@ -94,7 +108,7 @@ const DayCard = ({ day }: Props) => {
             bottom: (theme: Theme) => theme.spacing(1),
             left: (theme: Theme) => theme.spacing(1),
           }}
-          onClick={() => editWorkout(day)}
+          onClick={() => setCurrentDay(day)}
         />
       </Zoom>
       <Tooltip title="Добавить тренировку">
@@ -106,7 +120,7 @@ const DayCard = ({ day }: Props) => {
           }}
           size="small"
           color="primary"
-          onClick={() => editWorkout(day)}
+          onClick={() => setCurrentDay(day)}
         >
           <Add/>
         </Fab>

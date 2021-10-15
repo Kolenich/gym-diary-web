@@ -1,4 +1,8 @@
-import { Workout } from 'context/types';
+import { ContextValue, Workout } from 'context/types';
+
+export interface Props {
+  context?: ContextValue;
+}
 
 export interface State {
   workout: Workout

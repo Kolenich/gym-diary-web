@@ -3,13 +3,18 @@ import { Moment } from 'moment';
 export interface ContextState {
   workouts: Workout[];
   workoutDay: Moment | null;
+  selectedWorkout: Workout | null;
 }
 
 export interface ContextActions {
   loadWorkouts: () => void;
-  editWorkout: (day: Moment | null) => void;
+  setCurrentDay: (day: Moment | null) => void;
   addWorkout: (workout: Workout) => void;
+  setCurrentWorkout: (workout: Workout | null) => void;
+  updateWorkout: (workout: Workout) => void;
 }
+
+export type ContextValue = ContextState & ContextActions;
 
 export interface Workout {
   readonly id?: number;

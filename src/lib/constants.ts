@@ -18,7 +18,7 @@ export const SERVER_NOT_AVAILABLE = 'Сервер не доступен, поп�
 
 export const TODAY = moment();
 
-export const DJANGO_TIME_FORMAT = 'HH:mm:ss.SSSSSS';
+export const DJANGO_TIME_FORMAT = 'HH:mm';
 export const DJANGO_DATE_FORMAT = 'yyyy-MM-DD';
 export const DATE_DISPLAY_FORMAT = 'DD.MM.yyyy';
 export const TIME_DISPLAY_FORMAT = 'HH:mm';

@@ -22,17 +22,23 @@ const ExerciseAccordion = ({ exercise }: Props) => (
     </AccordionSummary>
     <AccordionDetails>
       <Typography variant="body2" color="text.primary" component="div">
-        <List sx={{ bgcolor: 'background.paper' }}>
-          {exercise.sets.map((set, index) => (
-            <ListItem key={set.id}>
-              <ListItemText>
-                <Typography variant="body2" color="text.secondary">
-                  {`${index + 1}. ${set.weight}кг - ${set.repeats} повторений`}
-                </Typography>
-              </ListItemText>
-            </ListItem>
-          ))}
-        </List>
+        {exercise.sets.length ? (
+          <List sx={{ bgcolor: 'background.paper' }}>
+            {exercise.sets.map((set, index) => (
+              <ListItem key={set.id}>
+                <ListItemText>
+                  <Typography variant="body2" color="text.secondary">
+                    {`${index + 1}. ${set.weight}кг - ${set.repeats} повторений`}
+                  </Typography>
+                </ListItemText>
+              </ListItem>
+            ))}
+          </List>
+        ) : (
+          <Typography variant="body2" color="text.secondary">
+            Подходы не указаны
+          </Typography>
+        )}
       </Typography>
     </AccordionDetails>
   </Accordion>
