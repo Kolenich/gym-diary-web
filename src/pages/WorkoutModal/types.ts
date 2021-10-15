@@ -7,6 +7,7 @@ export interface Props {
 export interface State {
   workout: Workout
   errors: FormErrors;
+  loading: boolean;
 }
 
 export interface FormErrors {

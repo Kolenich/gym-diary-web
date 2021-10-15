@@ -19,8 +19,8 @@ export type ContextValue = ContextState & ContextActions;
 export interface Workout {
   readonly id?: number;
   date: string;
-  start: string | null;
-  end: string | null;
+  start: string;
+  end: string;
   exercises: Exercise[];
 }
 

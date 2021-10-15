@@ -1,4 +1,4 @@
-import { Cancel, Save } from '@mui/icons-material';
+import { Cancel, DirectionsRun, Save, Timeline } from '@mui/icons-material';
 import { TimePicker } from '@mui/lab';
 import {
   Button,
@@ -7,6 +7,8 @@ import {
   DialogContent,
   Grid,
   List,
+  ListItemButton,
+  ListItemText,
   TextField,
   Typography,
 } from '@mui/material';
@@ -18,14 +20,15 @@ import { isAxiosError } from 'lib/utils';
 import { isEqual } from 'lodash';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
+import Loading from '../../components/Loading';
 import { FormErrors, Props, State } from './types';
 
 class WorkoutModal extends PureComponent<Props, State> {
   state: State = {
     workout: {
       date: '',
-      start: null,
-      end: null,
+      start: '',
+      end: '',
       exercises: [],
     },
     errors: {
@@ -33,6 +36,7 @@ class WorkoutModal extends PureComponent<Props, State> {
       start: null,
       end: null,
     },
+    loading: false,
   }
 
   /**
@@ -120,8 +124,8 @@ class WorkoutModal extends PureComponent<Props, State> {
     ...state,
     workout: {
       date: '',
-      start: null,
-      end: null,
+      start: '',
+      end: '',
       exercises: [],
     },
   }))
@@ -138,6 +142,8 @@ class WorkoutModal extends PureComponent<Props, State> {
   save = async () => {
     const { context } = this.props;
     const { workout } = this.state;
+
+    this.setState({ loading: true });
 
     try {
       if (!this.editMode) {
@@ -166,12 +172,14 @@ class WorkoutModal extends PureComponent<Props, State> {
           },
         }));
       }
+    } finally {
+      this.setState({ loading: false });
     }
   }
 
   render() {
     const { context } = this.props;
-    const { errors, workout } = this.state;
+    const { errors, workout, loading } = this.state;
 
     return (
       <Dialog
@@ -203,7 +211,12 @@ class WorkoutModal extends PureComponent<Props, State> {
               />
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h6" color="text.secondary">
+              <Typography
+                variant="h6"
+                color="text.secondary"
+                sx={{ display: 'flex', alignItems: 'center' }}
+              >
+                <Timeline sx={{ mr: 0.5 }}/>
                 Интервал
               </Typography>
             </Grid>
@@ -213,7 +226,7 @@ class WorkoutModal extends PureComponent<Props, State> {
                   ...state,
                   workout: {
                     ...state.workout,
-                    start: date ? moment(date).format(DJANGO_TIME_FORMAT) : null,
+                    start: date ? moment(date).format(DJANGO_TIME_FORMAT) : '',
                   },
                 }))}
                 value={moment(workout.start, DJANGO_TIME_FORMAT)}
@@ -236,7 +249,7 @@ class WorkoutModal extends PureComponent<Props, State> {
                   ...state,
                   workout: {
                     ...state.workout,
-                    end: date ? moment(date).format(DJANGO_TIME_FORMAT) : null,
+                    end: date ? moment(date).format(DJANGO_TIME_FORMAT) : '',
                   },
                 }))}
                 value={moment(workout.end, DJANGO_TIME_FORMAT)}
@@ -254,13 +267,24 @@ class WorkoutModal extends PureComponent<Props, State> {
               />
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h6" color="text.secondary">
+              <Typography
+                variant="h6"
+                color="text.secondary"
+                sx={{ display: 'flex', alignItems: 'center' }}
+              >
+                <DirectionsRun sx={{ mr: 0.5 }}/>
                 Упражнения
               </Typography>
               {workout.exercises.length ? (
                 <List>
                   {workout.exercises.map((exercise) => (
-                    <div key={exercise.id}>Дарова</div>
+                    <ListItemButton key={exercise.id}>
+                      <ListItemText>
+                        <Typography variant="body2">
+                          {exercise.name}
+                        </Typography>
+                      </ListItemText>
+                    </ListItemButton>
                   ))}
                 </List>
               ) : (
@@ -289,6 +313,7 @@ class WorkoutModal extends PureComponent<Props, State> {
             Отмена
           </Button>
         </DialogActions>
+        {loading && <Loading/>}
       </Dialog>
     );
   }
