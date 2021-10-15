@@ -36,7 +36,7 @@ class WorkoutModal extends PureComponent<Props, State> {
   }
 
   /**
-   * Getter for сфдсгдфештп current workout day
+   * Getter for calculating current workout day
    * @return {string}
    */
   get workoutDate() {
@@ -67,6 +67,26 @@ class WorkoutModal extends PureComponent<Props, State> {
     const { context } = this.props;
 
     return Boolean(context!.selectedWorkout);
+  }
+
+  /**
+   * Getter that calculates properties, that were changed from original object of
+   * context.selectedWorkout
+   * @return {Partial<Workout>}
+   */
+  get workoutDiff() {
+    const { context } = this.props;
+    const { workout } = this.state;
+
+    return Object.keys(workout).reduce((prev, curr) => {
+      if (!isEqual(
+        workout[curr as keyof Workout],
+        (context!.selectedWorkout as Workout)[curr as keyof Workout],
+      )) {
+        return { ...prev, [curr]: workout[curr as keyof Workout] };
+      }
+      return prev;
+    }, {});
   }
 
   componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>) {
@@ -128,17 +148,7 @@ class WorkoutModal extends PureComponent<Props, State> {
 
         context!.addWorkout(response.data);
       } else {
-        const updatedData: Partial<Workout> = Object.keys(workout).reduce((prev, curr) => {
-          if (context!.selectedWorkout && !isEqual(
-            workout[curr as keyof Workout],
-            context!.selectedWorkout[curr as keyof Workout],
-          )) {
-            return { ...prev, [curr]: workout[curr as keyof Workout] };
-          }
-          return prev;
-        }, {});
-
-        const response = await api.patch<Workout>(`workout-api/workouts/${workout.id}/`, updatedData);
+        const response = await api.patch<Workout>(`workout-api/workouts/${workout.id}/`, this.workoutDiff);
 
         context!.updateWorkout(response.data);
       }
