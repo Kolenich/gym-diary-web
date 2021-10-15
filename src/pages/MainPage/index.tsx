@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { AppBar, Box, Fab, Theme, Toolbar, Tooltip, Typography, Zoom } from '@mui/material';
 import DayCard from 'components/DayCard';
-import { DATE_DISPLAY_FORMAT, TODAY } from 'lib/constants';
+import { DATE_DISPLAY_FORMAT, TODAY, WORKOUT_DAYS } from 'lib/constants';
 import React, { useEffect, useState } from 'react';
 import { Weeks } from './types';
 import getWeek from './utils';
@@ -31,7 +31,7 @@ const MainPage = () => {
         </Toolbar>
       </AppBar>
       <Typography component="div" sx={{ m: 2, display: 'flex', flexWrap: 'wrap' }}>
-        {weeks.current.map((day) => (
+        {weeks.current.slice(0, WORKOUT_DAYS).map((day) => (
           <DayCard key={day.format('dddd')} day={day}/>
         ))}
       </Typography>

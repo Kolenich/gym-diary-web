@@ -9,19 +9,18 @@ const getWeek = (weeks: Weeks, type: 'current' | 'next' | 'previous') => {
   let today = TODAY;
 
   switch (type) {
-    case 'current':
-      break;
     case 'next':
       today = weeks.current[0].clone().add(7, 'days');
       break;
     case 'previous':
       today = weeks.current[0].clone().add(-7, 'days');
       break;
+    case 'current':
     default:
       break;
   }
 
-  for (let i = 1; i <= 5; i += 1) {
+  for (let i = 1; i <= 7; i += 1) {
     const dayOfCurrWeek = today.clone().set('day', i);
     const dayOfPreviousWeek = today.clone().add(-7, 'days').set('day', i);
     const dayOfNextWeek = today.clone().add(7, 'days').set('day', i);
