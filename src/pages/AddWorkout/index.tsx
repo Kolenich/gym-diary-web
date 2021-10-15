@@ -1,5 +1,6 @@
 import { Cancel, Save } from '@mui/icons-material';
 import { TimePicker } from '@mui/lab';
+import { TimeValidationError } from '@mui/lab/internal/pickers/hooks/useValidation';
 import {
   Button,
   Dialog,
@@ -55,6 +56,31 @@ const AddWorkout = () => {
       start: null,
       end: null,
     });
+  };
+
+  /**
+   * Callback for picker error handling
+   * @param {TimeValidationError} reason
+   * @param {keyof FormErrors} field
+   */
+  const handlePickerError = (reason: TimeValidationError, field: keyof FormErrors) => {
+    switch (reason) {
+      case 'maxTime':
+        setErrors((oldErrors) => ({
+          ...oldErrors,
+          [field]: 'Превышено максимальное время тренировки (2 часа).',
+        }));
+        break;
+      case 'minTime':
+        setErrors((oldErrors) => ({
+          ...oldErrors,
+          [field]: 'Конец тренировки не может быть раньше начала.',
+        }));
+        break;
+      default:
+        setErrors((oldErrors) => ({ ...oldErrors, [field]: null }));
+        break;
+    }
   };
 
   const save = async () => {
@@ -120,6 +146,7 @@ const AddWorkout = () => {
                   inputProps={{ ...props.inputProps, placeholder: 'чч:мм' }}
                 />
               )}
+              onError={(reason) => handlePickerError(reason, 'start')}
               minutesStep={5}
             />
           </Grid>
@@ -142,25 +169,7 @@ const AddWorkout = () => {
                   inputProps={{ ...props.inputProps, placeholder: 'чч:мм' }}
                 />
               )}
-              onError={(reason) => {
-                switch (reason) {
-                  case 'maxTime':
-                    setErrors((oldErrors) => ({
-                      ...oldErrors,
-                      end: 'Превышено максимальное время тренировки (2 часа)',
-                    }));
-                    break;
-                  case 'minTime':
-                    setErrors((oldErrors) => ({
-                      ...oldErrors,
-                      end: 'Конец тренировки не может быть раньше начала',
-                    }));
-                    break;
-                  default:
-                    setErrors((oldErrors) => ({ ...oldErrors, end: null }));
-                    break;
-                }
-              }}
+              onError={(reason) => handlePickerError(reason, 'end')}
               minutesStep={5}
             />
           </Grid>
