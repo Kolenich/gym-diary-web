@@ -10,6 +10,7 @@ import {
   Theme,
   Tooltip,
   Typography,
+  Zoom,
 } from '@mui/material';
 import ExerciseAccordion from 'components/ExerciseAccordion';
 import { Context } from 'context';
@@ -18,7 +19,7 @@ import {
   DJANGO_DATE_FORMAT,
   DJANGO_TIME_FORMAT,
   TIME_DISPLAY_FORMAT,
-  today,
+  TODAY,
 } from 'lib/constants';
 import { title } from 'lib/utils';
 import moment from 'moment';
@@ -52,13 +53,11 @@ const DayCard = ({ day }: Props) => {
             >
               <Typography variant="h6" component="div" color="text.primary" sx={{ flexGrow: 1 }}>
                 Тренировка
-
                 <Typography color="text.secondary">
                   {workout.start && workout.end ? (
                     `${moment(workout.start, DJANGO_TIME_FORMAT).format(TIME_DISPLAY_FORMAT)} - ${moment(workout.end, DJANGO_TIME_FORMAT).format(TIME_DISPLAY_FORMAT)}`
                   ) : 'Время не указано'}
                 </Typography>
-
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -86,7 +85,7 @@ const DayCard = ({ day }: Props) => {
           </Typography>
         )}
       </CardContent>
-      {day.format(DATE_DISPLAY_FORMAT) === today.format(DATE_DISPLAY_FORMAT) && (
+      <Zoom in={day.format(DATE_DISPLAY_FORMAT) === TODAY.format(DATE_DISPLAY_FORMAT)}>
         <Chip
           label="Сегодня"
           color="info"
@@ -95,8 +94,9 @@ const DayCard = ({ day }: Props) => {
             bottom: (theme: Theme) => theme.spacing(1),
             left: (theme: Theme) => theme.spacing(1),
           }}
+          onClick={() => editWorkout(day)}
         />
-      )}
+      </Zoom>
       <Tooltip title="Добавить тренировку">
         <Fab
           sx={{

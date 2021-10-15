@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { TODAY } from 'lib/constants';
 import { Weeks } from './types';
 
 const getWeek = (weeks: Weeks, type: 'current' | 'next' | 'previous') => {
@@ -6,7 +6,7 @@ const getWeek = (weeks: Weeks, type: 'current' | 'next' | 'previous') => {
   const previous = [];
   const next = [];
 
-  let today = moment();
+  let today = TODAY;
 
   switch (type) {
     case 'current':

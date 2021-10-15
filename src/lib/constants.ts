@@ -1,4 +1,3 @@
-// Status messages
 import moment from 'moment';
 
 export const SERVER_RESPONSES: Record<number, string> = {
@@ -17,7 +16,7 @@ export const SERVER_RESPONSES: Record<number, string> = {
 
 export const SERVER_NOT_AVAILABLE = 'Сервер не доступен, попробуйте позже';
 
-export const today = moment();
+export const TODAY = moment();
 
 export const DJANGO_TIME_FORMAT = 'HH:mm:ss.SSSSSS';
 export const DJANGO_DATE_FORMAT = 'yyyy-MM-DD';
