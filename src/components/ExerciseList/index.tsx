@@ -5,7 +5,6 @@ import { Props } from './types';
 
 const ExerciseList = ({ exercises }: Props) => {
   const [expandedExercises, setExpandedExercises] = useState<number[]>([]);
-  console.log(expandedExercises);
 
   return (
     <>

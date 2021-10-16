@@ -67,6 +67,7 @@ const DayCard = ({ day }: Props) => {
                   </IconButton>
                 </Tooltip>
               }
+              onDoubleClick={() => history.push({ pathname: `/workouts/${workout.id}` })}
               sx={{
                 cursor: 'pointer',
                 borderRadius: 1,
