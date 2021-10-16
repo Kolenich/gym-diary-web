@@ -12,7 +12,7 @@ import {
 import ExerciseList from 'components/ExerciseList';
 import Loading from 'components/Loading';
 import { Context } from 'context';
-import { Workout } from 'context/types';
+import { Exercise, Workout } from 'context/types';
 import api from 'lib/api';
 import { DATE_DISPLAY_FORMAT, DJANGO_DATE_FORMAT, DJANGO_TIME_FORMAT } from 'lib/constants';
 import { isAxiosError } from 'lib/utils';
@@ -138,7 +138,7 @@ class WorkoutModal extends PureComponent<Props, State> {
 
         addWorkout(response.data);
       } else {
-        const response = await api.patch<Workout>(`workout-api/workouts/${workout.id}/`, workout);
+        const response = await api.put<Workout>(`workout-api/workouts/${workout.id}/`, workout);
 
         updateWorkout(response.data);
       }
@@ -173,6 +173,45 @@ class WorkoutModal extends PureComponent<Props, State> {
       [field]: date ? moment(date).format(DJANGO_TIME_FORMAT) : null,
     },
   }))
+
+  handleExerciseChange = (exercise: Exercise, action: 'add' | 'update' | 'delete') => {
+    switch (action) {
+      case 'add':
+        this.setState((state) => ({
+          ...state,
+          workout: {
+            ...state.workout,
+            exercises: state.workout.exercises.concat(exercise),
+          },
+        }));
+        break;
+      case 'delete':
+        this.setState((state) => ({
+          ...state,
+          workout: {
+            ...state.workout,
+            exercises: state.workout.exercises.filter((x) => x.id !== exercise.id),
+          },
+        }));
+        break;
+      case 'update':
+        this.setState((state) => ({
+          ...state,
+          workout: {
+            ...state.workout,
+            exercises: state.workout.exercises.map((x) => {
+              if (x.id === exercise.id) {
+                return { ...x, ...exercise };
+              }
+              return x;
+            }),
+          },
+        }));
+        break;
+      default:
+        break;
+    }
+  }
 
   render() {
     const { errors, workout, loading } = this.state;
@@ -250,7 +289,10 @@ class WorkoutModal extends PureComponent<Props, State> {
               />
             </Grid>
             <Grid item xs={12}>
-              <ExerciseList exercises={workout.exercises}/>
+              <ExerciseList
+                exercises={workout.exercises}
+                onExerciseChange={this.handleExerciseChange}
+              />
             </Grid>
           </Grid>
         </DialogContent>
