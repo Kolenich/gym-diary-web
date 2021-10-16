@@ -62,12 +62,10 @@ class WorkoutModal extends PureComponent<Props, State> {
   get modalTitle() {
     const { match } = this.props;
 
-    switch (match.params.id) {
-      case 'add':
-        return 'Добавить тренировку';
-      default:
-        return 'Редактировать тренировку';
+    if (match.params.id === 'add') {
+      return 'Добавить тренировку';
     }
+    return 'Редактировать тренировку';
   }
 
   get editMode() {
