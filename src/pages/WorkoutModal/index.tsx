@@ -189,27 +189,26 @@ class WorkoutModal extends PureComponent<Props, State> {
         maxWidth="md"
       >
         <Typography
-          variant="h5"
-          color="text.secondary"
-          sx={{ px: 3, py: 2, fontWeight: 'bold' }}
+          component="div"
+          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
         >
-          {this.modalTitle}
+          <Typography
+            variant="h5"
+            color="text.secondary"
+            sx={{ px: 3, py: 2, fontWeight: 'bold' }}
+          >
+            {this.modalTitle}
+          </Typography>
+          <Typography
+            variant="h5"
+            color="text.secondary"
+            sx={{ px: 3, py: 2, fontWeight: 'bold' }}
+          >
+            {this.workoutDate}
+          </Typography>
         </Typography>
         <DialogContent>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                value={this.workoutDate}
-                label="Дата тренировки"
-                error={!!errors.date}
-                helperText={errors.date}
-                InputProps={{
-                  readOnly: true,
-                }}
-                margin="dense"
-                fullWidth
-              />
-            </Grid>
             <Grid item xs={12}>
               <Typography
                 variant="h6"
