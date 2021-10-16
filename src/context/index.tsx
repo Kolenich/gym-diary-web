@@ -1,18 +1,11 @@
 import api from 'lib/api';
 import { Moment } from 'moment';
-import React, {
-  ComponentType,
-  createContext,
-  FC,
-  useCallback,
-  useEffect,
-  useReducer,
-} from 'react';
+import React, { createContext, FC, useCallback, useReducer } from 'react';
 import initialState from './constants';
 import reducer, { Workouts } from './reducer';
-import { ContextActions, ContextState, ContextValue, Workout } from './types';
+import { ContextState, ContextValue, Workout } from './types';
 
-export const Context = createContext({} as ContextState & ContextActions);
+export const Context = createContext({} as ContextValue);
 
 const ContextProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState as never);
@@ -35,7 +28,7 @@ const ContextProvider: FC = ({ children }) => {
    * @type {(day: (moment.Moment | null)) => void}
    */
   const setCurrentDay = useCallback((day: Moment | null) => dispatch({
-    type: Workouts.EDIT,
+    type: Workouts.SET_DAY,
     payload: day,
   }), []);
 
@@ -49,15 +42,6 @@ const ContextProvider: FC = ({ children }) => {
   }), []);
 
   /**
-   * Action for editing existing workout
-   * @type {(workout: Workout) => void}
-   */
-  const setCurrentWorkout = useCallback((workout: Workout | null) => dispatch({
-    type: Workouts.SELECT,
-    payload: workout,
-  }), []);
-
-  /**
    * Action for updating specific workout
    * @type {(workout: Workout) => void}
    */
@@ -66,12 +50,6 @@ const ContextProvider: FC = ({ children }) => {
     payload: workout,
   }), []);
 
-  useEffect(() => {
-    (async () => {
-      await loadWorkouts();
-    })();
-  }, [loadWorkouts]);
-
   return (
     <Context.Provider
       value={{
@@ -79,7 +57,6 @@ const ContextProvider: FC = ({ children }) => {
         loadWorkouts,
         setCurrentDay,
         addWorkout,
-        setCurrentWorkout,
         updateWorkout,
       }}
     >
@@ -89,11 +66,3 @@ const ContextProvider: FC = ({ children }) => {
 };
 
 export default ContextProvider;
-
-export const withContext = <T, >(Element: ComponentType<T>) => (
-  (props: T & { context?: ContextValue }) => (
-    <Context.Consumer>
-      {(context) => <Element {...props} context={context}/>}
-    </Context.Consumer>
-  )
-);

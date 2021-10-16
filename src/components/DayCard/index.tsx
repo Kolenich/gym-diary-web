@@ -24,10 +24,13 @@ import {
 import { title } from 'lib/utils';
 import moment from 'moment';
 import React, { useContext } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { Props } from './types';
 
 const DayCard = ({ day }: Props) => {
-  const { workouts, setCurrentDay, setCurrentWorkout } = useContext(Context);
+  const { workouts, setCurrentDay } = useContext(Context);
+
+  const history = useHistory();
 
   const currentWorkouts = workouts.filter((workout) => (
     workout.date === day.format(DJANGO_DATE_FORMAT)
@@ -56,8 +59,9 @@ const DayCard = ({ day }: Props) => {
               secondaryAction={
                 <Tooltip title="Редактировать тренировку">
                   <IconButton
-                    onClick={() => setCurrentWorkout(workout)}
                     color="inherit"
+                    component={Link}
+                    to={`/workouts/${workout.id}`}
                   >
                     <Edit/>
                   </IconButton>
@@ -108,7 +112,10 @@ const DayCard = ({ day }: Props) => {
             bottom: (theme: Theme) => theme.spacing(1),
             left: (theme: Theme) => theme.spacing(1),
           }}
-          onClick={() => setCurrentDay(day)}
+          onClick={() => {
+            setCurrentDay(day);
+            history.push({ pathname: '/workouts/add' });
+          }}
         />
       </Zoom>
       <Tooltip title="Добавить тренировку">
@@ -120,7 +127,10 @@ const DayCard = ({ day }: Props) => {
           }}
           size="small"
           color="primary"
-          onClick={() => setCurrentDay(day)}
+          onClick={() => {
+            setCurrentDay(day);
+            history.push({ pathname: '/workouts/add' });
+          }}
         >
           <Add/>
         </Fab>

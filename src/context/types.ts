@@ -3,14 +3,12 @@ import { Moment } from 'moment';
 export interface ContextState {
   workouts: Workout[];
   workoutDay: Moment | null;
-  selectedWorkout: Workout | null;
 }
 
 export interface ContextActions {
   loadWorkouts: () => void;
   setCurrentDay: (day: Moment | null) => void;
   addWorkout: (workout: Workout) => void;
-  setCurrentWorkout: (workout: Workout | null) => void;
   updateWorkout: (workout: Workout) => void;
 }
 
@@ -18,9 +16,9 @@ export type ContextValue = ContextState & ContextActions;
 
 export interface Workout {
   readonly id?: number;
-  date: string;
-  start: string;
-  end: string;
+  date: string | null;
+  start: string | null;
+  end: string | null;
   exercises: Exercise[];
 }
 
@@ -35,3 +33,5 @@ export interface Set {
   weight: number;
   repeats: number;
 }
+
+export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;

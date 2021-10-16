@@ -1,22 +1,28 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { AppBar, Box, Fab, Theme, Toolbar, Tooltip, Typography, Zoom } from '@mui/material';
 import DayCard from 'components/DayCard';
+import { Context } from 'context';
 import { DATE_DISPLAY_FORMAT, TODAY, WORKOUT_DAYS } from 'lib/constants';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Weeks } from './types';
 import getWeek from './utils';
 
 const MainPage = () => {
+  const { loadWorkouts } = useContext(Context);
+
   const [weeks, setWeeks] = useState<Weeks>({
     previous: [],
     current: [],
     next: [],
   });
 
-  /** Effect for calculating weeks */
+  /** Effect for calculating weeks and loading workouts */
   useEffect(() => {
-    setWeeks((oldWeeks) => getWeek(oldWeeks, 'current'));
-  }, []);
+    (async () => {
+      setWeeks((oldWeeks) => getWeek(oldWeeks, 'current'));
+      await loadWorkouts();
+    })();
+  }, [loadWorkouts]);
 
   return (
     <Box sx={{ position: 'relative', height: '100vh' }}>

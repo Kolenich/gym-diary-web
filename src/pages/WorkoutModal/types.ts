@@ -1,11 +1,10 @@
-import { ContextValue, Workout } from 'context/types';
+import { PartialBy, Workout } from 'context/types';
+import { RouteComponentProps } from 'react-router-dom';
 
-export interface Props {
-  context?: ContextValue;
-}
+export type Props = RouteComponentProps<{ id: string }>;
 
 export interface State {
-  workout: Workout
+  workout: PartialBy<Workout, 'date'>;
   errors: FormErrors;
   loading: boolean;
 }

@@ -3,9 +3,8 @@ import { Workout } from './types';
 
 export enum Workouts {
   LOAD = 'LOAD_WORKOUTS',
-  EDIT = 'EDIT_WORKOUT',
+  SET_DAY = 'SET_WORKOUT_DAY',
   ADD = 'ADD_WORKOUT',
-  SELECT = 'SELECT_WORKOUT',
   UPDATE = 'UPDATE_WORKOUT',
 }
 
@@ -18,12 +17,10 @@ export default (state = initialState, action: ReducerAction) => {
   switch (action.type) {
     case Workouts.LOAD:
       return { ...state, workouts: action.payload };
-    case Workouts.EDIT:
+    case Workouts.SET_DAY:
       return { ...state, workoutDay: action.payload };
     case Workouts.ADD:
       return { ...state, workouts: state.workouts.concat(action.payload as Workout) };
-    case Workouts.SELECT:
-      return { ...state, selectedWorkout: action.payload };
     case Workouts.UPDATE:
       return {
         ...state,
