@@ -102,7 +102,7 @@ class WorkoutModal extends PureComponent<Props, State> {
 
     if (match.params.id !== 'add') {
       this.setState({ loading: true });
-      const response = await api.get<Workout>(`workout-api/workouts/${match.params.id}`);
+      const response = await api.get<Workout>(`workout-api/workouts/${match.params.id}/`);
 
       this.setState((state) => ({ ...state, workout: response.data, loading: false }));
     }
