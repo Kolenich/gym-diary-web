@@ -1,17 +1,11 @@
-import { DirectionsRun, StarBorder } from '@mui/icons-material';
-import {
-  Collapse,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from '@mui/material';
+import { DirectionsRun } from '@mui/icons-material';
+import { Collapse, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material';
 import React, { Fragment, useState } from 'react';
 import { Props } from './types';
 
 const ExerciseList = ({ exercises }: Props) => {
   const [expandedExercises, setExpandedExercises] = useState<number[]>([]);
+  console.log(expandedExercises);
 
   return (
     <>
@@ -25,7 +19,7 @@ const ExerciseList = ({ exercises }: Props) => {
       </Typography>
       {exercises.length ? (
         <List>
-          {exercises.map((exercise) => (
+          {exercises.map((exercise, exerciseIndex) => (
             <Fragment key={exercise.id}>
               <ListItemButton
                 onClick={() => setExpandedExercises((oldExpanded) => {
@@ -37,18 +31,29 @@ const ExerciseList = ({ exercises }: Props) => {
               >
                 <ListItemText>
                   <Typography variant="body2">
-                    {exercise.name}
+                    {exerciseIndex + 1}. {exercise.name}
                   </Typography>
                 </ListItemText>
               </ListItemButton>
               <Collapse in={expandedExercises.includes(exercise.id!)} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                      <StarBorder/>
-                    </ListItemIcon>
-                    <ListItemText primary="Starred"/>
-                  </ListItemButton>
+                  {exercise.sets.length ? exercise.sets.map((set, setIndex) => (
+                    <ListItem key={set.id} sx={{ pl: 4 }}>
+                      <ListItemText>
+                        <Typography variant="body2" color="text.secondary">
+                          {setIndex + 1}. {set.weight}кг - {set.repeats} повторений
+                        </Typography>
+                      </ListItemText>
+                    </ListItem>
+                  )) : (
+                    <ListItem>
+                      <ListItemText sx={{ pl: 4 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          Подходы не указаны
+                        </Typography>
+                      </ListItemText>
+                    </ListItem>
+                  )}
                 </List>
               </Collapse>
             </Fragment>
