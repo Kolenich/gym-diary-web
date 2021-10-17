@@ -1,5 +1,5 @@
 import { Cancel, Save, Timeline } from '@mui/icons-material';
-import { TimePicker } from '@mui/lab';
+import { StaticTimePicker } from '@mui/lab';
 import {
   Button,
   Dialog,
@@ -71,7 +71,7 @@ class WorkoutModal extends PureComponent<Props, State> {
   get editMode() {
     const { match } = this.props;
 
-    return Boolean(match.params.id);
+    return match.params.id !== 'add';
   }
 
   async componentDidMount() {
@@ -255,7 +255,7 @@ class WorkoutModal extends PureComponent<Props, State> {
               </Typography>
             </Grid>
             <Grid item xs={6}>
-              <TimePicker
+              <StaticTimePicker
                 onChange={(date) => this.handlePickerChange(date, 'start')}
                 value={moment(workout.start, DJANGO_TIME_FORMAT)}
                 label="Начало тренировки"
@@ -265,6 +265,14 @@ class WorkoutModal extends PureComponent<Props, State> {
                     fullWidth
                     error={!!errors.start}
                     helperText={errors.start}
+                    value={workout.start}
+                    onChange={(event) => this.setState((state) => ({
+                      ...state,
+                      workout: {
+                        ...state.workout,
+                        start: event.target.value || null,
+                      },
+                    }))}
                     inputProps={{ ...props.inputProps, placeholder: 'чч:мм' }}
                   />
                 )}
@@ -272,7 +280,7 @@ class WorkoutModal extends PureComponent<Props, State> {
               />
             </Grid>
             <Grid item xs={6}>
-              <TimePicker
+              <StaticTimePicker
                 onChange={(date) => this.handlePickerChange(date, 'end')}
                 value={moment(workout.end, DJANGO_TIME_FORMAT)}
                 label="Конец тренировки"
@@ -282,6 +290,14 @@ class WorkoutModal extends PureComponent<Props, State> {
                     fullWidth
                     error={!!errors.end}
                     helperText={errors.end}
+                    value={workout.end}
+                    onChange={(event) => this.setState((state) => ({
+                      ...state,
+                      workout: {
+                        ...state.workout,
+                        end: event.target.value || null,
+                      },
+                    }))}
                     inputProps={{ ...props.inputProps, placeholder: 'чч:мм' }}
                   />
                 )}
