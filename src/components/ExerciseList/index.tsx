@@ -1,5 +1,6 @@
-import { Add, Delete, DirectionsRun, Save } from '@mui/icons-material';
+import { Add, Cancel, Delete, DirectionsRun, Edit, Save } from '@mui/icons-material';
 import {
+  Chip,
   Collapse,
   IconButton,
   List,
@@ -11,13 +12,119 @@ import {
   Typography,
 } from '@mui/material';
 import { Exercise } from 'context/types';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, ReactText, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import { Props } from './types';
 
 const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
-  const [expandedExercises, setExpandedExercises] = useState<number[]>([]);
+  const [expandedExercises, setExpandedExercises] = useState<ReactText[]>([]);
+  const [editingExercises, setEditingExercises] = useState<Exercise[]>([]);
 
   const [newExercises, setNewExercises] = useState<Exercise[]>([]);
+
+  /**
+   * Function for rendering current state of exercise, either it is being simply displayed or edited
+   * @param {Exercise} exercise - exercise object being displayed or edited
+   * @param {number} index - it's index in array
+   * @return {JSX.Element}
+   */
+  const renderExercise = (exercise: Exercise, index: number) => {
+    const editedExercise = editingExercises.find((x) => x.id === exercise.id);
+
+    if (editedExercise) {
+      return (
+        <TextField
+          label="Название"
+          value={editedExercise.name}
+          variant="standard"
+          size="small"
+          sx={{ ml: 2, mt: 1, display: 'block' }}
+          InputProps={{
+            endAdornment: (
+              <>
+                <Tooltip title="Сохранить">
+                  <IconButton
+                    color="success"
+                    sx={{ p: 0.5 }}
+                  >
+                    <Save/>
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Отмена">
+                  <IconButton
+                    color="error"
+                    sx={{ p: 0.5 }}
+                    onClick={() => setEditingExercises((oldExercises) => (
+                      oldExercises.filter((x) => (
+                        x.id !== editedExercise.id
+                      ))
+                    ))}
+                  >
+                    <Cancel/>
+                  </IconButton>
+                </Tooltip>
+              </>
+            ),
+          }}
+          onChange={(event) => setEditingExercises((oldExercises) => oldExercises.map((x) => {
+            if (x.id === editedExercise.id) {
+              return { ...x, name: event.target.value };
+            }
+            return x;
+          }))}
+        />
+      );
+    }
+
+    return (
+      <Typography component="div" sx={{ display: 'flex' }}>
+        <ListItemButton
+          onClick={() => setExpandedExercises((oldExpanded) => {
+            if (oldExpanded.includes(exercise.id!)) {
+              return oldExpanded.filter((x) => x !== exercise.id!);
+            }
+            return oldExpanded.concat(exercise.id!);
+          })}
+          sx={{ flexGrow: 1 }}
+        >
+          <ListItemText>
+            <Typography variant="body2" component="div">
+              {index + 1}. {exercise.name}
+              {typeof exercise.id === 'string' && (
+                <Chip label="Новое" color="success" size="small" sx={{ ml: 2 }}/>
+              )}
+            </Typography>
+          </ListItemText>
+        </ListItemButton>
+        <Tooltip title="Редактировать">
+          <IconButton
+            color="info"
+            onClick={() => {
+              setEditingExercises((oldExercises) => oldExercises.concat(exercise));
+              setExpandedExercises((oldExercises) => oldExercises.filter((x) => (
+                x !== exercise.id
+              )));
+            }}
+          >
+            <Edit/>
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Удалить">
+          <IconButton
+            color="error"
+            onClick={() => {
+              onExerciseChange(exercise, 'delete');
+              setExpandedExercises((oldExercises) => oldExercises.filter((x) => (
+                x !== exercise.id
+              )));
+            }}
+          >
+            <Delete/>
+          </IconButton>
+        </Tooltip>
+      </Typography>
+    );
+  };
 
   return (
     <>
@@ -32,6 +139,7 @@ const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
           <IconButton
             color="primary"
             onClick={() => setNewExercises((oldExercises) => oldExercises.concat({
+              id: uuid(),
               name: '',
               sets: [],
             }))}
@@ -43,20 +151,7 @@ const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
       <List>
         {exercises.length ? exercises.map((exercise, exerciseIndex) => (
           <Fragment key={exercise.id}>
-            <ListItemButton
-              onClick={() => setExpandedExercises((oldExpanded) => {
-                if (oldExpanded.includes(exercise.id!)) {
-                  return oldExpanded.filter((x) => x !== exercise.id!);
-                }
-                return oldExpanded.concat(exercise.id!);
-              })}
-            >
-              <ListItemText>
-                <Typography variant="body2">
-                  {exerciseIndex + 1}. {exercise.name}
-                </Typography>
-              </ListItemText>
-            </ListItemButton>
+            {renderExercise(exercise, exerciseIndex)}
             <Collapse in={expandedExercises.includes(exercise.id!)} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 <ListItem>
@@ -108,6 +203,7 @@ const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
               label="Название"
               value={newExercise.name}
               variant="standard"
+              size="small"
               onChange={(event) => setNewExercises((oldExercises) => oldExercises.map((x) => {
                 if (x.id === newExercise.id) {
                   return { ...x, name: event.target.value };
@@ -121,6 +217,7 @@ const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
                 setNewExercises([]);
               }}
               sx={{ mt: 2 }}
+              disabled={!newExercise.name}
               color="success"
             >
               <Save/>
