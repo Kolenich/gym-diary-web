@@ -7,7 +7,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Weeks } from './types';
 import getWeek from './utils';
 
-const MainPage = () => {
+const WeeksSchedule = () => {
   const { loadWorkouts } = useContext(Context);
 
   const [weeks, setWeeks] = useState<Weeks>({
@@ -89,4 +89,4 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default WeeksSchedule;
