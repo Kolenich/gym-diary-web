@@ -68,8 +68,6 @@ const WorkoutModal = ({ match, history }: Props) => {
     }
   }, [match.params.id]);
 
-  const resetErrors = () => setErrors({ start: null, end: null });
-
   const closeModal = () => {
     setCurrentDay(null);
     history.push({ pathname: '/workouts' });
@@ -78,7 +76,7 @@ const WorkoutModal = ({ match, history }: Props) => {
   const save = async () => {
     setLoading(true);
     try {
-      if (editMode) {
+      if (!editMode) {
         await api.post<Workout>('workout-api/workouts/', {
           ...workout,
           date: workoutDay!.format(DJANGO_DATE_FORMAT),
@@ -94,6 +92,7 @@ const WorkoutModal = ({ match, history }: Props) => {
         const newErrors = error.response?.data;
 
         setErrors((oldErrors) => ({ ...oldErrors, ...newErrors }));
+        setLoading(false);
       }
     }
   };
@@ -151,7 +150,7 @@ const WorkoutModal = ({ match, history }: Props) => {
   }, [loadWorkout, match.params.id]);
 
   useEffect(() => {
-    resetErrors();
+    setErrors({ start: null, end: null });
   }, [workout]);
 
   return (
