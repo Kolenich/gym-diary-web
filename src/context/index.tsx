@@ -33,15 +33,6 @@ const ContextProvider: FC = ({ children }) => {
   }), []);
 
   /**
-   * Action for adding newly created workout
-   * @type {(workout: Workout) => void}
-   */
-  const addWorkout = useCallback((workout: Workout) => dispatch({
-    type: Workouts.ADD,
-    payload: workout,
-  }), []);
-
-  /**
    * Action for updating specific workout
    * @type {(workout: Workout) => void}
    */
@@ -56,7 +47,6 @@ const ContextProvider: FC = ({ children }) => {
         ...state as ContextState,
         loadWorkouts,
         setCurrentDay,
-        addWorkout,
         updateWorkout,
       }}
     >

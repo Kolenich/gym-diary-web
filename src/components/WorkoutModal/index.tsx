@@ -124,19 +124,17 @@ class WorkoutModal extends PureComponent<Props, State> {
   }
 
   save = async () => {
-    const { workoutDay, addWorkout, updateWorkout } = this.context;
+    const { workoutDay, updateWorkout } = this.context;
     const { workout } = this.state;
 
     this.setState({ loading: true });
 
     try {
       if (!this.editMode) {
-        const response = await api.post<Workout>('workout-api/workouts/', {
+        await api.post<Workout>('workout-api/workouts/', {
           ...workout,
           date: workoutDay!.format(DJANGO_DATE_FORMAT),
         });
-
-        addWorkout(response.data);
       } else {
         const response = await api.put<Workout>(`workout-api/workouts/${workout.id}/`, workout);
 

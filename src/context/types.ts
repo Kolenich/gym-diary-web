@@ -2,14 +2,13 @@ import { Moment } from 'moment';
 import { ReactText } from 'react';
 
 export interface ContextState {
-  workouts: Workout[];
+  workouts: Omit<Workout, 'exercises'>[];
   workoutDay: Moment | null;
 }
 
 export interface ContextActions {
   loadWorkouts: () => void;
   setCurrentDay: (day: Moment | null) => void;
-  addWorkout: (workout: Workout) => void;
   updateWorkout: (workout: Workout) => void;
 }
 
