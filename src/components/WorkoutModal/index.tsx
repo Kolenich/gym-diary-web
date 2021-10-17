@@ -14,7 +14,7 @@ import Loading from 'components/Loading';
 import { Context } from 'context';
 import { Exercise, PartialBy, Workout } from 'context/types';
 import api from 'lib/api';
-import { DATE_DISPLAY_FORMAT, DJANGO_DATE_FORMAT, DJANGO_TIME_FORMAT, TODAY } from 'lib/constants';
+import { DATE_DISPLAY_FORMAT, DJANGO_DATE_FORMAT, DJANGO_TIME_FORMAT } from 'lib/constants';
 import { isAxiosError } from 'lib/utils';
 import moment, { Moment } from 'moment';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -40,8 +40,8 @@ const WorkoutModal = ({ match, history }: Props) => {
   const { workoutDay, setCurrentDay } = useContext(Context);
 
   const [workout, setWorkout] = useState<PartialBy<Workout, 'date'>>({
-    start: TODAY.format(DJANGO_TIME_FORMAT),
-    end: TODAY.clone().add(1, 'hours').add(30, 'minutes').format(DJANGO_TIME_FORMAT),
+    start: moment().format(DJANGO_TIME_FORMAT),
+    end: moment().add(1, 'hours').add(30, 'minutes').format(DJANGO_TIME_FORMAT),
     exercises: [],
   });
   const [errors, setErrors] = useState({
