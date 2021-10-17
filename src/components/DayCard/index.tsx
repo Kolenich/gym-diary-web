@@ -38,12 +38,7 @@ const DayCard = ({ day }: Props) => {
 
   return (
     <Card
-      sx={{
-        m: 1,
-        pb: 6,
-        flex: '1 0 18%',
-        position: 'relative',
-      }}
+      sx={{ position: 'relative', minHeight: 200, width: '100%' }}
     >
       <CardContent color="inherit">
         <List
@@ -91,7 +86,7 @@ const DayCard = ({ day }: Props) => {
                 },
               }}
             >
-              <FitnessCenter sx={{ mr: 4 }}/>
+              <FitnessCenter sx={{ mr: 1 }}/>
               <ListItemText
                 primary={
                   <Typography variant="h6" component="div">

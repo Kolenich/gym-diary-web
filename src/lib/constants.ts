@@ -27,4 +27,4 @@ export const TIME_DISPLAY_FORMAT = 'HH:mm';
  * Amount of days of week be displayed
  * @type {number}
  */
-export const WORKOUT_DAYS = 5;
+export const WORKOUT_DAYS = 6;

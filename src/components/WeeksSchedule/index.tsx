@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
-import { AppBar, Box, Fab, Theme, Toolbar, Tooltip, Typography, Zoom } from '@mui/material';
+import { AppBar, Fab, Grid, Theme, Toolbar, Tooltip, Typography, Zoom } from '@mui/material';
 import DayCard from 'components/DayCard';
 import { Context } from 'context';
 import { DATE_DISPLAY_FORMAT, TODAY, WORKOUT_DAYS } from 'lib/constants';
@@ -25,7 +25,7 @@ const WeeksSchedule = () => {
   }, [loadWorkouts]);
 
   return (
-    <Box sx={{ position: 'relative', height: '100vh' }}>
+    <>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -36,56 +36,90 @@ const WeeksSchedule = () => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Typography component="div" sx={{ m: 2, display: 'flex', flexWrap: 'wrap' }}>
-        {weeks.current.slice(0, WORKOUT_DAYS).map((day) => (
-          <DayCard key={day.format('dddd')} day={day}/>
-        ))}
-      </Typography>
-      <Tooltip title="Предыдущая неделя">
-        <Fab
-          sx={{
-            position: 'absolute',
-            bottom: (theme: Theme) => theme.spacing(2),
-            left: (theme: Theme) => theme.spacing(2),
-          }}
-          color="primary"
-          onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'previous'))}
-        >
-          <ChevronLeft/>
-        </Fab>
-      </Tooltip>
-      <Zoom
-        in={!weeks.current.some((day) => (
-          day.format(DATE_DISPLAY_FORMAT) === TODAY.format(DATE_DISPLAY_FORMAT)
-        ))}
+      <Grid
+        container
+        spacing={2}
+        sx={{ p: 2 }}
       >
-        <Fab
-          sx={{
-            position: 'absolute',
-            bottom: (theme: Theme) => theme.spacing(2),
-            left: '50%',
-          }}
-          color="primary"
-          variant="extended"
-          onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'current'))}
+        {weeks.current.slice(0, WORKOUT_DAYS).map((day) => (
+          <Grid
+            key={day.format('dddd')}
+            item
+            xs={12}
+            sm={6}
+            lg={4}
+            xl={2}
+          >
+            <DayCard day={day}/>
+          </Grid>
+        ))}
+      </Grid>
+      <Grid
+        container
+        sx={{
+          position: {
+            xs: 'sticky',
+            sm: 'absolute',
+            md: 'absolute',
+            lg: 'absolute',
+            xl: 'absolute',
+          },
+          bottom: (theme: Theme) => theme.spacing(2),
+          px: 2,
+          mt: 1,
+          zIndex: 'snackbar',
+        }}
+        alignItems="center"
+      >
+        <Grid
+          item
+          xs={4}
         >
-          Текущая неделя
-        </Fab>
-      </Zoom>
-      <Tooltip title="Следующая неделя">
-        <Fab
-          sx={{
-            position: 'absolute',
-            bottom: (theme: Theme) => theme.spacing(2),
-            right: (theme: Theme) => theme.spacing(2),
-          }}
-          color="primary"
-          onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'next'))}
+          <Tooltip title="Предыдущая неделя">
+            <Fab
+
+              color="primary"
+              onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'previous'))}
+            >
+              <ChevronLeft/>
+            </Fab>
+          </Tooltip>
+        </Grid>
+        <Grid
+          item
+          xs={4}
+          sx={{ textAlign: 'center' }}
         >
-          <ChevronRight/>
-        </Fab>
-      </Tooltip>
-    </Box>
+          <Zoom
+            in={!weeks.current.some((day) => (
+              day.format(DATE_DISPLAY_FORMAT) === TODAY.format(DATE_DISPLAY_FORMAT)
+            ))}
+          >
+            <Fab
+              color="primary"
+              variant="extended"
+              onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'current'))}
+            >
+              Текущая неделя
+            </Fab>
+          </Zoom>
+        </Grid>
+        <Grid
+          item
+          xs={4}
+          sx={{ textAlign: 'end' }}
+        >
+          <Tooltip title="Следующая неделя">
+            <Fab
+              color="primary"
+              onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'next'))}
+            >
+              <ChevronRight/>
+            </Fab>
+          </Tooltip>
+        </Grid>
+      </Grid>
+    </>
   );
 };
 
