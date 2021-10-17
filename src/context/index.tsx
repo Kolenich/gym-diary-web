@@ -24,6 +24,19 @@ const ContextProvider: FC = ({ children }) => {
   }, []);
 
   /**
+   * Action for deleting workout
+   * @type {(id: number) => Promise<void>}
+   */
+  const deleteWorkout = useCallback(async (id: number) => {
+    await api.delete(`/workout-api/workouts/${id}/`);
+
+    dispatch({
+      type: Workouts.DELETE,
+      payload: id,
+    });
+  }, []);
+
+  /**
    * Action for opening edit/create window for workout
    * @type {(day: (moment.Moment | null)) => void}
    */
@@ -38,6 +51,7 @@ const ContextProvider: FC = ({ children }) => {
         ...state as ContextState,
         loadWorkouts,
         setCurrentDay,
+        deleteWorkout,
       }}
     >
       {children}

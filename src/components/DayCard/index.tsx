@@ -28,7 +28,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { Props } from './types';
 
 const DayCard = ({ day }: Props) => {
-  const { workouts, setCurrentDay } = useContext(Context);
+  const { workouts, setCurrentDay, deleteWorkout } = useContext(Context);
 
   const history = useHistory();
 
@@ -57,15 +57,25 @@ const DayCard = ({ day }: Props) => {
             <ListItem
               key={workout.id}
               secondaryAction={
-                <Tooltip title="Редактировать тренировку">
-                  <IconButton
-                    color="inherit"
-                    component={Link}
-                    to={`/workouts/${workout.id}`}
-                  >
-                    <Edit/>
-                  </IconButton>
-                </Tooltip>
+                <>
+                  <Tooltip title="Редактировать тренировку">
+                    <IconButton
+                      color="inherit"
+                      component={Link}
+                      to={`/workouts/${workout.id}`}
+                    >
+                      <Edit/>
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Удалить тренировку">
+                    <IconButton
+                      color="inherit"
+                      onClick={() => deleteWorkout(workout.id!)}
+                    >
+                      <Delete/>
+                    </IconButton>
+                  </Tooltip>
+                </>
               }
               onDoubleClick={() => history.push({ pathname: `/workouts/${workout.id}` })}
               sx={{

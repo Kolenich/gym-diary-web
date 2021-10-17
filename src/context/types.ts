@@ -9,6 +9,7 @@ export interface ContextState {
 export interface ContextActions {
   loadWorkouts: () => void;
   setCurrentDay: (day: Moment | null) => void;
+  deleteWorkout: (id: number) => void;
 }
 
 export type ContextValue = ContextState & ContextActions;
@@ -22,13 +23,13 @@ export interface Workout {
 }
 
 export interface Exercise {
-  id?: ReactText;
+  id: ReactText;
   name: string;
   sets: Set[];
 }
 
 export interface Set {
-  id?: ReactText;
+  id: ReactText;
   weight: number;
   repeats: number;
 }

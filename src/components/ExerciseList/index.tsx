@@ -57,7 +57,7 @@ const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
    * @param {Exercise} exerciseObj - edited exercise
    */
   const saveEditedExercise = (exerciseObj: Exercise) => {
-    if (newExercises.map(({ id }) => id!).includes(exerciseObj.id!)) {
+    if (newExercises.map(({ id }) => id).includes(exerciseObj.id)) {
       setNewExercises((oldExercises) => oldExercises.map((x) => {
         if (x.id === exerciseObj.id) {
           return { ...x, ...exerciseObj };
@@ -142,10 +142,10 @@ const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
       <Typography component="div" sx={{ display: 'flex' }}>
         <ListItemButton
           onClick={() => setExpandedExercises((oldExpanded) => {
-            if (oldExpanded.includes(exercise.id!)) {
-              return oldExpanded.filter((x) => x !== exercise.id!);
+            if (oldExpanded.includes(exercise.id)) {
+              return oldExpanded.filter((x) => x !== exercise.id);
             }
-            return oldExpanded.concat(exercise.id!);
+            return oldExpanded.concat(exercise.id);
           })}
         >
           <ListItemText>
@@ -213,7 +213,7 @@ const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
         {exercises.length ? exercises.map((exercise) => (
           <Fragment key={exercise.id}>
             {renderExercise(exercise)}
-            <Collapse in={expandedExercises.includes(exercise.id!)} timeout="auto" unmountOnExit>
+            <Collapse in={expandedExercises.includes(exercise.id)} timeout="auto" unmountOnExit>
               <SetsList
                 sets={exercise.sets}
                 onSetChange={handleSetChange(exercise)}
