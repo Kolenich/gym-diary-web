@@ -12,42 +12,33 @@ import {
 import ExerciseList from 'components/ExerciseList';
 import Loading from 'components/Loading';
 import { Context } from 'context';
-import { Exercise, Workout } from 'context/types';
+import { Exercise, PartialBy, Workout } from 'context/types';
 import api from 'lib/api';
 import { DATE_DISPLAY_FORMAT, DJANGO_DATE_FORMAT, DJANGO_TIME_FORMAT } from 'lib/constants';
 import { isAxiosError } from 'lib/utils';
-import { isEqual } from 'lodash';
 import moment, { Moment } from 'moment';
-import React, { ContextType, PureComponent } from 'react';
-import { FormErrors, Props, State } from './types';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { Props } from './types';
 
-class WorkoutModal extends PureComponent<Props, State> {
-  static contextType = Context
+const WorkoutModal = ({ match, history }: Props) => {
+  const { workoutDay, setCurrentDay } = useContext(Context);
 
-  context!: ContextType<typeof Context>
-
-  state: State = {
-    workout: {
-      start: null,
-      end: null,
-      exercises: [],
-    },
-    errors: {
-      date: null,
-      start: null,
-      end: null,
-    },
-    loading: false,
-  }
+  const [workout, setWorkout] = useState<PartialBy<Workout, 'date'>>({
+    start: null,
+    end: null,
+    exercises: [],
+  });
+  const [errors, setErrors] = useState({
+    start: null,
+    end: null,
+  });
+  const [loading, setLoading] = useState(false);
 
   /**
-   * Getter for calculating current workout day
+   * Value for calculating current workout day
    * @return {string}
    */
-  get workoutDate() {
-    const { workoutDay } = this.context;
-    const { workout } = this.state;
-
+  const workoutDate = () => {
     if (workoutDay) {
       return workoutDay.format(DATE_DISPLAY_FORMAT);
     }
@@ -57,80 +48,37 @@ class WorkoutModal extends PureComponent<Props, State> {
     }
 
     return '';
-  }
+  };
 
-  get modalTitle() {
-    const { match } = this.props;
+  const modalTitle = match.params.id === 'add' ? 'Добавить тренировку' : 'Редактировать тренировку';
 
-    if (match.params.id === 'add') {
-      return 'Добавить тренировку';
-    }
-    return 'Редактировать тренировку';
-  }
-
-  get editMode() {
-    const { match } = this.props;
-
-    return match.params.id !== 'add';
-  }
-
-  async componentDidMount() {
-    await this.loadWorkout();
-  }
-
-  async componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>) {
-    const { match } = this.props;
-    const { workout } = this.state;
-
-    if (!isEqual(prevState.workout, workout)) {
-      this.resetErrors();
-    }
-
-    if (prevProps.match.params.id !== match.params.id) {
-      await this.loadWorkout();
-    }
-  }
+  const editMode = match.params.id !== 'add';
 
   /**
    * Function for loading current workout
    * @return {Promise<void>}
    */
-  loadWorkout = async () => {
-    const { match } = this.props;
-
+  const loadWorkout = useCallback(async () => {
     if (match.params.id !== 'add') {
-      this.setState({ loading: true });
+      setLoading(true);
       const response = await api.get<Workout>(`workout-api/workouts/${match.params.id}/`);
 
-      this.setState((state) => ({ ...state, workout: response.data, loading: false }));
+      setWorkout(response.data);
+      setLoading(false);
     }
-  }
+  }, [match.params.id]);
 
-  resetErrors = () => this.setState((state) => ({
-    ...state,
-    errors: {
-      date: null,
-      start: null,
-      end: null,
-    },
-  }))
+  const resetErrors = () => setErrors({ start: null, end: null });
 
-  closeModal = () => {
-    const { setCurrentDay } = this.context;
-    const { history } = this.props;
-
+  const closeModal = () => {
     setCurrentDay(null);
     history.push({ pathname: '/workouts' });
-  }
+  };
 
-  save = async () => {
-    const { workoutDay } = this.context;
-    const { workout } = this.state;
-
-    this.setState({ loading: true });
-
+  const save = async () => {
+    setLoading(true);
     try {
-      if (!this.editMode) {
+      if (editMode) {
         await api.post<Workout>('workout-api/workouts/', {
           ...workout,
           date: workoutDay!.format(DJANGO_DATE_FORMAT),
@@ -139,197 +87,198 @@ class WorkoutModal extends PureComponent<Props, State> {
         await api.put<Workout>(`workout-api/workouts/${workout.id}/`, workout);
       }
 
-      this.setState({ loading: false });
-      this.closeModal();
+      setLoading(false);
+      closeModal();
     } catch (error) {
-      if (isAxiosError<FormErrors>(error)) {
+      if (isAxiosError(error)) {
         const newErrors = error.response?.data;
 
-        this.setState((state) => ({
-          ...state,
-          loading: false,
-          errors: {
-            ...state.errors,
-            ...newErrors,
-          },
-        }));
+        setErrors((oldErrors) => ({ ...oldErrors, ...newErrors }));
       }
     }
-  }
+  };
 
   /**
    * Callback for handling TimePicker's input change
    * @param {moment.Moment | null} date - new value
    * @param {keyof Workout} field - field of Workout object
    */
-  handlePickerChange = (date: Moment | null, field: keyof Workout) => this.setState((state) => ({
-    ...state,
-    workout: {
-      ...state.workout,
+  const handlePickerChange = (date: Moment | null, field: keyof Workout) => (
+    setWorkout((oldWorkout) => ({
+      ...oldWorkout,
       [field]: date ? moment(date).format(DJANGO_TIME_FORMAT) : null,
-    },
-  }))
+    }))
+  );
 
-  handleExerciseChange = (exercise: Exercise, action: 'add' | 'update' | 'delete') => {
+  /**
+   * Callback for handling exercise change in child component
+   * @type {(exercise: Exercise, action: ("add" | "update" | "delete")) => void}
+   */
+  const handleExerciseChange = useCallback((exercise: Exercise, action: 'add' | 'update' | 'delete') => {
     switch (action) {
       case 'add':
-        this.setState((state) => ({
-          ...state,
-          workout: {
-            ...state.workout,
-            exercises: state.workout.exercises.concat(exercise),
-          },
+        setWorkout((oldWorkout) => ({
+          ...oldWorkout,
+          exercises: oldWorkout.exercises.concat(exercise),
         }));
         break;
       case 'delete':
-        this.setState((state) => ({
-          ...state,
-          workout: {
-            ...state.workout,
-            exercises: state.workout.exercises.filter((x) => x.id !== exercise.id),
-          },
+        setWorkout((oldWorkout) => ({
+          ...oldWorkout,
+          exercises: oldWorkout.exercises.filter((x) => x.id !== exercise.id),
         }));
         break;
       case 'update':
-        this.setState((state) => ({
-          ...state,
-          workout: {
-            ...state.workout,
-            exercises: state.workout.exercises.map((x) => {
-              if (x.id === exercise.id) {
-                return { ...x, ...exercise };
-              }
-              return x;
-            }),
-          },
+        setWorkout((oldWorkout) => ({
+          ...oldWorkout,
+          exercises: oldWorkout.exercises.map((x) => {
+            if (x.id === exercise.id) {
+              return { ...x, ...exercise };
+            }
+            return x;
+          }),
         }));
         break;
       default:
         break;
     }
-  }
+  }, []);
 
-  render() {
-    const { errors, workout, loading } = this.state;
+  useEffect(() => {
+    (async () => {
+      await loadWorkout();
+    })();
+  }, [loadWorkout, match.params.id]);
 
-    return (
-      <Dialog
-        open
-        onClose={this.closeModal}
-        fullWidth
-        maxWidth="md"
+  useEffect(() => {
+    resetErrors();
+  }, [workout]);
+
+  return (
+    <Dialog
+      open
+      onClose={closeModal}
+      fullWidth
+      maxWidth="md"
+    >
+      <Typography
+        component="div"
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
       >
         <Typography
-          component="div"
-          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+          variant="h5"
+          color="text.secondary"
+          sx={{ px: 3, py: 2, fontWeight: 'bold' }}
         >
-          <Typography
-            variant="h5"
-            color="text.secondary"
-            sx={{ px: 3, py: 2, fontWeight: 'bold' }}
-          >
-            {this.modalTitle}
-          </Typography>
-          <Typography
-            variant="h5"
-            color="text.secondary"
-            sx={{ px: 3, py: 2, fontWeight: 'bold' }}
-          >
-            {this.workoutDate}
-          </Typography>
+          {modalTitle}
         </Typography>
-        <DialogContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography
-                variant="h6"
-                color="text.secondary"
-                sx={{ display: 'flex', alignItems: 'center' }}
-              >
-                <Timeline sx={{ mr: 0.5 }}/>
-                Интервал
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <StaticTimePicker
-                onChange={(date) => this.handlePickerChange(date, 'start')}
-                value={moment(workout.start, DJANGO_TIME_FORMAT)}
-                label="Начало тренировки"
-                renderInput={(props) => (
-                  <TextField
-                    {...props}
-                    fullWidth
-                    error={!!errors.start}
-                    helperText={errors.start}
-                    value={workout.start}
-                    onChange={(event) => this.setState((state) => ({
-                      ...state,
-                      workout: {
-                        ...state.workout,
-                        start: event.target.value || null,
-                      },
-                    }))}
-                    inputProps={{ ...props.inputProps, placeholder: 'чч:мм' }}
-                  />
-                )}
-                minutesStep={5}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <StaticTimePicker
-                onChange={(date) => this.handlePickerChange(date, 'end')}
-                value={moment(workout.end, DJANGO_TIME_FORMAT)}
-                label="Конец тренировки"
-                renderInput={(props) => (
-                  <TextField
-                    {...props}
-                    fullWidth
-                    error={!!errors.end}
-                    helperText={errors.end}
-                    value={workout.end}
-                    onChange={(event) => this.setState((state) => ({
-                      ...state,
-                      workout: {
-                        ...state.workout,
-                        end: event.target.value || null,
-                      },
-                    }))}
-                    inputProps={{ ...props.inputProps, placeholder: 'чч:мм' }}
-                  />
-                )}
-                minutesStep={5}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <ExerciseList
-                exercises={workout.exercises}
-                onExerciseChange={this.handleExerciseChange}
-              />
-            </Grid>
+        <Typography
+          variant="h5"
+          color="text.secondary"
+          sx={{ px: 3, py: 2, fontWeight: 'bold' }}
+        >
+          {workoutDate()}
+        </Typography>
+      </Typography>
+      <DialogContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography
+              variant="h6"
+              color="text.secondary"
+              sx={{ display: 'flex', alignItems: 'center' }}
+            >
+              <Timeline sx={{ mr: 0.5 }}/>
+              Интервал
+            </Typography>
           </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={this.save}
-            startIcon={<Save/>}
+          <Grid
+            item
+            xl={6}
+            lg={6}
+            md={6}
+            sm={6}
+            xs={12}
           >
-            Сохранить
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={this.closeModal}
-            startIcon={<Cancel/>}
+            <StaticTimePicker
+              onChange={(date) => handlePickerChange(date, 'start')}
+              value={moment(workout.start, DJANGO_TIME_FORMAT)}
+              label="Начало тренировки"
+              renderInput={(props) => (
+                <TextField
+                  {...props}
+                  fullWidth
+                  error={!!errors.start}
+                  helperText={errors.start}
+                  value={workout.start}
+                  onChange={(event) => setWorkout((oldWorkout) => ({
+                    ...oldWorkout,
+                    start: event.target.value || null,
+                  }))}
+                  inputProps={{ ...props.inputProps, placeholder: 'чч:мм' }}
+                />
+              )}
+              minutesStep={5}
+            />
+          </Grid>
+          <Grid
+            item
+            xl={6}
+            lg={6}
+            md={6}
+            sm={6}
+            xs={12}
           >
-            Отмена
-          </Button>
-        </DialogActions>
-        {loading && <Loading/>}
-      </Dialog>
-    );
-  }
-}
+            <StaticTimePicker
+              onChange={(date) => handlePickerChange(date, 'end')}
+              value={moment(workout.end, DJANGO_TIME_FORMAT)}
+              label="Конец тренировки"
+              renderInput={(props) => (
+                <TextField
+                  {...props}
+                  fullWidth
+                  error={!!errors.end}
+                  helperText={errors.end}
+                  value={workout.end}
+                  onChange={(event) => setWorkout((oldWorkout) => ({
+                    ...oldWorkout,
+                    end: event.target.value || null,
+                  }))}
+                  inputProps={{ ...props.inputProps, placeholder: 'чч:мм' }}
+                />
+              )}
+              minutesStep={5}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <ExerciseList
+              exercises={workout.exercises}
+              onExerciseChange={handleExerciseChange}
+            />
+          </Grid>
+        </Grid>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={save}
+          startIcon={<Save/>}
+        >
+          Сохранить
+        </Button>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={closeModal}
+          startIcon={<Cancel/>}
+        >
+          Отмена
+        </Button>
+      </DialogActions>
+      {loading && <Loading/>}
+    </Dialog>
+  );
+};
 
 export default WorkoutModal;
