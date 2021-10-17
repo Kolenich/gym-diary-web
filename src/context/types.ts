@@ -9,7 +9,6 @@ export interface ContextState {
 export interface ContextActions {
   loadWorkouts: () => void;
   setCurrentDay: (day: Moment | null) => void;
-  updateWorkout: (workout: Workout) => void;
 }
 
 export type ContextValue = ContextState & ContextActions;

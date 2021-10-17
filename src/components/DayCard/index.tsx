@@ -1,4 +1,4 @@
-import { Add, Edit, FitnessCenter } from '@mui/icons-material';
+import { Add, Delete, Edit, FitnessCenter } from '@mui/icons-material';
 import {
   Card,
   CardContent,

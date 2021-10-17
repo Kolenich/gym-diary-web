@@ -3,7 +3,7 @@ import { Moment } from 'moment';
 import React, { createContext, FC, useCallback, useReducer } from 'react';
 import initialState from './constants';
 import reducer, { Workouts } from './reducer';
-import { ContextState, ContextValue, Workout } from './types';
+import { ContextState, ContextValue } from './types';
 
 export const Context = createContext({} as ContextValue);
 
@@ -32,22 +32,12 @@ const ContextProvider: FC = ({ children }) => {
     payload: day,
   }), []);
 
-  /**
-   * Action for updating specific workout
-   * @type {(workout: Workout) => void}
-   */
-  const updateWorkout = useCallback((workout: Workout) => dispatch({
-    type: Workouts.UPDATE,
-    payload: workout,
-  }), []);
-
   return (
     <Context.Provider
       value={{
         ...state as ContextState,
         loadWorkouts,
         setCurrentDay,
-        updateWorkout,
       }}
     >
       {children}

@@ -124,7 +124,7 @@ class WorkoutModal extends PureComponent<Props, State> {
   }
 
   save = async () => {
-    const { workoutDay, updateWorkout } = this.context;
+    const { workoutDay } = this.context;
     const { workout } = this.state;
 
     this.setState({ loading: true });
@@ -136,9 +136,7 @@ class WorkoutModal extends PureComponent<Props, State> {
           date: workoutDay!.format(DJANGO_DATE_FORMAT),
         });
       } else {
-        const response = await api.put<Workout>(`workout-api/workouts/${workout.id}/`, workout);
-
-        updateWorkout(response.data);
+        await api.put<Workout>(`workout-api/workouts/${workout.id}/`, workout);
       }
 
       this.setState({ loading: false });
