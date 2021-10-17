@@ -12,7 +12,11 @@ export interface ContextActions {
   deleteWorkout: (id: number) => void;
 }
 
-export type ContextValue = ContextState & ContextActions;
+export interface ContextConstants {
+  readonly isMobile: boolean;
+}
+
+export type ContextValue = ContextState & ContextActions & ContextConstants;
 
 export interface Workout {
   readonly id?: number;

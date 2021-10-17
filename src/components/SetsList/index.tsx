@@ -10,12 +10,15 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { Context } from 'context';
 import { Set } from 'context/types';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { Props } from './types';
 
 const SetsList = ({ sets, onSetChange }: Props) => {
+  const { isMobile } = useContext(Context);
+
   const [newSets, setNewSets] = useState<Set[]>([]);
   const [editingSets, setEditingSets] = useState<Set[]>([]);
 
@@ -105,9 +108,9 @@ const SetsList = ({ sets, onSetChange }: Props) => {
             color="text.secondary"
             component="div"
           >
-            {set.weight} кг. - {set.repeats} повторений
+            {set.weight} кг. - {set.repeats}{isMobile ? '' : ' повторений'}
             {typeof set.id === 'string' && (
-              <Chip label="Новый подход" color="success" size="small" sx={{ ml: 2 }}/>
+              <Chip label="Новый" color="success" size="small" sx={{ ml: 2 }}/>
             )}
             <Tooltip title="Редактировать">
               <IconButton
@@ -144,7 +147,7 @@ const SetsList = ({ sets, onSetChange }: Props) => {
   return (
     <List component="div" disablePadding>
       <ListItem>
-        <ListItemText sx={{ pl: 4 }}>
+        <ListItemText sx={{ pl: isMobile ? 0 : 4 }}>
           <Typography
             variant="body1"
             color="text.secondary"
@@ -154,11 +157,16 @@ const SetsList = ({ sets, onSetChange }: Props) => {
             <Tooltip title="Добавить подход">
               <IconButton
                 color="primary"
-                onClick={() => setNewSets((oldSets) => oldSets.concat({
-                  id: uuid(),
-                  weight: 0,
-                  repeats: 0,
-                }))}
+                onClick={() => {
+                  setNewSets((oldSets) => oldSets.concat({
+                    id: uuid(),
+                    weight: 0,
+                    repeats: 0,
+                  }));
+                  if (isMobile) {
+                    window.scrollTo(0, document.body.scrollHeight);
+                  }
+                }}
               >
                 <Add/>
               </IconButton>
@@ -167,12 +175,12 @@ const SetsList = ({ sets, onSetChange }: Props) => {
         </ListItemText>
       </ListItem>
       {sets.length ? sets.map((set) => (
-        <ListItem key={set.id} sx={{ pl: 8 }}>
+        <ListItem key={set.id} sx={{ pl: isMobile ? 2 : 8 }}>
           {renderSet(set)}
         </ListItem>
       )) : (
         <ListItem>
-          <ListItemText sx={{ pl: 8 }}>
+          <ListItemText sx={{ pl: isMobile ? 0 : 8 }}>
             <Typography variant="body2" color="text.secondary">
               Подходы не указаны
             </Typography>
@@ -180,7 +188,7 @@ const SetsList = ({ sets, onSetChange }: Props) => {
         </ListItem>
       )}
       {newSets.map((newSet) => (
-        <ListItem key={newSet.id} sx={{ pl: 8 }}>
+        <ListItem key={newSet.id} sx={{ pl: isMobile ? 2 : 8 }}>
           <TextField
             variant="standard"
             value={newSet.weight}

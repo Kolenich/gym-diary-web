@@ -12,12 +12,15 @@ import {
   Typography,
 } from '@mui/material';
 import SetsList from 'components/SetsList';
+import { Context } from 'context';
 import { Exercise, Set } from 'context/types';
-import React, { Fragment, ReactText, useCallback, useState } from 'react';
+import React, { Fragment, ReactText, useCallback, useContext, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { Props } from './types';
 
 const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
+  const { isMobile } = useContext(Context);
+
   const [expandedExercises, setExpandedExercises] = useState<ReactText[]>([]);
   const [editingExercises, setEditingExercises] = useState<Exercise[]>([]);
   const [newExercises, setNewExercises] = useState<Exercise[]>([]);
@@ -80,6 +83,14 @@ const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
     onExerciseChange(exerciseObj, 'add');
     setNewExercises([]);
   };
+
+  const renderExerciseName = (exercise: Exercise) => (
+    isMobile && exercise.name.length > 8 ? (
+      <Tooltip title={exercise.name}>
+        <span>{exercise.name.substr(0, 8)}...</span>
+      </Tooltip>
+    ) : exercise.name
+  );
 
   /**
    * Function for rendering current state of exercise, either it is being simply displayed or edited
@@ -150,9 +161,9 @@ const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
         >
           <ListItemText>
             <Typography variant="body2" component="div">
-              {exercise.name}
+              {renderExerciseName(exercise)}
               {typeof exercise.id === 'string' && (
-                <Chip label="Новое упражнение" color="success" size="small" sx={{ ml: 2 }}/>
+                <Chip label="Новое" color="success" size="small" sx={{ ml: 2 }}/>
               )}
             </Typography>
           </ListItemText>

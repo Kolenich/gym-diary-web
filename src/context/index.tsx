@@ -1,3 +1,4 @@
+import { useMediaQuery, useTheme } from '@mui/material';
 import api from 'lib/api';
 import { Moment } from 'moment';
 import React, { createContext, FC, useCallback, useReducer } from 'react';
@@ -8,6 +9,9 @@ import { ContextState, ContextValue } from './types';
 export const Context = createContext({} as ContextValue);
 
 const ContextProvider: FC = ({ children }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   const [state, dispatch] = useReducer(reducer, initialState as never);
 
   /**
@@ -49,6 +53,7 @@ const ContextProvider: FC = ({ children }) => {
     <Context.Provider
       value={{
         ...state as ContextState,
+        isMobile,
         loadWorkouts,
         setCurrentDay,
         deleteWorkout,

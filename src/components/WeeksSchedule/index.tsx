@@ -100,7 +100,7 @@ const WeeksSchedule = () => {
               variant="extended"
               onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'current'))}
             >
-              Текущая неделя
+              Сегодня
             </Fab>
           </Zoom>
         </Grid>

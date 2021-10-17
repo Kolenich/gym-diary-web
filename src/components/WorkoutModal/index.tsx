@@ -1,5 +1,5 @@
 import { Cancel, Save, Timeline } from '@mui/icons-material';
-import { StaticTimePicker } from '@mui/lab';
+import { MobileTimePicker, MobileTimePickerProps, StaticTimePicker } from '@mui/lab';
 import {
   Button,
   Dialog,
@@ -14,18 +14,34 @@ import Loading from 'components/Loading';
 import { Context } from 'context';
 import { Exercise, PartialBy, Workout } from 'context/types';
 import api from 'lib/api';
-import { DATE_DISPLAY_FORMAT, DJANGO_DATE_FORMAT, DJANGO_TIME_FORMAT } from 'lib/constants';
+import { DATE_DISPLAY_FORMAT, DJANGO_DATE_FORMAT, DJANGO_TIME_FORMAT, TODAY } from 'lib/constants';
 import { isAxiosError } from 'lib/utils';
 import moment, { Moment } from 'moment';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Props } from './types';
 
 const WorkoutModal = ({ match, history }: Props) => {
+  const { isMobile } = useContext(Context);
+
+  const TimePickerComponent = isMobile ? (props: MobileTimePickerProps) => (
+    <MobileTimePicker
+      {...props}
+      okText="ОК"
+      cancelText="Отмена"
+      clearable
+      clearText="Очистить"
+      showTodayButton
+      todayText="Сейчас"
+      openTo="hours"
+      views={['hours', 'minutes']}
+    />
+  ) : StaticTimePicker;
+
   const { workoutDay, setCurrentDay } = useContext(Context);
 
   const [workout, setWorkout] = useState<PartialBy<Workout, 'date'>>({
-    start: null,
-    end: null,
+    start: TODAY.format(DJANGO_TIME_FORMAT),
+    end: TODAY.clone().add(1, 'hours').add(30, 'minutes').format(DJANGO_TIME_FORMAT),
     exercises: [],
   });
   const [errors, setErrors] = useState({
@@ -162,7 +178,18 @@ const WorkoutModal = ({ match, history }: Props) => {
     >
       <Typography
         component="div"
-        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexDirection: {
+            xl: 'row',
+            lg: 'row',
+            md: 'row',
+            sm: 'row',
+            xs: 'column',
+          },
+        }}
       >
         <Typography
           variant="h5"
@@ -199,8 +226,8 @@ const WorkoutModal = ({ match, history }: Props) => {
             sm={6}
             xs={12}
           >
-            <StaticTimePicker
-              onChange={(date) => handlePickerChange(date, 'start')}
+            <TimePickerComponent
+              onChange={(date) => handlePickerChange(date as Moment, 'start')}
               value={moment(workout.start, DJANGO_TIME_FORMAT)}
               label="Начало тренировки"
               renderInput={(props) => (
@@ -228,8 +255,8 @@ const WorkoutModal = ({ match, history }: Props) => {
             sm={6}
             xs={12}
           >
-            <StaticTimePicker
-              onChange={(date) => handlePickerChange(date, 'end')}
+            <TimePickerComponent
+              onChange={(date) => handlePickerChange(date as Moment, 'end')}
               value={moment(workout.end, DJANGO_TIME_FORMAT)}
               label="Конец тренировки"
               renderInput={(props) => (
