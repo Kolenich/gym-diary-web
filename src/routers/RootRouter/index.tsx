@@ -1,5 +1,5 @@
-import MainPage from 'pages/MainPage';
-import WorkoutModal from 'pages/WorkoutModal';
+import MainPage from 'components/MainPage';
+import WorkoutModal from 'components/WorkoutModal';
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 

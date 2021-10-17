@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import ExerciseList from 'components/ExerciseList';
+import ExerciseList from 'components/WorkoutModal/ExerciseList';
 import Loading from 'components/Loading';
 import { Context } from 'context';
 import { Exercise, Workout } from 'context/types';
