@@ -11,7 +11,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import SetsList from 'components/WorkoutModal/ExerciseList/SetsList';
+import SetsList from 'components/SetsList';
 import { Exercise, Set } from 'context/types';
 import React, { Fragment, ReactText, useCallback, useState } from 'react';
 import { v4 as uuid } from 'uuid';
