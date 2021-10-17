@@ -23,6 +23,35 @@ const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
   const [newExercises, setNewExercises] = useState<Exercise[]>([]);
 
   /**
+   * Common function for saving edited exercise
+   * @param {Exercise} exerciseObj - edited exercise
+   */
+  const saveEditedExercise = (exerciseObj: Exercise) => {
+    if (newExercises.map(({ id }) => id!).includes(exerciseObj.id!)) {
+      setNewExercises((oldExercises) => oldExercises.map((x) => {
+        if (x.id === exerciseObj.id) {
+          return { ...x, ...exerciseObj };
+        }
+        return x;
+      }));
+    } else {
+      onExerciseChange(exerciseObj, 'update');
+    }
+    setEditingExercises((oldExercises) => oldExercises.filter((x) => (
+      x.id !== exerciseObj.id
+    )));
+  };
+
+  /**
+   * Common function for adding new exercise
+   * @param {Exercise} exerciseObj - new exercise
+   */
+  const saveNewExercise = (exerciseObj: Exercise) => {
+    onExerciseChange(exerciseObj, 'add');
+    setNewExercises([]);
+  };
+
+  /**
    * Function for rendering current state of exercise, either it is being simply displayed or edited
    * @param {Exercise} exercise - exercise object being displayed or edited
    * @param {number} index - it's index in array
@@ -33,46 +62,48 @@ const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
 
     if (editedExercise) {
       return (
-        <TextField
-          label="Название"
-          value={editedExercise.name}
-          variant="standard"
-          size="small"
-          sx={{ ml: 2, mt: 1, display: 'block' }}
-          InputProps={{
-            endAdornment: (
-              <>
-                <Tooltip title="Сохранить">
-                  <IconButton
-                    color="success"
-                    sx={{ p: 0.5 }}
-                  >
-                    <Save/>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Отмена">
-                  <IconButton
-                    color="error"
-                    sx={{ p: 0.5 }}
-                    onClick={() => setEditingExercises((oldExercises) => (
-                      oldExercises.filter((x) => (
-                        x.id !== editedExercise.id
-                      ))
-                    ))}
-                  >
-                    <Cancel/>
-                  </IconButton>
-                </Tooltip>
-              </>
-            ),
-          }}
-          onChange={(event) => setEditingExercises((oldExercises) => oldExercises.map((x) => {
-            if (x.id === editedExercise.id) {
-              return { ...x, name: event.target.value };
-            }
-            return x;
-          }))}
-        />
+        <ListItem>
+          <TextField
+            label="Название"
+            value={editedExercise.name}
+            variant="standard"
+            size="small"
+            onKeyPress={(event) => {
+              if (event.key === 'Enter') {
+                saveEditedExercise(editedExercise);
+              }
+            }}
+            onChange={(event) => setEditingExercises((oldExercises) => oldExercises.map((x) => {
+              if (x.id === editedExercise.id) {
+                return { ...x, name: event.target.value };
+              }
+              return x;
+            }))}
+          />
+          <Tooltip title="Сохранить">
+            <IconButton
+              color="success"
+              sx={{ p: 0.5, mt: 2 }}
+              disabled={!editedExercise.name}
+              onClick={() => saveEditedExercise(editedExercise)}
+            >
+              <Save/>
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Отменить">
+            <IconButton
+              color="error"
+              sx={{ p: 0.5, mt: 2 }}
+              onClick={() => setEditingExercises((oldExercises) => (
+                oldExercises.filter((x) => (
+                  x.id !== editedExercise.id
+                ))
+              ))}
+            >
+              <Cancel/>
+            </IconButton>
+          </Tooltip>
+        </ListItem>
       );
     }
 
@@ -204,6 +235,11 @@ const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
               value={newExercise.name}
               variant="standard"
               size="small"
+              onKeyPress={(event) => {
+                if (event.key === 'Enter') {
+                  saveNewExercise(newExercise);
+                }
+              }}
               onChange={(event) => setNewExercises((oldExercises) => oldExercises.map((x) => {
                 if (x.id === newExercise.id) {
                   return { ...x, name: event.target.value };
@@ -211,26 +247,27 @@ const ExerciseList = ({ exercises, onExerciseChange }: Props) => {
                 return x;
               }))}
             />
-            <IconButton
-              onClick={() => {
-                onExerciseChange(newExercise, 'add');
-                setNewExercises([]);
-              }}
-              sx={{ mt: 2 }}
-              disabled={!newExercise.name}
-              color="success"
-            >
-              <Save/>
-            </IconButton>
-            <IconButton
-              onClick={() => setNewExercises((oldExercises) => oldExercises.filter((x) => (
-                x.id !== newExercise.id
-              )))}
-              sx={{ mt: 2 }}
-              color="error"
-            >
-              <Delete/>
-            </IconButton>
+            <Tooltip title="Сохранить">
+              <IconButton
+                onClick={() => saveNewExercise(newExercise)}
+                sx={{ p: 0.5, mt: 2 }}
+                disabled={!newExercise.name}
+                color="success"
+              >
+                <Save/>
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Отменить">
+              <IconButton
+                onClick={() => setNewExercises((oldExercises) => oldExercises.filter((x) => (
+                  x.id !== newExercise.id
+                )))}
+                sx={{ p: 0.5, mt: 2 }}
+                color="error"
+              >
+                <Cancel/>
+              </IconButton>
+            </Tooltip>
           </ListItem>
         ))}
       </List>
