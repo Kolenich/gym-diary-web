@@ -2,7 +2,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import api from 'lib/api';
 import { Moment } from 'moment';
 import React, { createContext, FC, useCallback, useReducer } from 'react';
-import initialState from './constants';
+import initialState from './initialState';
 import reducer, { Workouts } from './reducer';
 import { ContextState, ContextValue } from './types';
 

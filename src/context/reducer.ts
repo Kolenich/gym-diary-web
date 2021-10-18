@@ -1,4 +1,4 @@
-import initialState from './constants';
+import initialState from './initialState';
 
 export enum Workouts {
   LOAD = 'LOAD_WORKOUTS',
