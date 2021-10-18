@@ -194,7 +194,7 @@ const WorkoutModal = ({ match, history }: Props) => {
         <Typography
           variant="h5"
           color="text.secondary"
-          sx={{ px: 3, py: 2, fontWeight: 'bold' }}
+          sx={{ px: 3, py: 2, fontWeight: 'bold', textAlign: 'center' }}
         >
           {modalTitle}
         </Typography>
