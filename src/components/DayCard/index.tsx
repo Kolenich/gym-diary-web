@@ -39,6 +39,7 @@ const DayCard = ({ day }: Props) => {
   return (
     <Card sx={{ position: 'relative' }}>
       <CardActionArea
+        component="div"
         sx={{ minHeight: 200 }}
         onDoubleClick={() => {
           setCurrentDay(day);
