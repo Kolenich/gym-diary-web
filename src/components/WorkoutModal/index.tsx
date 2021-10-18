@@ -77,7 +77,7 @@ const WorkoutModal = ({ match, history }: Props) => {
   const loadWorkout = useCallback(async () => {
     if (match.params.id !== 'add') {
       setLoading(true);
-      const response = await api.get<Workout>(`workout-api/workouts/${match.params.id}/`);
+      const response = await api.get<Workout>(`workouts-api/workouts/${match.params.id}/`);
 
       setWorkout(response.data);
       setLoading(false);
@@ -93,12 +93,12 @@ const WorkoutModal = ({ match, history }: Props) => {
     setLoading(true);
     try {
       if (!editMode) {
-        await api.post<Workout>('workout-api/workouts/', {
+        await api.post<Workout>('workouts-api/workouts/', {
           ...workout,
           date: workoutDay!.format(DJANGO_DATE_FORMAT),
         });
       } else {
-        await api.put<Workout>(`workout-api/workouts/${workout.id}/`, workout);
+        await api.put<Workout>(`workouts-api/workouts/${workout.id}/`, workout);
       }
 
       setLoading(false);

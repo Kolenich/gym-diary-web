@@ -4,6 +4,7 @@ import DayCard from 'components/DayCard';
 import { Context } from 'context';
 import { DATE_DISPLAY_FORMAT, TODAY, WORKOUT_DAYS } from 'lib/constants';
 import React, { useContext, useEffect, useState } from 'react';
+import Loading from '../Loading';
 import { Weeks } from './types';
 import getWeek from './utils';
 
@@ -16,11 +17,17 @@ const WeeksSchedule = () => {
     next: [],
   });
 
+  const [loading, setLoading] = useState(false);
+
   /** Effect for calculating weeks and loading workouts */
   useEffect(() => {
     (async () => {
+      setLoading(true);
+
       setWeeks((oldWeeks) => getWeek(oldWeeks, 'current'));
       await loadWorkouts();
+
+      setLoading(false);
     })();
   }, [loadWorkouts]);
 
@@ -67,7 +74,6 @@ const WeeksSchedule = () => {
           bottom: (theme: Theme) => theme.spacing(2),
           px: 2,
           mt: 1,
-          zIndex: 'snackbar',
         }}
         alignItems="center"
       >
@@ -119,6 +125,7 @@ const WeeksSchedule = () => {
           </Tooltip>
         </Grid>
       </Grid>
+      {loading && <Loading/>}
     </>
   );
 };

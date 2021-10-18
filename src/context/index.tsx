@@ -19,7 +19,7 @@ const ContextProvider: FC = ({ children }) => {
    * @type {() => Promise<void>}
    */
   const loadWorkouts = useCallback(async () => {
-    const response = await api.get('workout-api/workouts/');
+    const response = await api.get('workouts-api/workouts/');
 
     dispatch({
       type: Workouts.LOAD,
@@ -32,7 +32,7 @@ const ContextProvider: FC = ({ children }) => {
    * @type {(id: number) => Promise<void>}
    */
   const deleteWorkout = useCallback(async (id: number) => {
-    await api.delete(`/workout-api/workouts/${id}/`);
+    await api.delete(`/workouts-api/workouts/${id}/`);
 
     dispatch({
       type: Workouts.DELETE,
