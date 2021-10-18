@@ -1,5 +1,5 @@
 import { useMediaQuery, useTheme } from '@mui/material';
-import api from 'lib/api';
+import { useAPI } from 'api';
 import { Moment } from 'moment';
 import React, { createContext, FC, useCallback, useReducer } from 'react';
 import initialState from './initialState';
@@ -11,6 +11,8 @@ export const Context = createContext({} as ContextValue);
 const ContextProvider: FC = ({ children }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const api = useAPI();
 
   const [state, dispatch] = useReducer(reducer, initialState as never);
 
@@ -25,20 +27,20 @@ const ContextProvider: FC = ({ children }) => {
       type: Workouts.LOAD,
       payload: response.data,
     });
-  }, []);
+  }, [api]);
 
   /**
    * Action for deleting workout
    * @type {(id: number) => Promise<void>}
    */
   const deleteWorkout = useCallback(async (id: number) => {
-    await api.delete(`/workouts-api/workouts/${id}/`);
+    await api.doDelete(`/workouts-api/workouts/${id}/`);
 
     dispatch({
       type: Workouts.DELETE,
       payload: id,
     });
-  }, []);
+  }, [api]);
 
   /**
    * Action for opening edit/create window for workout

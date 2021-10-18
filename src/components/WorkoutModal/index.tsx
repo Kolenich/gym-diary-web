@@ -9,11 +9,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useAPI } from 'api';
 import ExerciseList from 'components/ExerciseList';
 import Loading from 'components/Loading';
 import { Context } from 'context';
 import { Exercise, PartialBy, Workout } from 'context/types';
-import api from 'lib/api';
 import { DATE_DISPLAY_FORMAT, DJANGO_DATE_FORMAT, DJANGO_TIME_FORMAT } from 'lib/constants';
 import { isAxiosError } from 'lib/utils';
 import moment, { Moment } from 'moment';
@@ -22,6 +22,7 @@ import { Props } from './types';
 
 const WorkoutModal = ({ match, history }: Props) => {
   const { isMobile } = useContext(Context);
+  const api = useAPI();
 
   const TimePickerComponent = isMobile ? (props: MobileTimePickerProps) => (
     <MobileTimePicker
@@ -82,7 +83,7 @@ const WorkoutModal = ({ match, history }: Props) => {
       setWorkout(response.data);
       setLoading(false);
     }
-  }, [match.params.id]);
+  }, [api, match.params.id]);
 
   const closeModal = () => {
     setCurrentDay(null);

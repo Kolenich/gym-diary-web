@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { baseURL } from './utils';
+import { baseURL } from 'lib/utils';
 
 // Request cancel setup
 const { CancelToken } = axios;

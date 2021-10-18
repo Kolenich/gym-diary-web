@@ -6,6 +6,7 @@ module.exports = customizer.override(
     {
       alias: {
         '^components/*': './src/pages/*',
+        '^api/*': './src/api/*',
         '^context/*': './src/context/*',
         '^types/*': './src/types/*',
         '^routes/*': './src/routers/*',

@@ -5,13 +5,16 @@ import 'moment/locale/ru';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import RootRouter from 'routers/RootRouter';
+import APIProvider from './api';
 
 const App = () => (
   <BrowserRouter>
     <LocalizationProvider dateAdapter={DateAdapter}>
-      <ContextProvider>
-        <RootRouter/>
-      </ContextProvider>
+      <APIProvider>
+        <ContextProvider>
+          <RootRouter/>
+        </ContextProvider>
+      </APIProvider>
     </LocalizationProvider>
   </BrowserRouter>
 );

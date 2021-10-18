@@ -1,4 +1,4 @@
-import session from './session';
+import session from '../api/session';
 
 class API {
   get = <T>(url: string, params?: unknown) => session.get<T>(url, { params })
