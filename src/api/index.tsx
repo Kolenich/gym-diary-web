@@ -23,6 +23,10 @@ const APIProvider: FC = ({ children }) => {
     session.patch<T>(url, data, { headers })
   ), []);
 
+  /**
+   * Action was renamed due to "delete" being a reserved word in Javascript
+   * @type {(url: string, headers?: Record<string, string>) => Promise<AxiosResponse<unknown>>}
+   */
   const doDelete = useCallback((url: string, headers?: Record<string, string>) => (
     session.delete(url, { headers })
   ), []);
