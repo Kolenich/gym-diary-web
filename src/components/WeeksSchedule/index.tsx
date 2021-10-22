@@ -83,7 +83,6 @@ const WeeksSchedule = () => {
         >
           <Tooltip title="Предыдущая неделя">
             <Fab
-
               color="primary"
               onClick={() => setWeeks((oldWeeks) => getWeek(oldWeeks, 'previous'))}
             >
