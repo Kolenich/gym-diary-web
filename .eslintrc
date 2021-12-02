@@ -16,6 +16,7 @@
   "plugins": [
     "@typescript-eslint"
   ],
+  "ignorePatterns": ["config-overrides.ts"],
   "rules": {
     "linebreak-style": 0,
     "max-classes-per-file": [

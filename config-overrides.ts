@@ -1,4 +1,5 @@
-import customizer from 'customize-cra';
+// @ts-ignore
+const customizer = require('customize-cra');
 
 module.exports = customizer.override(
   customizer.addBabelPlugin([
