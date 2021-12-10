@@ -1,4 +1,4 @@
-import React, { createContext, FC, useCallback, useContext } from 'react';
+import React, { createContext, PureComponent, useContext } from 'react';
 import session from './session';
 import { APIContextActions } from './types';
 
@@ -6,36 +6,40 @@ export const APIContext = createContext({} as APIContextActions);
 
 export const useAPI = () => useContext(APIContext);
 
-const APIProvider: FC = ({ children }) => {
-  const get = useCallback(<T, >(url: string, params?: unknown) => (
-    session.get<T>(url, { params })
-  ), []);
+class APIProvider extends PureComponent {
+  get = <T, >(url: string, params?: unknown) => session.get<T>(url, { params })
 
-  const post = useCallback(<T, >(url: string, data: unknown, headers?: Record<string, string>) => (
+  post = <T, >(url: string, data: unknown, headers?: Record<string, string>) => (
     session.post<T>(url, data, { headers })
-  ), []);
+  )
 
-  const put = useCallback(<T, >(url: string, data: unknown, headers?: Record<string, string>) => (
+  put = <T, >(url: string, data: unknown, headers?: Record<string, string>) => (
     session.put<T>(url, data, { headers })
-  ), []);
+  )
 
-  const patch = useCallback(<T, >(url: string, data: unknown, headers?: Record<string, string>) => (
+  patch = <T, >(url: string, data: unknown, headers?: Record<string, string>) => (
     session.patch<T>(url, data, { headers })
-  ), []);
+  )
 
-  /**
-   * Action was renamed due to "delete" being a reserved word in Javascript
-   * @type {(url: string, headers?: Record<string, string>) => Promise<AxiosResponse<unknown>>}
-   */
-  const doDelete = useCallback((url: string, headers?: Record<string, string>) => (
-    session.delete(url, { headers })
-  ), []);
+  delete = (url: string, headers?: Record<string, string>) => session.delete(url, { headers })
 
-  return (
-    <APIContext.Provider value={{ get, post, put, patch, doDelete }}>
-      {children}
-    </APIContext.Provider>
-  );
-};
+  render() {
+    const { children } = this.props;
+
+    return (
+      <APIContext.Provider
+        value={{
+          get: this.get,
+          post: this.post,
+          put: this.put,
+          patch: this.patch,
+          delete: this.delete,
+        }}
+      >
+        {children}
+      </APIContext.Provider>
+    );
+  }
+}
 
 export default APIProvider;

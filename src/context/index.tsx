@@ -34,7 +34,7 @@ const ContextProvider: FC = ({ children }) => {
    * @type {(id: number) => Promise<void>}
    */
   const deleteWorkout = useCallback(async (id: number) => {
-    await api.doDelete(`/workouts-api/workouts/${id}/`);
+    await api.delete(`/workouts-api/workouts/${id}/`);
 
     dispatch({
       type: Workouts.DELETE,

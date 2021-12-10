@@ -5,5 +5,5 @@ export interface APIContextActions {
   post: <T>(url: string, data: unknown, headers?: Record<string, string>) => AxiosPromise<T>;
   put: <T>(url: string, data: unknown, headers?: Record<string, string>) => AxiosPromise<T>;
   patch: <T>(url: string, data: unknown, headers?: Record<string, string>) => AxiosPromise<T>;
-  doDelete: (url: string, headers?: Record<string, string>) => AxiosPromise;
+  delete: (url: string, headers?: Record<string, string>) => AxiosPromise;
 }
