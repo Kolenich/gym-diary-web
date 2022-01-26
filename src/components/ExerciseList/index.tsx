@@ -11,7 +11,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import SetsList from 'components/SetsList';
+import { SetsList } from 'components';
 import { Context } from 'context';
 import { Exercise, Set } from 'context/types';
 import React, { Fragment, ReactText, useCallback, useContext, useState } from 'react';

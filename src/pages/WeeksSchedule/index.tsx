@@ -1,10 +1,10 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { AppBar, Fab, Grid, Theme, Toolbar, Tooltip, Typography, Zoom } from '@mui/material';
-import DayCard from 'components/DayCard';
+import { DayCard } from 'components';
 import { Context } from 'context';
 import { DATE_DISPLAY_FORMAT, TODAY, WORKOUT_DAYS } from 'lib/constants';
 import React, { useContext, useEffect, useState } from 'react';
-import Loading from '../Loading';
+import Loading from '../../components/Loading';
 import { Weeks } from './types';
 import getWeek from './utils';
 

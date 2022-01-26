@@ -10,8 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useAPI } from 'api';
-import ExerciseList from 'components/ExerciseList';
-import Loading from 'components/Loading';
+import { ExerciseList, Loading } from 'components';
 import { Context } from 'context';
 import { Exercise, PartialBy, Workout } from 'context/types';
 import { DATE_DISPLAY_FORMAT, DJANGO_DATE_FORMAT, DJANGO_TIME_FORMAT } from 'lib/constants';
