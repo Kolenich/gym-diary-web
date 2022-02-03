@@ -1,14 +1,16 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { AppBar, Fab, Grid, Theme, Toolbar, Tooltip, Typography, Zoom } from '@mui/material';
-import { DayCard } from 'components';
+import { DayCard, Loading } from 'components';
 import { Context } from 'context';
 import { DATE_DISPLAY_FORMAT, TODAY, WORKOUT_DAYS } from 'lib/constants';
+import { isAxiosError } from 'lib/utils';
+import { useSnackbar } from 'notistack';
 import React, { useContext, useEffect, useState } from 'react';
-import Loading from '../../components/Loading';
 import { Weeks } from './types';
 import getWeek from './utils';
 
 const WeeksSchedule = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const { loadWorkouts } = useContext(Context);
 
   const [weeks, setWeeks] = useState<Weeks>({
@@ -25,11 +27,18 @@ const WeeksSchedule = () => {
       setLoading(true);
 
       setWeeks((oldWeeks) => getWeek(oldWeeks, 'current'));
-      await loadWorkouts();
 
-      setLoading(false);
+      try {
+        await loadWorkouts();
+      } catch (error) {
+        if (isAxiosError(error)) {
+          enqueueSnackbar(`При загрузке данных произошла ошибка (${error.message})`, { variant: 'error' });
+        }
+      } finally {
+        setLoading(false);
+      }
     })();
-  }, [loadWorkouts]);
+  }, [loadWorkouts, enqueueSnackbar]);
 
   return (
     <>
