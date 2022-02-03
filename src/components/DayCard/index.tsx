@@ -53,7 +53,7 @@ const DayCard = ({ day }: Props) => {
           <List
             subheader={
               <Typography gutterBottom variant="h6" component="div" color="text.secondary">
-                {title(day.locale('ru').format('dddd'))} ({day?.format(DATE_DISPLAY_FORMAT)})
+                {title(day.locale('ru').format('dddd'))} ({day.format(DATE_DISPLAY_FORMAT)})
               </Typography>
             }
           >
@@ -81,18 +81,6 @@ const DayCard = ({ day }: Props) => {
                     </Tooltip>
                   </>
                 }
-                //                sx={{
-                //                  cursor: 'pointer',
-                //                  borderRadius: 1,
-                //                  transition: (theme: Theme) => theme.transitions.create('all', {
-                //                    easing: theme.transitions.easing.sharp,
-                //                    duration: theme.transitions.duration.short,
-                //                  }),
-                //                  ':hover': {
-                //                    bgcolor: 'primary.light',
-                //                    color: 'common.white',
-                //                  },
-                //                }}
               >
                 <FitnessCenter sx={{ mr: 1 }}/>
                 <ListItemText
