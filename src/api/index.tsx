@@ -1,10 +1,8 @@
-import React, { createContext, PureComponent, useContext } from 'react';
+import React, { ComponentType, createContext, PureComponent, useContext } from 'react';
 import session from './session';
 import { APIContextActions } from './types';
 
-export const APIContext = createContext({} as APIContextActions);
-
-export const useAPI = () => useContext(APIContext);
+const APIContext = createContext({} as APIContextActions);
 
 class APIProvider extends PureComponent {
   get = <T, >(url: string, params?: unknown) => session.get<T>(url, { params })
@@ -43,3 +41,11 @@ class APIProvider extends PureComponent {
 }
 
 export default APIProvider;
+
+export const useAPI = () => useContext(APIContext);
+
+export const withAPI = <P, >(Component: ComponentType<P>) => (props: P) => (
+  <APIContext.Consumer>
+    {(api) => <Component {...props} api={api}/>}
+  </APIContext.Consumer>
+);
