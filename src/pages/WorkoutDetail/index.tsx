@@ -70,20 +70,6 @@ const WorkoutModal = ({ match, history }: Props) => {
 
   const editMode = match.params.id !== 'add';
 
-  /**
-   * Function for loading current workout
-   * @return {Promise<void>}
-   */
-  const loadWorkout = useCallback(async () => {
-    if (match.params.id !== 'add') {
-      setLoading(true);
-      const response = await api.get<Workout>(`workouts-api/workouts/${match.params.id}/`);
-
-      setWorkout(response.data);
-      setLoading(false);
-    }
-  }, [api, match.params.id]);
-
   const closeModal = () => {
     setCurrentDay(null);
     history.push({ pathname: '/workouts' });
@@ -161,9 +147,15 @@ const WorkoutModal = ({ match, history }: Props) => {
 
   useEffect(() => {
     (async () => {
-      await loadWorkout();
+      if (match.params.id !== 'add') {
+        setLoading(true);
+        const response = await api.get<Workout>(`workouts-api/workouts/${match.params.id}/`);
+
+        setWorkout(response.data);
+        setLoading(false);
+      }
     })();
-  }, [loadWorkout, match.params.id]);
+  }, [api, match.params.id]);
 
   useEffect(() => {
     setErrors({ start: null, end: null });
