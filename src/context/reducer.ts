@@ -7,7 +7,7 @@ export enum Workouts {
 }
 
 interface ReducerAction {
-  type: string;
+  type: Workouts;
   payload: unknown;
 }
 
