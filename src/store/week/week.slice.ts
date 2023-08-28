@@ -2,12 +2,12 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 
-import { DEFAULT_WEEKS, EWeekTypes } from './week.constants';
+import { EWeekTypes } from './week.constants';
 import type { IWeekState } from './week.types';
-import { getWeek } from './week.utils';
+import { getCurrentWeek } from './week.utils';
 
 const INITIAL_STATE: IWeekState = {
-  weeks: getWeek(DEFAULT_WEEKS, EWeekTypes.Current),
+  currentWeek: getCurrentWeek([], EWeekTypes.Current),
   workoutDay: null,
 };
 
@@ -19,13 +19,13 @@ const weekSlice = createSlice({
       state.workoutDay = action.payload;
     },
     goToPreviousWeek(state) {
-      state.weeks = getWeek(state.weeks, EWeekTypes.Previous);
+      state.currentWeek = getCurrentWeek(state.currentWeek, EWeekTypes.Previous);
     },
     goToCurrentWeek(state) {
-      state.weeks = getWeek(state.weeks, EWeekTypes.Current);
+      state.currentWeek = getCurrentWeek(state.currentWeek, EWeekTypes.Current);
     },
     goToNextWeek(state) {
-      state.weeks = getWeek(state.weeks, EWeekTypes.Next);
+      state.currentWeek = getCurrentWeek(state.currentWeek, EWeekTypes.Next);
     },
   },
 });

@@ -3,10 +3,3 @@ export enum EWeekTypes {
   Current = 'current',
   Next = 'next',
 }
-
-export const DEFAULT_WEEKS: Record<EWeekTypes, string[]> = {
-  [EWeekTypes.Previous]: [],
-  [EWeekTypes.Current]: [],
-  [EWeekTypes.Next]: [],
-};
-

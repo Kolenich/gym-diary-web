@@ -7,7 +7,6 @@ import { DJANGO_DATE_FORMAT } from 'constants/datetime';
 
 import type { TRootState } from '../store.types';
 
-import { EWeekTypes } from './week.constants';
 import type { IWeekState } from './week.types';
 
 const selectWeek = (state: TRootState): IWeekState => state.week;
@@ -24,7 +23,7 @@ export const selectWorkoutDay = createSelector(selectWeek, (week) => {
   return moment(workoutDay);
 });
 
-export const selectCurrentWeek = createSelector(selectWeek, (week) => week.weeks[EWeekTypes.Current].map((dayString) => moment(dayString)));
+export const selectCurrentWeek = createSelector(selectWeek, (week) => week.currentWeek.map((dayString) => moment(dayString)));
 
 export const selectWeekWorkoutsParams = createSelector(
   selectCurrentWeek,

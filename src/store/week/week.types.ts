@@ -1,9 +1,5 @@
-import type { EWeekTypes } from './week.constants';
-
 export interface IWeekState {
-  weeks: TWeeks;
+  currentWeek: string[];
   workoutDay: string | null;
 }
-
-export type TWeeks = Record<EWeekTypes, string[]>;
 
