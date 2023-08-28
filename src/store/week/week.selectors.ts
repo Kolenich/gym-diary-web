@@ -11,7 +11,7 @@ import type { IWeekState } from './week.types';
 
 const selectWeek = (state: TRootState): IWeekState => state.week;
 
-export const selectWorkoutDay = createSelector(selectWeek, (week) => {
+export const selectWorkoutDay = createSelector(selectWeek, week => {
   const { workoutDay } = week;
 
   const isNull = workoutDay === null;
@@ -23,12 +23,15 @@ export const selectWorkoutDay = createSelector(selectWeek, (week) => {
   return moment(workoutDay);
 });
 
-export const selectCurrentWeek = createSelector(selectWeek, (week) => week.currentWeek.map((dayString) => moment(dayString)));
+export const selectCurrentWeek = createSelector(selectWeek, week =>
+  week.currentWeek.map(dayString => moment(dayString)),
+);
 
 export const selectWeekWorkoutsParams = createSelector(
   selectCurrentWeek,
-  (currentWeek) => ({
-    date__gte: currentWeek[0].format(DJANGO_DATE_FORMAT),
-    date__lte: [...currentWeek].reverse()[0].format(DJANGO_DATE_FORMAT),
-  } as TGetWorkoutsParams),
+  currentWeek =>
+    ({
+      date__gte: currentWeek[0].format(DJANGO_DATE_FORMAT),
+      date__lte: [...currentWeek].reverse()[0].format(DJANGO_DATE_FORMAT),
+    }) as TGetWorkoutsParams,
 );
