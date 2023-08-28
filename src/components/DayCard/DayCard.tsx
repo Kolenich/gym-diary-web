@@ -25,11 +25,6 @@ import moment from 'moment';
 
 import { useDeleteWorkout, useGetWorkouts } from 'api/workouts';
 import {
-  DELETE_WORKOUT,
-  EDIT_WORKOUT,
-  NO_WORKOUT_TIME, NO_WORKOUTS, WORKOUT,
-} from 'components/DayCard/DayCard.constants';
-import {
   DATE_DISPLAY_FORMAT,
   DJANGO_DATE_FORMAT,
   DJANGO_TIME_FORMAT,
@@ -40,8 +35,12 @@ import { TODAY } from 'constants/texts';
 import { useAppDispatch } from 'store/hooks';
 import { setWorkoutDay } from 'store/week';
 import { capitalize } from 'utils/capitalize';
-import { isArrayNonEmpty } from 'utils/is-array-non-empty';
 
+import {
+  DELETE_WORKOUT,
+  EDIT_WORKOUT,
+  NO_WORKOUT_TIME, NO_WORKOUTS, WORKOUT,
+} from './DayCard.constants';
 import type { IDayCardProps } from './DayCard.types';
 
 const DayCard: FC<IDayCardProps> = ({ day }) => {
@@ -52,19 +51,37 @@ const DayCard: FC<IDayCardProps> = ({ day }) => {
 
   const navigate = useNavigate();
 
-  const currentWorkouts = useMemo(() => workouts.filter((workout) => (
-    workout.date === day.format(DJANGO_DATE_FORMAT)
-  )), [day, workouts]);
+  const currentWorkout = useMemo(() => workouts.find(({ date }) => date === day.format(DJANGO_DATE_FORMAT)) || null, [day, workouts]);
+  const hasCurrentWorkout = !!currentWorkout;
 
   const handleCardDoubleClick = (): void => {
+    if (hasCurrentWorkout) {
+      const { id = 0 } = currentWorkout;
+
+      navigate(id.toString());
+      return;
+    }
+
     dispatch(setWorkoutDay(day.toISOString()));
     navigate('add');
   };
 
+  const handleWorkoutDelete = (): void => {
+    if (hasCurrentWorkout) {
+      deleteWorkout(currentWorkout.id);
+    }
+  };
+
   const cardTitle = capitalize(day.locale('ru').format('dddd'));
   const formattedDay = day.format(DATE_DISPLAY_FORMAT);
-  const hasCurrentWorkouts = isArrayNonEmpty(currentWorkouts);
-  const hasTodayLabel = day.format(DATE_DISPLAY_FORMAT) === TODAY_DATE.format(DATE_DISPLAY_FORMAT);
+  const isToday = day.format(DATE_DISPLAY_FORMAT) === TODAY_DATE.format(DATE_DISPLAY_FORMAT);
+  const hasBothStartAndEnd = !!currentWorkout?.start && !!currentWorkout?.end;
+
+  const secondaryTitle = hasBothStartAndEnd ? (
+    `${moment(currentWorkout.start, DJANGO_TIME_FORMAT)
+      .format(TIME_DISPLAY_FORMAT)} - ${moment(currentWorkout.end, DJANGO_TIME_FORMAT)
+      .format(TIME_DISPLAY_FORMAT)}`
+  ) : NO_WORKOUT_TIME;
 
   return (
     <Card sx={{ position: 'relative' }}>
@@ -84,60 +101,45 @@ const DayCard: FC<IDayCardProps> = ({ day }) => {
               </Typography>
             }
           >
-            {hasCurrentWorkouts ? currentWorkouts.map(({ id = 0, start, end }) => {
-              const handleWorkoutDelete = (): void => {
-                deleteWorkout(id);
-              };
-
-              const hasBothStartAndEnd = !!start && !!end;
-
-              const secondaryTitle = hasBothStartAndEnd ? (
-                `${moment(start, DJANGO_TIME_FORMAT)
-                  .format(TIME_DISPLAY_FORMAT)} - ${moment(end, DJANGO_TIME_FORMAT)
-                  .format(TIME_DISPLAY_FORMAT)}`
-              ) : NO_WORKOUT_TIME;
-
-              return (
-                <ListItem
-                  key={id}
-                  secondaryAction={
-                    <>
-                      <Tooltip title={EDIT_WORKOUT}>
-                        <IconButton
-                          color='inherit'
-                          component={Link}
-                          to={id.toString()}
-                        >
-                          <Edit />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title={DELETE_WORKOUT}>
-                        <IconButton
-                          color='inherit'
-                          onClick={handleWorkoutDelete}
-                        >
-                          <Delete />
-                        </IconButton>
-                      </Tooltip>
-                    </>
+            {hasCurrentWorkout ? (
+              <ListItem
+                secondaryAction={
+                  <>
+                    <Tooltip title={EDIT_WORKOUT}>
+                      <IconButton
+                        color='inherit'
+                        component={Link}
+                        to={(currentWorkout.id as number).toString()}
+                      >
+                        <Edit />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title={DELETE_WORKOUT}>
+                      <IconButton
+                        color='inherit'
+                        onClick={handleWorkoutDelete}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                }
+              >
+                <FitnessCenter sx={{ mr: 1 }} />
+                <ListItemText
+                  primary={
+                    <Typography variant='h6' component='div'>
+                      {WORKOUT}
+                    </Typography>
                   }
-                >
-                  <FitnessCenter sx={{ mr: 1 }} />
-                  <ListItemText
-                    primary={
-                      <Typography variant='h6' component='div'>
-                        {WORKOUT}
-                      </Typography>
-                    }
-                    secondary={
-                      <Typography variant='body2'>
-                        {secondaryTitle}
-                      </Typography>
-                    }
-                  />
-                </ListItem>
-              );
-            }) : (
+                  secondary={
+                    <Typography variant='body2'>
+                      {secondaryTitle}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            ) : (
               <Typography variant='body2'>
                 {NO_WORKOUTS}
               </Typography>
@@ -145,7 +147,7 @@ const DayCard: FC<IDayCardProps> = ({ day }) => {
           </List>
         </CardContent>
       </CardActionArea>
-      <Zoom in={hasTodayLabel}>
+      <Zoom in={isToday}>
         <Chip
           label={TODAY}
           color='info'
