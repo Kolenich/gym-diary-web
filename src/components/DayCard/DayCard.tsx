@@ -32,8 +32,8 @@ import {
   TODAY_DATE,
 } from 'constants/datetime';
 import { TODAY } from 'constants/texts';
-import { useAppDispatch } from 'store/hooks';
-import { setWorkoutDay } from 'store/week';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { selectWeekWorkoutsParams, setWorkoutDay } from 'store/week';
 import { capitalize } from 'utils/capitalize';
 
 import {
@@ -44,7 +44,8 @@ import {
 import type { IDayCardProps } from './DayCard.types';
 
 const DayCard: FC<IDayCardProps> = ({ day }) => {
-  const { data: workouts = [] } = useGetWorkouts();
+  const weekWorkoutsParams = useAppSelector(selectWeekWorkoutsParams);
+  const { data: workouts = [] } = useGetWorkouts(weekWorkoutsParams);
   const [deleteWorkout] = useDeleteWorkout();
 
   const dispatch = useAppDispatch();

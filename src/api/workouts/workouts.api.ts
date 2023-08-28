@@ -6,8 +6,8 @@ import { DEFAULT_API_TIMEOUT, EApiMethods } from '../api.constants';
 
 import { EWorkoutsApiTags, EWorkoutsEndpoints, LIST_TAG_ID } from './workouts.constants';
 import type { IWorkout } from './workouts.types';
+import type { TGetWorkoutsParams } from './workouts.types';
 
-// Define a service using a base URL and expected endpoints
 const workoutsApiSlice = createApi({
   reducerPath: 'workoutsApi',
   baseQuery: fetchBaseQuery({
@@ -16,8 +16,11 @@ const workoutsApiSlice = createApi({
   }),
   tagTypes: [EWorkoutsApiTags.Workouts, EWorkoutsApiTags.Exercises, EWorkoutsApiTags.Sets],
   endpoints: (builder) => ({
-    getWorkouts: builder.query<IWorkout[], void>({
-      query: () => 'workouts/',
+    getWorkouts: builder.query<IWorkout[], TGetWorkoutsParams>({
+      query: (params) => ({
+        url: 'workouts/',
+        params,
+      }),
       providesTags: (result = []) => [
         { type: EWorkoutsApiTags.Workouts, id: LIST_TAG_ID },
         ...result.map(({ id }) => ({ type: EWorkoutsApiTags.Workouts, id })),

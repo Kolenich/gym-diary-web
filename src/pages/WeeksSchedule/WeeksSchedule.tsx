@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import type { Theme } from '@mui/material';
@@ -12,32 +12,33 @@ import { DayCard } from 'components/DayCard';
 import { Loading } from 'components/Loading';
 import { DATE_DISPLAY_FORMAT, TODAY_DATE } from 'constants/datetime';
 import { TODAY } from 'constants/texts';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
+import {
+  goToCurrentWeek,
+  goToNextWeek,
+  goToPreviousWeek,
+  selectCurrentWeek,
+  selectWeekWorkoutsParams,
+} from 'store/week';
 import { getErrorSentence } from 'utils/get-error-sentence';
 
 import {
-  EWeekTypes,
   NEXT_WEEK,
   PREVIOUS_WEEK,
   PUMPER_DIARY,
   WORKOUT_DAYS,
 } from './WeekSchedule.constants';
-import type { IWeeks } from './WeeksSchedule.types';
-import { getWeek } from './WeeksSchedule.utils';
 
 const WeeksSchedule: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const [weeks, setWeeks] = useState<IWeeks>({
-    previous: [],
-    current: [],
-    next: [],
-  });
 
-  const { error, isLoading } = useGetWorkouts();
+  const dispatch = useAppDispatch();
 
-  /** Effect for calculating weeks */
-  useEffect(() => {
-    setWeeks((oldWeeks) => getWeek(oldWeeks, EWeekTypes.Current));
-  }, []);
+  const currentWeek = useAppSelector(selectCurrentWeek);
+
+  const weekWorkoutsParams = useAppSelector(selectWeekWorkoutsParams);
+
+  const { error, isLoading } = useGetWorkouts(weekWorkoutsParams);
 
   useEffect(() => {
     const hasError = !!error;
@@ -47,21 +48,21 @@ const WeeksSchedule: FC = () => {
     }
   }, [error, enqueueSnackbar]);
 
-  const goToPreviousWeek = (): void => {
-    setWeeks((oldWeeks) => getWeek(oldWeeks, EWeekTypes.Previous));
+  const goPreviousWeek = (): void => {
+    dispatch(goToPreviousWeek());
   };
 
-  const goToCurrentWeek = (): void => {
-    setWeeks((oldWeeks) => getWeek(oldWeeks, EWeekTypes.Current));
+  const goCurrentWeek = (): void => {
+    dispatch(goToCurrentWeek());
   };
 
-  const goToNextWeek = (): void => {
-    setWeeks((oldWeeks) => getWeek(oldWeeks, EWeekTypes.Next));
+  const goNextWeek = (): void => {
+    dispatch(goToNextWeek());
   };
 
-  const currentYear = (weeks.current.filter((day) => day.day() === TODAY_DATE.day())[0] || TODAY_DATE).year();
-  const displayedDays = weeks.current.slice(0, WORKOUT_DAYS);
-  const isToday = !weeks.current.some((day) => (
+  const currentYear = (currentWeek.filter((day) => day.day() === TODAY_DATE.day())[0] || TODAY_DATE).year();
+  const displayedDays = currentWeek.slice(0, WORKOUT_DAYS);
+  const isToday = !currentWeek.some((day) => (
     day.format(DATE_DISPLAY_FORMAT) === TODAY_DATE.format(DATE_DISPLAY_FORMAT)
   ));
 
@@ -118,7 +119,7 @@ const WeeksSchedule: FC = () => {
           <Tooltip title={PREVIOUS_WEEK}>
             <Fab
               color='primary'
-              onClick={goToPreviousWeek}
+              onClick={goPreviousWeek}
             >
               <ChevronLeft />
             </Fab>
@@ -133,7 +134,7 @@ const WeeksSchedule: FC = () => {
             <Fab
               color='primary'
               variant='extended'
-              onClick={goToCurrentWeek}
+              onClick={goCurrentWeek}
             >
               {TODAY}
             </Fab>
@@ -147,7 +148,7 @@ const WeeksSchedule: FC = () => {
           <Tooltip title={NEXT_WEEK}>
             <Fab
               color='primary'
-              onClick={goToNextWeek}
+              onClick={goNextWeek}
             >
               <ChevronRight />
             </Fab>

@@ -1,9 +1,12 @@
+import moment from 'moment';
+
 import { TODAY_DATE } from 'constants/datetime';
 
-import { EWeekTypes } from './WeekSchedule.constants';
-import type { IWeeks } from './WeeksSchedule.types';
+import { EWeekTypes } from './week.constants';
+import type { TWeeks } from './week.types';
 
-export const getWeek = (weeks: IWeeks, type: EWeekTypes): IWeeks => {
+
+export const getWeek = (weeks: TWeeks, type: EWeekTypes): TWeeks => {
   const current = [];
   const previous = [];
   const next = [];
@@ -12,10 +15,10 @@ export const getWeek = (weeks: IWeeks, type: EWeekTypes): IWeeks => {
 
   switch (type) {
     case EWeekTypes.Next:
-      today = weeks.current[0].clone().add(7, 'days');
+      today = moment(weeks.current[0]).clone().add(7, 'days');
       break;
     case EWeekTypes.Previous:
-      today = weeks.current[0].clone().add(-7, 'days');
+      today = moment(weeks.current[0]).clone().add(-7, 'days');
       break;
     case EWeekTypes.Current:
       // Fix bug for JS thinking, that Sunday is the first day of week
@@ -32,9 +35,9 @@ export const getWeek = (weeks: IWeeks, type: EWeekTypes): IWeeks => {
     const dayOfPreviousWeek = today.clone().subtract(7, 'days').set('day', i);
     const dayOfNextWeek = today.clone().add(7, 'days').set('day', i);
 
-    current.push(dayOfCurrWeek);
-    previous.push(dayOfPreviousWeek);
-    next.push(dayOfNextWeek);
+    current.push(dayOfCurrWeek.toISOString());
+    previous.push(dayOfPreviousWeek.toISOString());
+    next.push(dayOfNextWeek.toISOString());
   }
 
   return { current, next, previous };

@@ -1,5 +1,12 @@
-import type { IWeekState } from './week.types';
+export enum EWeekTypes {
+  Previous = 'previous',
+  Current = 'current',
+  Next = 'next',
+}
 
-export const INITIAL_STATE: IWeekState = {
-  workoutDay: null,
+export const DEFAULT_WEEKS: Record<EWeekTypes, string[]> = {
+  [EWeekTypes.Previous]: [],
+  [EWeekTypes.Current]: [],
+  [EWeekTypes.Next]: [],
 };
+

@@ -6,4 +6,4 @@ export {
   useCreateWorkout,
   useUpdateWorkout,
 } from './workouts.api';
-export type { IWorkout, IExercise, ISet } from './workouts.types';
+export type { IWorkout, IExercise, ISet, TGetWorkoutsParams } from './workouts.types';

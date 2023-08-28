@@ -19,3 +19,7 @@ export interface ISet {
   weight: number;
   repeats: number;
 }
+
+export type TGetWorkoutsParams = {
+  [Key in keyof Pick<IWorkout, 'date'> as `${Key}__${'gte' | 'lte'}`]: string;
+}

@@ -1,18 +1,11 @@
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { Cancel, Save, Timeline } from '@mui/icons-material';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Grid,
-  Typography,
-} from '@mui/material';
-import { StaticTimePicker } from '@mui/x-date-pickers';
+import { Button, Dialog, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
+import { TimePicker } from '@mui/x-date-pickers';
 
 import type { Moment } from 'moment';
 import moment from 'moment';
@@ -29,8 +22,11 @@ import {
   ADD_WORKOUT,
   CANCEL,
   DEFAULT_WORKOUT,
-  EDIT_WORKOUT, INTERVAL,
-  SAVE, WORKOUT_END, WORKOUT_START,
+  EDIT_WORKOUT,
+  INTERVAL,
+  SAVE,
+  WORKOUT_END,
+  WORKOUT_START,
 } from './WorkoutDetail.constants';
 
 const WorkoutModal: FC = () => {
@@ -58,11 +54,13 @@ const WorkoutModal: FC = () => {
     setLocalWorkout(workout);
   }, [workout]);
 
-  if (!hasWorkoutDay && !isEditMode) {
+  const isRenderAvailable = hasWorkoutDay || isEditMode;
+
+  if (!isRenderAvailable) {
     return <Navigate to='..' />;
   }
 
-  const workoutDate = (): string => {
+  const workoutDate = useMemo(() => {
     if (hasWorkoutDay) {
       return workoutDay.format(DATE_DISPLAY_FORMAT);
     }
@@ -74,7 +72,7 @@ const WorkoutModal: FC = () => {
     }
 
     return '';
-  };
+  }, [workoutDay, localWorkout.date]);
 
   const modalTitle = workoutId === 'add' ? ADD_WORKOUT : EDIT_WORKOUT;
 
@@ -182,16 +180,16 @@ const WorkoutModal: FC = () => {
         <Typography
           variant='h5'
           color='text.secondary'
-          sx={{ px: 3, py: 2, fontWeight: 'bold', textAlign: 'center' }}
+          sx={{ mx: 3, my: 2, fontWeight: 'bold', textAlign: 'center' }}
         >
           {modalTitle}
         </Typography>
         <Typography
           variant='h5'
           color='text.secondary'
-          sx={{ px: 3, py: 2, fontWeight: 'bold' }}
+          sx={{ mx: 3, my: { xl: 2, lg: 2, md: 2, sm: 2 }, fontWeight: 'bold' }}
         >
-          {workoutDate()}
+          {workoutDate}
         </Typography>
       </Typography>
       <DialogContent>
@@ -214,13 +212,9 @@ const WorkoutModal: FC = () => {
             sm={6}
             xs={12}
           >
-            <Typography
-              variant='body1'
-              sx={{ ml: (theme) => theme.spacing(3) }}
-            >
-              {WORKOUT_START}
-            </Typography>
-            <StaticTimePicker
+            <TimePicker
+              sx={{ width: '100%' }}
+              label={WORKOUT_START}
               onChange={handlePickerChange('start')}
               value={moment(start, DJANGO_TIME_FORMAT)}
               minutesStep={5}
@@ -236,13 +230,9 @@ const WorkoutModal: FC = () => {
             sm={6}
             xs={12}
           >
-            <Typography
-              sx={{ ml: (theme) => theme.spacing(3) }}
-              variant='body1'
-            >
-              {WORKOUT_END}
-            </Typography>
-            <StaticTimePicker
+            <TimePicker
+              sx={{ width: '100%' }}
+              label={WORKOUT_END}
               onChange={handlePickerChange('end')}
               value={moment(end, DJANGO_TIME_FORMAT)}
               minutesStep={5}
