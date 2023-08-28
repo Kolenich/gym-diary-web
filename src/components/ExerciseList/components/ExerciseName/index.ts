@@ -1,1 +1,1 @@
-export {default as ExerciseName} from './ExerciseName';
+export { default as ExerciseName } from './ExerciseName';

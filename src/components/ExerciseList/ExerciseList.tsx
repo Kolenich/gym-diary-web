@@ -30,11 +30,11 @@ import {
   EExercisesAction,
   EXERCISES,
   NAME,
-  NEW, NO_EXERCISES,
+  NEW,
+  NO_EXERCISES,
   SAVE,
 } from './ExerciseList.constants';
 import type { IExerciseListProps } from './ExerciseList.types';
-
 
 const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) => {
   const [expandedExercises, setExpandedExercises] = useState<Key[]>([]);
@@ -51,23 +51,23 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
     const isNewExercise = newExercises.map(({ id }) => id).includes(exerciseObjId);
 
     if (isNewExercise) {
-      setNewExercises((oldExercises) => oldExercises.map((oldExercise) => {
-        const { id } = oldExercise;
+      setNewExercises((oldExercises) =>
+        oldExercises.map((oldExercise) => {
+          const { id } = oldExercise;
 
-        const isTargetExercise = id === exerciseObjId;
+          const isTargetExercise = id === exerciseObjId;
 
-        if (isTargetExercise) {
-          return { ...oldExercise, ...exerciseObj };
-        }
+          if (isTargetExercise) {
+            return { ...oldExercise, ...exerciseObj };
+          }
 
-        return oldExercise;
-      }));
+          return oldExercise;
+        }),
+      );
     } else {
       onExerciseChange(exerciseObj, EExercisesAction.Update);
     }
-    setEditingExercises((oldExercises) => oldExercises.filter(({ id }) => (
-      id !== exerciseObjId
-    )));
+    setEditingExercises((oldExercises) => oldExercises.filter(({ id }) => id !== exerciseObjId));
   };
 
   /**
@@ -102,16 +102,18 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
       const handleExerciseInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
         const { value, name } = event.target;
 
-        setEditingExercises((oldEditingExercises) => oldEditingExercises.map((oldEditingExercise) => {
-          const { id } = oldEditingExercise;
-          const isTargetExercise = id === editedExerciseId;
+        setEditingExercises((oldEditingExercises) =>
+          oldEditingExercises.map((oldEditingExercise) => {
+            const { id } = oldEditingExercise;
+            const isTargetExercise = id === editedExerciseId;
 
-          if (isTargetExercise) {
-            return { ...oldEditingExercise, [name]: value };
-          }
+            if (isTargetExercise) {
+              return { ...oldEditingExercise, [name]: value };
+            }
 
-          return oldEditingExercise;
-        }));
+            return oldEditingExercise;
+          }),
+        );
       };
 
       const handleSaveClick = (): void => {
@@ -119,9 +121,7 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
       };
 
       const cancelExerciseEdit = (): void => {
-        setEditingExercises((oldExercises) => (
-          oldExercises.filter(({ id }) => id !== editedExerciseId)
-        ));
+        setEditingExercises((oldExercises) => oldExercises.filter(({ id }) => id !== editedExerciseId));
       };
 
       const isSaveAvailable = !!editedExerciseName;
@@ -139,22 +139,13 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
           />
           <Tooltip title={SAVE}>
             <span>
-              <IconButton
-                color='success'
-                sx={{ mt: 2 }}
-                disabled={!isSaveAvailable}
-                onClick={handleSaveClick}
-              >
-              <Save />
-            </IconButton>
+              <IconButton color='success' sx={{ mt: 2 }} disabled={!isSaveAvailable} onClick={handleSaveClick}>
+                <Save />
+              </IconButton>
             </span>
           </Tooltip>
           <Tooltip title={CANCEL}>
-            <IconButton
-              color='error'
-              sx={{ mt: 2 }}
-              onClick={cancelExerciseEdit}
-            >
+            <IconButton color='error' sx={{ mt: 2 }} onClick={cancelExerciseEdit}>
               <Cancel />
             </IconButton>
           </Tooltip>
@@ -176,16 +167,12 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
 
     const editExercise = (): void => {
       setEditingExercises((oldExercises) => oldExercises.concat(exercise));
-      setExpandedExercises((oldExercises) => oldExercises.filter((exerciseId) => (
-        exerciseId !== targetExerciseId
-      )));
+      setExpandedExercises((oldExercises) => oldExercises.filter((exerciseId) => exerciseId !== targetExerciseId));
     };
 
     const deleteExercise = (): void => {
       onExerciseChange(exercise, EExercisesAction.Delete);
-      setExpandedExercises((oldExercises) => oldExercises.filter((exerciseId) => (
-        exerciseId !== targetExerciseId
-      )));
+      setExpandedExercises((oldExercises) => oldExercises.filter((exerciseId) => exerciseId !== targetExerciseId));
     };
 
     const isNewExercise = typeof targetExerciseId === 'string';
@@ -196,25 +183,17 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
           <ListItemText>
             <Typography variant='body2' component='div'>
               <ExerciseName name={targetExerciseName} />
-              {isNewExercise && (
-                <Chip label={NEW} color='success' size='small' sx={{ ml: 2 }} />
-              )}
+              {isNewExercise && <Chip label={NEW} color='success' size='small' sx={{ ml: 2 }} />}
             </Typography>
           </ListItemText>
         </ListItemButton>
         <Tooltip title={EDIT}>
-          <IconButton
-            color='info'
-            onClick={editExercise}
-          >
+          <IconButton color='info' onClick={editExercise}>
             <Edit />
           </IconButton>
         </Tooltip>
         <Tooltip title={DELETE}>
-          <IconButton
-            color='error'
-            onClick={deleteExercise}
-          >
+          <IconButton color='error' onClick={deleteExercise}>
             <Delete />
           </IconButton>
         </Tooltip>
@@ -223,86 +202,84 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
   };
 
   const addNewExercise = (): void => {
-    setNewExercises((oldExercises) => oldExercises.concat({
-      id: uuid(),
-      name: '',
-      sets: [],
-    }));
+    setNewExercises((oldExercises) =>
+      oldExercises.concat({
+        id: uuid(),
+        name: '',
+        sets: [],
+      }),
+    );
   };
 
   const hasExercises = isArrayNonEmpty(exercises);
 
   return (
     <>
-      <Typography
-        variant='h6'
-        color='text.secondary'
-        sx={{ display: 'flex', alignItems: 'center' }}
-      >
+      <Typography variant='h6' color='text.secondary' sx={{ display: 'flex', alignItems: 'center' }}>
         <DirectionsRun sx={{ mr: 0.5 }} />
         {EXERCISES}
         <Tooltip title={ADD_EXERCISE}>
-          <IconButton
-            color='primary'
-            onClick={addNewExercise}
-          >
+          <IconButton color='primary' onClick={addNewExercise}>
             <Add />
           </IconButton>
         </Tooltip>
       </Typography>
       <List>
-        {hasExercises ? exercises.map((exercise) => {
-          const { id, sets } = exercise;
+        {hasExercises ? (
+          exercises.map((exercise) => {
+            const { id, sets } = exercise;
 
-          const isExerciseExpanded = expandedExercises.includes(id);
+            const isExerciseExpanded = expandedExercises.includes(id);
 
-          const handleSetChange = (set: ISet, action: ESetsActions): void => {
-            const { id: targetSetId } = set;
-            // Defining function, that will manage sets depending on action provided
-            let updateSets = (sets: ISet[]): ISet[] => sets;
+            const handleSetChange = (set: ISet, action: ESetsActions): void => {
+              const { id: targetSetId } = set;
+              // Defining function, that will manage sets depending on action provided
+              let updateSets = (sets: ISet[]): ISet[] => sets;
 
-            switch (action) {
-              case ESetsActions.Add:
-                updateSets = (sets: ISet[]): ISet[] => sets.concat(set);
-                break;
-              case ESetsActions.Update:
-                updateSets = (sets: ISet[]): ISet[] => sets.map((prevSet) => {
-                  const { id } = prevSet;
+              switch (action) {
+                case ESetsActions.Add:
+                  updateSets = (sets: ISet[]): ISet[] => sets.concat(set);
+                  break;
+                case ESetsActions.Update:
+                  updateSets = (sets: ISet[]): ISet[] =>
+                    sets.map((prevSet) => {
+                      const { id } = prevSet;
 
-                  const isTargetSet = id === targetSetId;
+                      const isTargetSet = id === targetSetId;
 
-                  if (isTargetSet) {
-                    return { ...prevSet, ...set };
-                  }
+                      if (isTargetSet) {
+                        return { ...prevSet, ...set };
+                      }
 
-                  return prevSet;
-                });
-                break;
-              case ESetsActions.Delete:
-                updateSets = (sets: ISet[]): ISet[] => sets.filter(({ id }) => id !== targetSetId);
-                break;
-              default:
-                break;
-            }
+                      return prevSet;
+                    });
+                  break;
+                case ESetsActions.Delete:
+                  updateSets = (sets: ISet[]): ISet[] => sets.filter(({ id }) => id !== targetSetId);
+                  break;
+                default:
+                  break;
+              }
 
-            onExerciseChange({
-              ...exercise,
-              sets: updateSets(exercise.sets),
-            }, EExercisesAction.Update);
-          };
+              onExerciseChange(
+                {
+                  ...exercise,
+                  sets: updateSets(exercise.sets),
+                },
+                EExercisesAction.Update,
+              );
+            };
 
-          return (
-            <Fragment key={id}>
-              {renderExercise(exercise)}
-              <Collapse in={isExerciseExpanded} timeout='auto' unmountOnExit>
-                <SetsList
-                  sets={sets}
-                  onSetChange={handleSetChange}
-                />
-              </Collapse>
-            </Fragment>
-          );
-        }) : (
+            return (
+              <Fragment key={id}>
+                {renderExercise(exercise)}
+                <Collapse in={isExerciseExpanded} timeout='auto' unmountOnExit>
+                  <SetsList sets={sets} onSetChange={handleSetChange} />
+                </Collapse>
+              </Fragment>
+            );
+          })
+        ) : (
           <ListItem>
             <Typography variant='body2' color='text.secondary'>
               {NO_EXERCISES}
@@ -321,17 +298,19 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
           const handleNameChange = (event: ChangeEvent<HTMLInputElement>): void => {
             const { value } = event.target;
 
-            setNewExercises((oldExercises) => oldExercises.map((oldExercise) => {
-              const { id } = oldExercise;
+            setNewExercises((oldExercises) =>
+              oldExercises.map((oldExercise) => {
+                const { id } = oldExercise;
 
-              const isTargetExercise = id === newExerciseId;
+                const isTargetExercise = id === newExerciseId;
 
-              if (isTargetExercise) {
-                return { ...oldExercise, name: value };
-              }
+                if (isTargetExercise) {
+                  return { ...oldExercise, name: value };
+                }
 
-              return oldExercise;
-            }));
+                return oldExercise;
+              }),
+            );
           };
 
           const save = (): void => {
@@ -339,9 +318,7 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
           };
 
           const cancelExerciseCreation = (): void => {
-            setNewExercises((oldExercises) => oldExercises.filter(({ id }) => (
-              id !== newExerciseId
-            )));
+            setNewExercises((oldExercises) => oldExercises.filter(({ id }) => id !== newExerciseId));
           };
 
           const isSaveAvailable = !!name;
@@ -358,22 +335,13 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
               />
               <Tooltip title={SAVE}>
                 <span>
-                  <IconButton
-                    onClick={save}
-                    sx={{ mt: 2 }}
-                    disabled={!isSaveAvailable}
-                    color='success'
-                  >
-                  <Save />
-                </IconButton>
+                  <IconButton onClick={save} sx={{ mt: 2 }} disabled={!isSaveAvailable} color='success'>
+                    <Save />
+                  </IconButton>
                 </span>
               </Tooltip>
               <Tooltip title={CANCEL}>
-                <IconButton
-                  onClick={cancelExerciseCreation}
-                  sx={{ mt: 2 }}
-                  color='error'
-                >
+                <IconButton onClick={cancelExerciseCreation} sx={{ mt: 2 }} color='error'>
                   <Cancel />
                 </IconButton>
               </Tooltip>

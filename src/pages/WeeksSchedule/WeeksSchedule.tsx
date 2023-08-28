@@ -22,12 +22,7 @@ import {
 } from 'store/week';
 import { getErrorSentence } from 'utils/get-error-sentence';
 
-import {
-  NEXT_WEEK,
-  PREVIOUS_WEEK,
-  PUMPER_DIARY,
-  WORKOUT_DAYS,
-} from './WeekSchedule.constants';
+import { NEXT_WEEK, PREVIOUS_WEEK, PUMPER_DIARY, WORKOUT_DAYS } from './WeekSchedule.constants';
 
 const WeeksSchedule: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -62,9 +57,9 @@ const WeeksSchedule: FC = () => {
 
   const currentYear = (currentWeek.filter((day) => day.day() === TODAY_DATE.day())[0] || TODAY_DATE).year();
   const displayedDays = currentWeek.slice(0, WORKOUT_DAYS);
-  const isToday = !currentWeek.some((day) => (
-    day.format(DATE_DISPLAY_FORMAT) === TODAY_DATE.format(DATE_DISPLAY_FORMAT)
-  ));
+  const isToday = !currentWeek.some(
+    (day) => day.format(DATE_DISPLAY_FORMAT) === TODAY_DATE.format(DATE_DISPLAY_FORMAT),
+  );
 
   return (
     <>
@@ -78,20 +73,9 @@ const WeeksSchedule: FC = () => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Grid
-        container
-        spacing={2}
-        sx={{ p: 2 }}
-      >
+      <Grid container spacing={2} sx={{ p: 2 }}>
         {displayedDays.map((day) => (
-          <Grid
-            key={day.format('dddd')}
-            item
-            xs={12}
-            sm={6}
-            lg={4}
-            xl={2}
-          >
+          <Grid key={day.format('dddd')} item xs={12} sm={6} lg={4} xl={2}>
             <DayCard day={day} />
           </Grid>
         ))}
@@ -112,44 +96,23 @@ const WeeksSchedule: FC = () => {
         }}
         alignItems='center'
       >
-        <Grid
-          item
-          xs={4}
-        >
+        <Grid item xs={4}>
           <Tooltip title={PREVIOUS_WEEK}>
-            <Fab
-              color='primary'
-              onClick={goPreviousWeek}
-            >
+            <Fab color='primary' onClick={goPreviousWeek}>
               <ChevronLeft />
             </Fab>
           </Tooltip>
         </Grid>
-        <Grid
-          item
-          xs={4}
-          sx={{ textAlign: 'center' }}
-        >
+        <Grid item xs={4} sx={{ textAlign: 'center' }}>
           <Zoom in={isToday}>
-            <Fab
-              color='primary'
-              variant='extended'
-              onClick={goCurrentWeek}
-            >
+            <Fab color='primary' variant='extended' onClick={goCurrentWeek}>
               {TODAY}
             </Fab>
           </Zoom>
         </Grid>
-        <Grid
-          item
-          xs={4}
-          sx={{ textAlign: 'end' }}
-        >
+        <Grid item xs={4} sx={{ textAlign: 'end' }}>
           <Tooltip title={NEXT_WEEK}>
-            <Fab
-              color='primary'
-              onClick={goNextWeek}
-            >
+            <Fab color='primary' onClick={goNextWeek}>
               <ChevronRight />
             </Fab>
           </Tooltip>

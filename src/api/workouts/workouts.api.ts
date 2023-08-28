@@ -5,8 +5,7 @@ import { BASE_URL } from 'constants/url';
 import { DEFAULT_API_TIMEOUT, EApiMethods } from '../api.constants';
 
 import { EWorkoutsApiTags, EWorkoutsEndpoints, LIST_TAG_ID } from './workouts.constants';
-import type { IWorkout } from './workouts.types';
-import type { TGetWorkoutsParams } from './workouts.types';
+import type { IWorkout, TGetWorkoutsParams } from './workouts.types';
 
 const workoutsApiSlice = createApi({
   reducerPath: 'workoutsApi',

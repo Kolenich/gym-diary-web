@@ -1,10 +1,6 @@
 import type { FC } from 'react';
 
-import {
-  Navigate,
-  Route,
-  Routes,
-} from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { WeeksSchedule } from 'pages/WeeksSchedule';
 import { WorkoutDetail } from 'pages/WorkoutDetail';
