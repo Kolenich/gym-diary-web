@@ -75,15 +75,9 @@
         "prefix": ["G"]
       }
     ],
-    "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
-    "react/prop-types": 0,
-    "no-debugger": "off",
     "@typescript-eslint/explicit-function-return-type": "error",
     "arrow-body-style": [2, "as-needed"],
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/ban-types": "off",
-    "@typescript-eslint/triple-slash-reference": 0,
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
@@ -99,66 +93,6 @@
       }
     ],
     "semi": ["error", "always"],
-    "import/prefer-default-export": "off",
-    "react/sort-comp": [
-      "error",
-      {
-        "order": [
-          "defaultProps",
-          "static-variables",
-          "static-methods",
-          "getDerivedStateFromProps",
-          "state",
-          "instance-variables",
-          "constructor",
-          "lifecycle",
-          "getters",
-          "setters",
-          "instance-methods",
-          "everything-else",
-          "/^on.+$/",
-          "/^handle.+$/",
-          "/^render.+$/",
-          "render"
-        ],
-        "groups": {
-          "lifecycle": [
-            "displayName",
-            "propTypes",
-            "contextTypes",
-            "childContextTypes",
-            "mixins",
-            "statics",
-            "getDefaultProps",
-            "getInitialState",
-            "getChildContext",
-            "componentWillMount",
-            "UNSAFE_componentWillMount",
-            "componentDidMount",
-            "componentWillReceiveProps",
-            "UNSAFE_componentWillReceiveProps",
-            "shouldComponentUpdate",
-            "componentWillUpdate",
-            "UNSAFE_componentWillUpdate",
-            "getSnapshotBeforeUpdate",
-            "componentDidUpdate",
-            "componentDidCatch",
-            "componentWillUnmount"
-          ]
-        }
-      }
-    ]
-  },
-  "overrides": [
-    {
-      "files": ["src/**/__mocks__/**/*", "src/**/*.test.*"],
-      "env": {
-        "jest": true
-      },
-      "rules": {
-        "@typescript-eslint/camelcase": "off",
-        "@typescript-eslint/no-explicit-any": "off"
-      }
-    }
-  ]
+    "import/prefer-default-export": "off"
+  }
 }

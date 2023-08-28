@@ -42,11 +42,6 @@ const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
   const [newSets, setNewSets] = useState<ISet[]>([]);
   const [editingSets, setEditingSets] = useState<ISet[]>([]);
 
-  /**
-   * Function for rendering current state of set, either it is being simply displayed or edited
-   * @param {ISet} set - set object
-   * @return {JSX.Element}
-   */
   const renderSet = (set: ISet): JSX.Element => {
     const { id: targetSetId, weight: targetSetWeight, repeats: targetSetRepeats } = set;
 

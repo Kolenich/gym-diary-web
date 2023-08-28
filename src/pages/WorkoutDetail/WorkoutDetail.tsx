@@ -95,11 +95,6 @@ const WorkoutModal: FC = () => {
     closeModal();
   };
 
-  /**
-   * Callback for handling TimePicker's input change
-   * @param {moment.Moment | null} date - new value
-   * @param {keyof IWorkout} field - field of Workout object
-   */
   const handlePickerChange =
     (field: keyof IWorkout) =>
     (date: Moment | null): void => {
@@ -109,10 +104,6 @@ const WorkoutModal: FC = () => {
       }));
     };
 
-  /**
-   * Callback for handling exercise change in child component
-   * @type {(exercise: IExercise, action: EExercisesAction) => void}
-   */
   const handleExerciseChange = (exercise: IExercise, action: EExercisesAction): void => {
     const { id: targetExerciseId } = exercise;
 

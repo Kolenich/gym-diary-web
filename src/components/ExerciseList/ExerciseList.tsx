@@ -41,10 +41,6 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
   const [editingExercises, setEditingExercises] = useState<IExercise[]>([]);
   const [newExercises, setNewExercises] = useState<IExercise[]>([]);
 
-  /**
-   * Common function for saving edited exercise
-   * @param {IExercise} exerciseObj - edited exercise
-   */
   const saveEditedExercise = (exerciseObj: IExercise): void => {
     const { id: exerciseObjId } = exerciseObj;
 
@@ -70,20 +66,11 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
     setEditingExercises(oldExercises => oldExercises.filter(({ id }) => id !== exerciseObjId));
   };
 
-  /**
-   * Common function for adding new exercise
-   * @param {IExercise} exerciseObj - new exercise
-   */
   const saveNewExercise = (exerciseObj: IExercise): void => {
     onExerciseChange(exerciseObj, EExercisesAction.Add);
     setNewExercises([]);
   };
 
-  /**
-   * Function for rendering current state of exercise, either it is being simply displayed or edited
-   * @param {IExercise} exercise - exercise object being displayed or edited
-   * @return {JSX.Element}
-   */
   const renderExercise = (exercise: IExercise): JSX.Element => {
     const { id: targetExerciseId, name: targetExerciseName } = exercise;
     const editedExercise = editingExercises.find(({ id }) => id === targetExerciseId);
