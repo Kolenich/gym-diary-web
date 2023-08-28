@@ -1,12 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit';
-
 import moment from 'moment';
 
 import type { TGetWorkoutsParams } from 'api/workouts';
+
 import { DJANGO_DATE_FORMAT } from 'constants/datetime';
 
 import type { TRootState } from '../store.types';
-
 import type { IWeekState } from './week.types';
 
 const selectWeek = (state: TRootState): IWeekState => state.week;

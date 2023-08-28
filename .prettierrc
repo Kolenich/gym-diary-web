@@ -23,5 +23,8 @@
   ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
-  "order": "alphabetical"
+  "order": "alphabetical",
+  "plugins": [
+    "@trivago/prettier-plugin-sort-imports"
+  ]
 }
