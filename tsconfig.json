@@ -9,7 +9,33 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
-    "baseUrl": "./src",
+    "baseUrl": ".",
+    "paths": {
+      "api/*": [
+        "src/api/*"
+      ],
+      "components/*": [
+        "src/components/*"
+      ],
+      "hooks/*": [
+        "src/hooks/*"
+      ],
+      "pages/*": [
+        "src/pages/*"
+      ],
+      "store/*": [
+        "src/store/*"
+      ],
+      "utils/*": [
+        "src/utils/*"
+      ],
+      "constants/*": [
+        "src/constants/*"
+      ],
+      "routers/*": [
+        "src/routers/*"
+      ]
+    },
     "lib": [
       "dom",
       "dom.iterable",

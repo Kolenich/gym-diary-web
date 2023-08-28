@@ -1,24 +1,30 @@
-import { LocalizationProvider } from '@mui/lab';
-import DateAdapter from '@mui/lab/AdapterMoment';
-import ContextProvider from 'context';
-import 'moment/locale/ru';
-import { SnackbarProvider } from 'notistack';
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import RootRouter from 'routers/RootRouter';
-import APIProvider from './api';
+import type { FC } from 'react';
 
-const App = () => (
+import { BrowserRouter } from 'react-router-dom';
+
+import { Provider } from 'react-redux';
+
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { ruRU } from '@mui/x-date-pickers/locales';
+
+import { SnackbarProvider } from 'notistack';
+
+import { RootRouter } from './routers/RootRouter';
+import { store } from './store';
+
+const App: FC = () => (
   <BrowserRouter>
-    <LocalizationProvider dateAdapter={DateAdapter}>
-      <SnackbarProvider>
-        <APIProvider>
-          <ContextProvider>
-            <RootRouter/>
-          </ContextProvider>
-        </APIProvider>
-      </SnackbarProvider>
-    </LocalizationProvider>
+    <Provider store={store}>
+      <LocalizationProvider
+        dateAdapter={AdapterMoment}
+        localeText={ruRU.components.MuiLocalizationProvider.defaultProps.localeText}
+      >
+        <SnackbarProvider>
+          <RootRouter />
+        </SnackbarProvider>
+      </LocalizationProvider>
+    </Provider>
   </BrowserRouter>
 );
 

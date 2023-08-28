@@ -1,88 +1,261 @@
 {
-  "env": {
-    "browser": true,
-    "es2021": true
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "jest",
+    "import"
+  ],
+  "parserOptions": {
+    // Allows for the parsing of modern ECMAScript features
+    "ecmaVersion": 2021,
+    // Allows for the use of imports
+    "sourceType": "module",
+    "ecmaFeatures": {
+      // Allows for the parsing of JSX
+      "jsx": true,
+      "arrowFunctions": true
+    },
+    "project": "./tsconfig.json"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "import/resolver": {
+      "node": {
+        "extensions": [
+          ".ts",
+          ".tsx"
+        ],
+        "paths": [
+          "./src"
+        ]
+      }
+    }
   },
   "extends": [
-    "airbnb-base",
+    "plugin:jest/recommended",
+    "eslint:recommended",
+    // Uses the recommended rules from @eslint-plugin-react
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    // Uses the recommended rules from the @typescript-eslint/eslint-plugin
     "plugin:@typescript-eslint/recommended",
-    "plugin:react-hooks/recommended"
+    "prettier"
   ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": 12,
-    "sourceType": "module"
-  },
-  "plugins": [
-    "@typescript-eslint"
-  ],
-  "ignorePatterns": ["config-overrides.ts"],
+  "ignorePatterns": ["craco.config.js"],
   "rules": {
-    "linebreak-style": 0,
-    "max-classes-per-file": [
+    // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
+    // e.g. "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/naming-convention": [
       "error",
-      2
-    ],
-    "no-shadow": "off",
-    "@typescript-eslint/no-shadow": [
-      "error"
-    ],
-    "object-curly-newline": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "indent": [
-      "error",
-      2,
       {
-        "SwitchCase": 1
+        "selector": "variable",
+        "types": [
+          "boolean"
+        ],
+        "format": [
+          "PascalCase"
+        ],
+        "prefix": [
+          "is",
+          "has"
+        ]
+      },
+      {
+        "selector": "variable",
+        "format": [
+          "strictCamelCase",
+          "StrictPascalCase",
+          "UPPER_CASE"
+        ]
+      },
+      {
+        "selector": "enum",
+        "format": [
+          "StrictPascalCase"
+        ],
+        "prefix": [
+          "E"
+        ]
+      },
+      {
+        "selector": "enumMember",
+        "format": [
+          "StrictPascalCase"
+        ]
+      },
+      {
+        "selector": "interface",
+        "format": [
+          "StrictPascalCase"
+        ],
+        "prefix": [
+          "I"
+        ]
+      },
+      {
+        "selector": "typeAlias",
+        "format": [
+          "StrictPascalCase"
+        ],
+        "prefix": [
+          "T"
+        ]
+      },
+      {
+        "selector": "typeParameter",
+        "format": [
+          "StrictPascalCase"
+        ],
+        "prefix": [
+          "G"
+        ]
       }
     ],
-    "no-use-before-define": "off",
-    "@typescript-eslint/no-use-before-define": [
-      "error"
-    ],
-    "import/extensions": "off",
-    "camelcase": [
-      "error"
-    ],
-    "@typescript-eslint/naming-convention": [
-      "warn",
+    "import/order": [
+      "error",
       {
-        "selector": "property",
-        "format": [
-          "snake_case",
-          "camelCase"
-        ]
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index"
+        ],
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "react-router-dom",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "@reduxjs/**",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "react-redux",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "@mui/**",
+            "group": "external",
+            "position": "before"
+          },
+        ],
+        "pathGroupsExcludedImportTypes": [
+          "builtin",
+          "react"
+        ],
+        "newlines-between": "always"
+      }
+    ],
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": 0,
+    "no-debugger": "off",
+    "@typescript-eslint/explicit-function-return-type": "error",
+    "arrow-body-style": [
+      2,
+      "as-needed"
+    ],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/triple-slash-reference": 0,
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "prefer-destructuring": [
+      "error",
+      {
+        "object": true,
+        "array": true
+      }
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "import/prefer-default-export": "off",
+    "react/sort-comp": [
+      "error",
+      {
+        "order": [
+          "defaultProps",
+          "static-variables",
+          "static-methods",
+          "getDerivedStateFromProps",
+          "state",
+          "instance-variables",
+          "constructor",
+          "lifecycle",
+          "getters",
+          "setters",
+          "instance-methods",
+          "everything-else",
+          "/^on.+$/",
+          "/^handle.+$/",
+          "/^render.+$/",
+          "render"
+        ],
+        "groups": {
+          "lifecycle": [
+            "displayName",
+            "propTypes",
+            "contextTypes",
+            "childContextTypes",
+            "mixins",
+            "statics",
+            "getDefaultProps",
+            "getInitialState",
+            "getChildContext",
+            "componentWillMount",
+            "UNSAFE_componentWillMount",
+            "componentDidMount",
+            "componentWillReceiveProps",
+            "UNSAFE_componentWillReceiveProps",
+            "shouldComponentUpdate",
+            "componentWillUpdate",
+            "UNSAFE_componentWillUpdate",
+            "getSnapshotBeforeUpdate",
+            "componentDidUpdate",
+            "componentDidCatch",
+            "componentWillUnmount"
+          ]
+        }
       }
     ]
   },
   "overrides": [
     {
       "files": [
-        "**/*.ts",
-        "**/*.tsx"
+        "src/**/__mocks__/**/*",
+        "src/**/*.test.*"
       ],
+      "env": {
+        "jest": true
+      },
       "rules": {
-        "camelcase": [
-          "off"
-        ]
+        "@typescript-eslint/camelcase": "off",
+        "@typescript-eslint/no-explicit-any": "off"
       }
     }
-  ],
-  "settings": {
-    "import/resolver": {
-      "node": {
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".ts",
-          ".tsx"
-        ],
-        "moduleDirectory": [
-          "node_modules",
-          "src/"
-        ]
-      }
-    }
-  }
+  ]
 }
