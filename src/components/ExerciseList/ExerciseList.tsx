@@ -17,7 +17,6 @@ import { v4 as uuid } from 'uuid';
 
 import type { IExercise, ISet } from 'api/workouts';
 
-import { ExerciseName } from 'components/ExerciseList/components/ExerciseName';
 import { ESetsActions, SetsList } from 'components/SetsList';
 
 import { isArrayNonEmpty } from 'utils/is-array-non-empty';
@@ -35,6 +34,7 @@ import {
   SAVE,
 } from './ExerciseList.constants';
 import type { IExerciseListProps } from './ExerciseList.types';
+import { ExerciseName } from './components/ExerciseName';
 
 const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) => {
   const [expandedExercises, setExpandedExercises] = useState<Key[]>([]);
