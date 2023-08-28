@@ -57,7 +57,7 @@ const DayCard: FC<IDayCardProps> = ({ day }) => {
   )), [day, workouts]);
 
   const handleCardDoubleClick = (): void => {
-    dispatch(setWorkoutDay(day));
+    dispatch(setWorkoutDay(day.toISOString()));
     navigate('add');
   };
 

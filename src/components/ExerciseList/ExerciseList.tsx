@@ -138,14 +138,16 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
             onChange={handleExerciseInputChange}
           />
           <Tooltip title={SAVE}>
-            <IconButton
-              color='success'
-              sx={{ mt: 2 }}
-              disabled={!isSaveAvailable}
-              onClick={handleSaveClick}
-            >
+            <span>
+              <IconButton
+                color='success'
+                sx={{ mt: 2 }}
+                disabled={!isSaveAvailable}
+                onClick={handleSaveClick}
+              >
               <Save />
             </IconButton>
+            </span>
           </Tooltip>
           <Tooltip title={CANCEL}>
             <IconButton
@@ -355,14 +357,16 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
                 onChange={handleNameChange}
               />
               <Tooltip title={SAVE}>
-                <IconButton
-                  onClick={save}
-                  sx={{ mt: 2 }}
-                  disabled={!isSaveAvailable}
-                  color='success'
-                >
+                <span>
+                  <IconButton
+                    onClick={save}
+                    sx={{ mt: 2 }}
+                    disabled={!isSaveAvailable}
+                    color='success'
+                  >
                   <Save />
                 </IconButton>
+                </span>
               </Tooltip>
               <Tooltip title={CANCEL}>
                 <IconButton

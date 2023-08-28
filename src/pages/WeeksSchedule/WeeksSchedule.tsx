@@ -34,8 +34,6 @@ const WeeksSchedule: FC = () => {
 
   const { error, isLoading } = useGetWorkouts();
 
-  console.log(error);
-
   /** Effect for calculating weeks */
   useEffect(() => {
     setWeeks((oldWeeks) => getWeek(oldWeeks, EWeekTypes.Current));

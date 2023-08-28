@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 
-import { useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { Cancel, Save, Timeline } from '@mui/icons-material';
 import {
@@ -30,7 +30,7 @@ import {
   CANCEL,
   DEFAULT_WORKOUT,
   EDIT_WORKOUT, INTERVAL,
-  SAVE,
+  SAVE, WORKOUT_END, WORKOUT_START,
 } from './WorkoutDetail.constants';
 
 const WorkoutModal: FC = () => {
@@ -57,6 +57,10 @@ const WorkoutModal: FC = () => {
   useEffect(() => {
     setLocalWorkout(workout);
   }, [workout]);
+
+  if (!hasWorkoutDay && !isEditMode) {
+    return <Navigate to='..' />;
+  }
 
   const workoutDate = (): string => {
     if (hasWorkoutDay) {
@@ -91,6 +95,7 @@ const WorkoutModal: FC = () => {
     } else {
       updateWorkout(localWorkout);
     }
+
     closeModal();
   };
 
@@ -209,12 +214,17 @@ const WorkoutModal: FC = () => {
             sm={6}
             xs={12}
           >
+            <Typography
+              variant='body1'
+              sx={{ ml: (theme) => theme.spacing(3) }}
+            >
+              {WORKOUT_START}
+            </Typography>
             <StaticTimePicker
               onChange={handlePickerChange('start')}
               value={moment(start, DJANGO_TIME_FORMAT)}
               minutesStep={5}
               ampm={false}
-              localeText={{ timeTableLabel: 'Начало' }}
               views={['hours', 'minutes']}
             />
           </Grid>
@@ -226,6 +236,12 @@ const WorkoutModal: FC = () => {
             sm={6}
             xs={12}
           >
+            <Typography
+              sx={{ ml: (theme) => theme.spacing(3) }}
+              variant='body1'
+            >
+              {WORKOUT_END}
+            </Typography>
             <StaticTimePicker
               onChange={handlePickerChange('end')}
               value={moment(end, DJANGO_TIME_FORMAT)}

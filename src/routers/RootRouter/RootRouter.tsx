@@ -13,16 +13,13 @@ import { ERoutePaths } from './RootRouter.constants';
 
 const RootRouter: FC = () => (
   <Routes>
-    <Route
-      path={`${ERoutePaths.Workouts}/${ERoutePaths.WorkoutDetail}`}
-      element={<WorkoutDetail />}
-    />
-    <Route path={ERoutePaths.Workouts} element={<WeeksSchedule />}>
+    <Route path={ERoutePaths.Home}>
+      <Route index element={<Navigate to={ERoutePaths.Workouts} />} />
+      <Route path={ERoutePaths.Workouts}>
+        <Route index element={<WeeksSchedule />} />
+        <Route path={ERoutePaths.WorkoutDetail} element={<WorkoutDetail />} />
+      </Route>
     </Route>
-    <Route
-      path={ERoutePaths.Home}
-      element={<Navigate to={ERoutePaths.Workouts} />}
-    />
   </Routes>
 );
 

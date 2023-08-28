@@ -125,14 +125,16 @@ const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
             onChange={handleEditingSetInputChange}
           />
           <Tooltip title={SAVE}>
-            <IconButton
-              sx={{ mt: 2 }}
-              disabled={!isSaveButtonAvailable}
-              color='success'
-              onClick={saveSet}
-            >
+            <span>
+              <IconButton
+                sx={{ mt: 2 }}
+                disabled={!isSaveButtonAvailable}
+                color='success'
+                onClick={saveSet}
+              >
               <Save />
             </IconButton>
+            </span>
           </Tooltip>
           <Tooltip title={CANCEL}>
             <IconButton
@@ -298,14 +300,16 @@ const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
               onChange={handleNewSetInputChange}
             />
             <Tooltip title={SAVE}>
-              <IconButton
-                sx={{ mt: 2 }}
-                disabled={!isSaveAvailable}
-                color='success'
-                onClick={saveSet}
-              >
+              <span>
+                <IconButton
+                  sx={{ mt: 2 }}
+                  disabled={!isSaveAvailable}
+                  color='success'
+                  onClick={saveSet}
+                >
                 <Save />
               </IconButton>
+              </span>
             </Tooltip>
             <Tooltip title={CANCEL}>
               <IconButton
