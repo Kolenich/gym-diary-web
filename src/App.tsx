@@ -1,14 +1,10 @@
-import type { FC } from 'react';
-
-import { BrowserRouter } from 'react-router-dom';
-
-import { Provider } from 'react-redux';
-
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { ruRU } from '@mui/x-date-pickers/locales';
-
 import { SnackbarProvider } from 'notistack';
+import type { FC } from 'react';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 
 import { RootRouter } from './routers/RootRouter';
 import { store } from './store';

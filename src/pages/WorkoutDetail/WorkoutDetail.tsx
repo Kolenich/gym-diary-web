@@ -1,20 +1,20 @@
-import type { FC } from 'react';
-import { useEffect, useMemo, useState } from 'react';
-
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
-
 import { Cancel, Save, Timeline } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import { TimePicker } from '@mui/x-date-pickers';
-
 import type { Moment } from 'moment';
 import moment from 'moment';
+import type { FC } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import type { IExercise, IWorkout } from 'api/workouts';
 import { useCreateWorkout, useGetWorkout, useUpdateWorkout } from 'api/workouts';
+
 import { EExercisesAction, ExerciseList } from 'components/ExerciseList';
 import { Loading } from 'components/Loading';
+
 import { DATE_DISPLAY_FORMAT, DJANGO_DATE_FORMAT, DJANGO_TIME_FORMAT } from 'constants/datetime';
+
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { selectWorkoutDay, setWorkoutDay } from 'store/week';
 
@@ -35,10 +35,9 @@ const WorkoutModal: FC = () => {
 
   const isEditMode = workoutId !== 'add';
 
-  const {
-    data: workout = DEFAULT_WORKOUT as IWorkout,
-    isLoading: isLoadingWorkout,
-  } = useGetWorkout(+workoutId, { skip: !isEditMode });
+  const { data: workout = DEFAULT_WORKOUT as IWorkout, isLoading: isLoadingWorkout } = useGetWorkout(+workoutId, {
+    skip: !isEditMode,
+  });
   const [createWorkout, { isLoading: isCreatingWorkout }] = useCreateWorkout();
   const [updateWorkout, { isLoading: isUpdatingWorkout }] = useUpdateWorkout();
 
@@ -89,7 +88,6 @@ const WorkoutModal: FC = () => {
           date: workoutDay.format(DJANGO_DATE_FORMAT),
         });
       }
-
     } else {
       updateWorkout(localWorkout);
     }
@@ -102,12 +100,14 @@ const WorkoutModal: FC = () => {
    * @param {moment.Moment | null} date - new value
    * @param {keyof IWorkout} field - field of Workout object
    */
-  const handlePickerChange = (field: keyof IWorkout) => (date: Moment | null): void => {
-    setLocalWorkout((oldLocalWorkout) => ({
-      ...oldLocalWorkout,
-      [field]: date ? moment(date).format(DJANGO_TIME_FORMAT) : null,
-    }));
-  };
+  const handlePickerChange =
+    (field: keyof IWorkout) =>
+    (date: Moment | null): void => {
+      setLocalWorkout(oldLocalWorkout => ({
+        ...oldLocalWorkout,
+        [field]: date ? moment(date).format(DJANGO_TIME_FORMAT) : null,
+      }));
+    };
 
   /**
    * Callback for handling exercise change in child component
@@ -118,21 +118,21 @@ const WorkoutModal: FC = () => {
 
     switch (action) {
       case EExercisesAction.Add:
-        setLocalWorkout((oldLocalWorkout) => ({
+        setLocalWorkout(oldLocalWorkout => ({
           ...oldLocalWorkout,
           exercises: oldLocalWorkout.exercises.concat(exercise),
         }));
         break;
       case EExercisesAction.Delete:
-        setLocalWorkout((oldLocalWorkout) => ({
+        setLocalWorkout(oldLocalWorkout => ({
           ...oldLocalWorkout,
           exercises: oldLocalWorkout.exercises.filter(({ id }) => id !== targetExerciseId),
         }));
         break;
       case EExercisesAction.Update:
-        setLocalWorkout((oldLocalWorkout) => ({
+        setLocalWorkout(oldLocalWorkout => ({
           ...oldLocalWorkout,
-          exercises: oldLocalWorkout.exercises.map((oldExercise) => {
+          exercises: oldLocalWorkout.exercises.map(oldExercise => {
             const { id } = oldExercise;
 
             const isTargetExercise = id === targetExerciseId;
@@ -150,18 +150,12 @@ const WorkoutModal: FC = () => {
     }
   };
 
-
   const { start, end, exercises } = localWorkout;
 
   const isLoading = isLoadingWorkout || isCreatingWorkout || isUpdatingWorkout;
 
   return (
-    <Dialog
-      open
-      onClose={closeModal}
-      fullWidth
-      maxWidth='md'
-    >
+    <Dialog open onClose={closeModal} fullWidth maxWidth='md'>
       <Typography
         component='div'
         sx={{
@@ -177,11 +171,7 @@ const WorkoutModal: FC = () => {
           },
         }}
       >
-        <Typography
-          variant='h5'
-          color='text.secondary'
-          sx={{ mx: 3, my: 2, fontWeight: 'bold', textAlign: 'center' }}
-        >
+        <Typography variant='h5' color='text.secondary' sx={{ mx: 3, my: 2, fontWeight: 'bold', textAlign: 'center' }}>
           {modalTitle}
         </Typography>
         <Typography
@@ -195,23 +185,12 @@ const WorkoutModal: FC = () => {
       <DialogContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography
-              variant='h6'
-              color='text.secondary'
-              sx={{ display: 'flex', alignItems: 'center' }}
-            >
+            <Typography variant='h6' color='text.secondary' sx={{ display: 'flex', alignItems: 'center' }}>
               <Timeline sx={{ mr: 0.5 }} />
               {INTERVAL}
             </Typography>
           </Grid>
-          <Grid
-            item
-            xl={6}
-            lg={6}
-            md={6}
-            sm={6}
-            xs={12}
-          >
+          <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
             <TimePicker
               sx={{ width: '100%' }}
               label={WORKOUT_START}
@@ -222,14 +201,7 @@ const WorkoutModal: FC = () => {
               views={['hours', 'minutes']}
             />
           </Grid>
-          <Grid
-            item
-            xl={6}
-            lg={6}
-            md={6}
-            sm={6}
-            xs={12}
-          >
+          <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
             <TimePicker
               sx={{ width: '100%' }}
               label={WORKOUT_END}
@@ -241,28 +213,15 @@ const WorkoutModal: FC = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <ExerciseList
-              exercises={exercises}
-              onExerciseChange={handleExerciseChange}
-            />
+            <ExerciseList exercises={exercises} onExerciseChange={handleExerciseChange} />
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button
-          variant='contained'
-          color='success'
-          onClick={save}
-          startIcon={<Save />}
-        >
+        <Button variant='contained' color='success' onClick={save} startIcon={<Save />}>
           {SAVE}
         </Button>
-        <Button
-          variant='contained'
-          color='error'
-          onClick={closeModal}
-          startIcon={<Cancel />}
-        >
+        <Button variant='contained' color='error' onClick={closeModal} startIcon={<Cancel />}>
           {CANCEL}
         </Button>
       </DialogActions>

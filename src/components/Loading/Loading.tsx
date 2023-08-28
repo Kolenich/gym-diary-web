@@ -1,6 +1,5 @@
-import type { FC } from 'react';
-
 import { CircularProgress, Typography } from '@mui/material';
+import type { FC } from 'react';
 
 const Loading: FC = () => (
   <Typography

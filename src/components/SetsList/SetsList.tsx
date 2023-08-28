@@ -1,6 +1,3 @@
-import type { ChangeEvent, FC } from 'react';
-import { useState } from 'react';
-
 import { Add, Cancel, Delete, Edit, Save } from '@mui/icons-material';
 import {
   Chip,
@@ -12,13 +9,15 @@ import {
   TextField,
   Tooltip,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from '@mui/material';
-
+import type { ChangeEvent, FC } from 'react';
+import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import type { ISet } from 'api/workouts';
+
+import { useMobile } from 'hooks/use-mobile';
+
 import { isArrayNonEmpty } from 'utils/is-array-non-empty';
 
 import {
@@ -38,8 +37,7 @@ import {
 import type { ISetsProps } from './SetsList.types';
 
 const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMobile();
 
   const [newSets, setNewSets] = useState<ISet[]>([]);
   const [editingSets, setEditingSets] = useState<ISet[]>([]);
@@ -62,42 +60,44 @@ const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
       const handleEditingSetInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = event.target;
 
-        setEditingSets((oldEditingSets) => oldEditingSets.map((oldEditingSet) => {
-          const { id } = oldEditingSet;
+        setEditingSets(oldEditingSets =>
+          oldEditingSets.map(oldEditingSet => {
+            const { id } = oldEditingSet;
 
-          const isTargetSet = id === editedSetId;
+            const isTargetSet = id === editedSetId;
 
-          if (isTargetSet) {
-            return { ...oldEditingSet, [name]: +value };
-          }
+            if (isTargetSet) {
+              return { ...oldEditingSet, [name]: +value };
+            }
 
-          return oldEditingSet;
-        }));
+            return oldEditingSet;
+          }),
+        );
       };
 
       const saveSet = (): void => {
         const isEditedSetNew = newSets.map(({ id }) => id).includes(editedSetId);
 
         if (isEditedSetNew) {
-          setNewSets((oldNewSets) => oldNewSets.map((oldNewSet) => {
-            const { id } = oldNewSet;
+          setNewSets(oldNewSets =>
+            oldNewSets.map(oldNewSet => {
+              const { id } = oldNewSet;
 
-            if (id === editedSet.id) {
-              return { ...oldNewSet, ...editedSet };
-            }
+              if (id === editedSet.id) {
+                return { ...oldNewSet, ...editedSet };
+              }
 
-            return oldNewSet;
-          }));
+              return oldNewSet;
+            }),
+          );
         } else {
           onSetChange(editedSet, ESetsActions.Update);
         }
-        setEditingSets((oldEditingSets) => oldEditingSets.filter(({ id }) => id !== editedSetId));
+        setEditingSets(oldEditingSets => oldEditingSets.filter(({ id }) => id !== editedSetId));
       };
 
       const cancelSetEditing = (): void => {
-        setEditingSets((oldEditingSets) => oldEditingSets.filter(({ id }) => (
-          id !== editedSetId
-        )));
+        setEditingSets(oldEditingSets => oldEditingSets.filter(({ id }) => id !== editedSetId));
       };
 
       const isSaveButtonAvailable = editedSetWeight && editedSetRepeats;
@@ -126,22 +126,13 @@ const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
           />
           <Tooltip title={SAVE}>
             <span>
-              <IconButton
-                sx={{ mt: 2 }}
-                disabled={!isSaveButtonAvailable}
-                color='success'
-                onClick={saveSet}
-              >
-              <Save />
-            </IconButton>
+              <IconButton sx={{ mt: 2 }} disabled={!isSaveButtonAvailable} color='success' onClick={saveSet}>
+                <Save />
+              </IconButton>
             </span>
           </Tooltip>
           <Tooltip title={CANCEL}>
-            <IconButton
-              sx={{ mt: 2 }}
-              color='error'
-              onClick={cancelSetEditing}
-            >
+            <IconButton sx={{ mt: 2 }} color='error' onClick={cancelSetEditing}>
               <Cancel />
             </IconButton>
           </Tooltip>
@@ -150,14 +141,14 @@ const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
     }
 
     const addSetToEdited = (): void => {
-      setEditingSets((oldEditingSets) => oldEditingSets.concat(set));
+      setEditingSets(oldEditingSets => oldEditingSets.concat(set));
     };
 
     const deleteSet = (): void => {
       const isTargetSetNew = newSets.map(({ id }) => id).includes(targetSetId);
 
       if (isTargetSetNew) {
-        setNewSets((oldNewSets) => oldNewSets.filter(({ id }) => id !== targetSetId));
+        setNewSets(oldNewSets => oldNewSets.filter(({ id }) => id !== targetSetId));
       } else {
         onSetChange(set, ESetsActions.Delete);
       }
@@ -168,30 +159,16 @@ const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
 
     return (
       <ListItemText>
-        <Typography
-          variant='body2'
-          color='text.secondary'
-          component='div'
-        >
+        <Typography variant='body2' color='text.secondary' component='div'>
           {setText}
-          {isNewSet && (
-            <Chip label={NEW} color='success' size='small' sx={{ ml: 2 }} />
-          )}
+          {isNewSet && <Chip label={NEW} color='success' size='small' sx={{ ml: 2 }} />}
           <Tooltip title={EDIT}>
-            <IconButton
-              color='info'
-              sx={{ py: 0.5, ml: 1 }}
-              onClick={addSetToEdited}
-            >
+            <IconButton color='info' sx={{ py: 0.5, ml: 1 }} onClick={addSetToEdited}>
               <Edit />
             </IconButton>
           </Tooltip>
           <Tooltip title={DELETE}>
-            <IconButton
-              color='error'
-              sx={{ py: 0.5 }}
-              onClick={deleteSet}
-            >
+            <IconButton color='error' sx={{ py: 0.5 }} onClick={deleteSet}>
               <Delete />
             </IconButton>
           </Tooltip>
@@ -201,11 +178,13 @@ const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
   };
 
   const addSet = (): void => {
-    setNewSets((oldSets) => oldSets.concat({
-      id: uuid(),
-      weight: 0,
-      repeats: 0,
-    }));
+    setNewSets(oldSets =>
+      oldSets.concat({
+        id: uuid(),
+        weight: 0,
+        repeats: 0,
+      }),
+    );
 
     if (isMobile) {
       window.scrollTo(0, document.body.scrollHeight);
@@ -218,28 +197,23 @@ const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
     <List component='div' disablePadding>
       <ListItem>
         <ListItemText sx={{ pl: isMobile ? 0 : 4 }}>
-          <Typography
-            variant='body1'
-            color='text.secondary'
-            sx={{ display: 'flex', alignItems: 'center' }}
-          >
+          <Typography variant='body1' color='text.secondary' sx={{ display: 'flex', alignItems: 'center' }}>
             {SETS}
             <Tooltip title={ADD_SET}>
-              <IconButton
-                color='primary'
-                onClick={addSet}
-              >
+              <IconButton color='primary' onClick={addSet}>
                 <Add />
               </IconButton>
             </Tooltip>
           </Typography>
         </ListItemText>
       </ListItem>
-      {hasSets ? sets.map((set) => (
-        <ListItem key={set.id} sx={{ pl: isMobile ? 2 : 8 }}>
-          {renderSet(set)}
-        </ListItem>
-      )) : (
+      {hasSets ? (
+        sets.map(set => (
+          <ListItem key={set.id} sx={{ pl: isMobile ? 2 : 8 }}>
+            {renderSet(set)}
+          </ListItem>
+        ))
+      ) : (
         <ListItem>
           <ListItemText sx={{ pl: isMobile ? 0 : 8 }}>
             <Typography variant='body2' color='text.secondary'>
@@ -248,29 +222,31 @@ const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
           </ListItemText>
         </ListItem>
       )}
-      {newSets.map((newSet) => {
+      {newSets.map(newSet => {
         const handleNewSetInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
           const { name, value } = event.target;
 
-          setNewSets((oldNewSets) => oldNewSets.map((oldNewSet) => {
-            const { id } = oldNewSet;
-            const isTargetSet = id === newSet.id;
+          setNewSets(oldNewSets =>
+            oldNewSets.map(oldNewSet => {
+              const { id } = oldNewSet;
+              const isTargetSet = id === newSet.id;
 
-            if (isTargetSet) {
-              return { ...oldNewSet, [name]: +value };
-            }
+              if (isTargetSet) {
+                return { ...oldNewSet, [name]: +value };
+              }
 
-            return oldNewSet;
-          }));
+              return oldNewSet;
+            }),
+          );
         };
 
         const saveSet = (): void => {
           onSetChange(newSet, ESetsActions.Add);
-          setNewSets((oldNewSets) => oldNewSets.filter(({ id }) => id !== newSet.id));
+          setNewSets(oldNewSets => oldNewSets.filter(({ id }) => id !== newSet.id));
         };
 
         const deleteNewSet = (): void => {
-          setNewSets((oldNewSets) => oldNewSets.filter(({ id }) => id !== newSet.id));
+          setNewSets(oldNewSets => oldNewSets.filter(({ id }) => id !== newSet.id));
         };
 
         const { weight, repeats, id } = newSet;
@@ -301,22 +277,13 @@ const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
             />
             <Tooltip title={SAVE}>
               <span>
-                <IconButton
-                  sx={{ mt: 2 }}
-                  disabled={!isSaveAvailable}
-                  color='success'
-                  onClick={saveSet}
-                >
-                <Save />
-              </IconButton>
+                <IconButton sx={{ mt: 2 }} disabled={!isSaveAvailable} color='success' onClick={saveSet}>
+                  <Save />
+                </IconButton>
               </span>
             </Tooltip>
             <Tooltip title={CANCEL}>
-              <IconButton
-                sx={{ mt: 2 }}
-                color='error'
-                onClick={deleteNewSet}
-              >
+              <IconButton sx={{ mt: 2 }} color='error' onClick={deleteNewSet}>
                 <Cancel />
               </IconButton>
             </Tooltip>

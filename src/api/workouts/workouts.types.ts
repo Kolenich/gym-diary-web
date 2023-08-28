@@ -22,4 +22,4 @@ export interface ISet {
 
 export type TGetWorkoutsParams = {
   [Key in keyof Pick<IWorkout, 'date'> as `${Key}__${'gte' | 'lte'}`]: string;
-}
+};

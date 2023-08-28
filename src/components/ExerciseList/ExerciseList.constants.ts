@@ -11,5 +11,5 @@ export const NO_EXERCISES = 'Упражнения не указаны';
 export enum EExercisesAction {
   Add,
   Update,
-  Delete
+  Delete,
 }

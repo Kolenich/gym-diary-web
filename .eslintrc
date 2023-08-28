@@ -1,9 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint",
-    "prettier"
-  ],
+  "plugins": ["@typescript-eslint", "prettier"],
   "parserOptions": {
     // Allows for the parsing of modern ECMAScript features
     "ecmaVersion": 2021,
@@ -22,13 +19,8 @@
     },
     "import/resolver": {
       "node": {
-        "extensions": [
-          ".ts",
-          ".tsx"
-        ],
-        "paths": [
-          "./src"
-        ]
+        "extensions": [".ts", ".tsx"],
+        "paths": ["./src"]
       }
     }
   },
@@ -41,9 +33,7 @@
     "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
-  "ignorePatterns": [
-    "craco.config.js"
-  ],
+  "ignorePatterns": ["craco.config.js"],
   "rules": {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
@@ -52,66 +42,37 @@
       "error",
       {
         "selector": "variable",
-        "types": [
-          "boolean"
-        ],
-        "format": [
-          "PascalCase"
-        ],
-        "prefix": [
-          "is",
-          "has"
-        ]
+        "types": ["boolean"],
+        "format": ["PascalCase"],
+        "prefix": ["is", "has"]
       },
       {
         "selector": "variable",
-        "format": [
-          "strictCamelCase",
-          "StrictPascalCase",
-          "UPPER_CASE"
-        ]
+        "format": ["strictCamelCase", "StrictPascalCase", "UPPER_CASE"]
       },
       {
         "selector": "enum",
-        "format": [
-          "StrictPascalCase"
-        ],
-        "prefix": [
-          "E"
-        ]
+        "format": ["StrictPascalCase"],
+        "prefix": ["E"]
       },
       {
         "selector": "enumMember",
-        "format": [
-          "StrictPascalCase"
-        ]
+        "format": ["StrictPascalCase"]
       },
       {
         "selector": "interface",
-        "format": [
-          "StrictPascalCase"
-        ],
-        "prefix": [
-          "I"
-        ]
+        "format": ["StrictPascalCase"],
+        "prefix": ["I"]
       },
       {
         "selector": "typeAlias",
-        "format": [
-          "StrictPascalCase"
-        ],
-        "prefix": [
-          "T"
-        ]
+        "format": ["StrictPascalCase"],
+        "prefix": ["T"]
       },
       {
         "selector": "typeParameter",
-        "format": [
-          "StrictPascalCase"
-        ],
-        "prefix": [
-          "G"
-        ]
+        "format": ["StrictPascalCase"],
+        "prefix": ["G"]
       }
     ],
     "react/jsx-uses-react": "off",
@@ -119,10 +80,7 @@
     "react/prop-types": 0,
     "no-debugger": "off",
     "@typescript-eslint/explicit-function-return-type": "error",
-    "arrow-body-style": [
-      2,
-      "as-needed"
-    ],
+    "arrow-body-style": [2, "as-needed"],
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/triple-slash-reference": 0,
@@ -140,10 +98,7 @@
         "array": true
       }
     ],
-    "semi": [
-      "error",
-      "always"
-    ],
+    "semi": ["error", "always"],
     "import/prefer-default-export": "off",
     "react/sort-comp": [
       "error",
@@ -196,10 +151,7 @@
   },
   "overrides": [
     {
-      "files": [
-        "src/**/__mocks__/**/*",
-        "src/**/*.test.*"
-      ],
+      "files": ["src/**/__mocks__/**/*", "src/**/*.test.*"],
       "env": {
         "jest": true
       },

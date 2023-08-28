@@ -11,36 +11,16 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "api/*": [
-        "src/api/*"
-      ],
-      "components/*": [
-        "src/components/*"
-      ],
-      "hooks/*": [
-        "src/hooks/*"
-      ],
-      "pages/*": [
-        "src/pages/*"
-      ],
-      "store/*": [
-        "src/store/*"
-      ],
-      "utils/*": [
-        "src/utils/*"
-      ],
-      "constants/*": [
-        "src/constants/*"
-      ],
-      "routers/*": [
-        "src/routers/*"
-      ]
+      "api/*": ["src/api/*"],
+      "components/*": ["src/components/*"],
+      "constants/*": ["src/constants/*"],
+      "hooks/*": ["src/hooks/*"],
+      "pages/*": ["src/pages/*"],
+      "routers/*": ["src/routers/*"],
+      "store/*": ["src/store/*"],
+      "utils/*": ["src/utils/*"]
     },
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
@@ -50,7 +30,5 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

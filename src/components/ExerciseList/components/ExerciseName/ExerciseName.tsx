@@ -1,12 +1,12 @@
+import { Tooltip } from '@mui/material';
 import type { FC } from 'react';
 
-import { Tooltip, useMediaQuery, useTheme } from '@mui/material';
+import { useMobile } from 'hooks/use-mobile';
 
 import type { IExerciseNameProps } from './ExerciseName.types';
 
 const ExerciseName: FC<IExerciseNameProps> = ({ name }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMobile();
 
   const isMobileRenderNeeded = isMobile && name.length > 8;
 

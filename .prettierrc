@@ -11,20 +11,18 @@
   "trailingComma": "all",
   "endOfLine": "auto",
   "importOrder": [
-    "^api(.*)$",
-    "^components(.*)$",
-    "^constants(.*)$",
-    "^pages(.*)$",
-    "^routers(.*)$",
-    "^store(.*)$",
-    "^utils(.*)$",
+    "^api/(.*)$",
+    "^components/(.*)$",
+    "^constants/(.*)$",
+    "^hooks/(.*)$",
+    "^pages/(.*)$",
+    "^routers/(.*)$",
+    "^store/(.*)$",
+    "^utils/(.*)$",
     "^[../]",
     "^[./]"
   ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
-  "order": "alphabetical",
-  "plugins": [
-    "@trivago/prettier-plugin-sort-imports"
-  ]
+  "plugins": ["@trivago/prettier-plugin-sort-imports"]
 }

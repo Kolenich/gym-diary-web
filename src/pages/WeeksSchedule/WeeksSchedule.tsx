@@ -1,17 +1,18 @@
-import type { FC } from 'react';
-import { useEffect } from 'react';
-
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import type { Theme } from '@mui/material';
 import { AppBar, Fab, Grid, Toolbar, Tooltip, Typography, Zoom } from '@mui/material';
-
 import { useSnackbar } from 'notistack';
+import type { FC } from 'react';
+import { useEffect } from 'react';
 
 import { useGetWorkouts } from 'api/workouts';
+
 import { DayCard } from 'components/DayCard';
 import { Loading } from 'components/Loading';
+
 import { DATE_DISPLAY_FORMAT, TODAY_DATE } from 'constants/datetime';
 import { TODAY } from 'constants/texts';
+
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import {
   goToCurrentWeek,
@@ -20,6 +21,7 @@ import {
   selectCurrentWeek,
   selectWeekWorkoutsParams,
 } from 'store/week';
+
 import { getErrorSentence } from 'utils/get-error-sentence';
 
 import { NEXT_WEEK, PREVIOUS_WEEK, PUMPER_DIARY, WORKOUT_DAYS } from './WeekSchedule.constants';
@@ -55,11 +57,9 @@ const WeeksSchedule: FC = () => {
     dispatch(goToNextWeek());
   };
 
-  const currentYear = (currentWeek.filter((day) => day.day() === TODAY_DATE.day())[0] || TODAY_DATE).year();
+  const currentYear = (currentWeek.filter(day => day.day() === TODAY_DATE.day())[0] || TODAY_DATE).year();
   const displayedDays = currentWeek.slice(0, WORKOUT_DAYS);
-  const isToday = !currentWeek.some(
-    (day) => day.format(DATE_DISPLAY_FORMAT) === TODAY_DATE.format(DATE_DISPLAY_FORMAT),
-  );
+  const isToday = !currentWeek.some(day => day.format(DATE_DISPLAY_FORMAT) === TODAY_DATE.format(DATE_DISPLAY_FORMAT));
 
   return (
     <>
@@ -74,7 +74,7 @@ const WeeksSchedule: FC = () => {
         </Toolbar>
       </AppBar>
       <Grid container spacing={2} sx={{ p: 2 }}>
-        {displayedDays.map((day) => (
+        {displayedDays.map(day => (
           <Grid key={day.format('dddd')} item xs={12} sm={6} lg={4} xl={2}>
             <DayCard day={day} />
           </Grid>

@@ -26,7 +26,6 @@ export const getCurrentWeek = (currentWeek: string[], type: EWeekTypes): string[
       break;
   }
 
-
   for (let i = 1; i <= 7; i += 1) {
     const dayOfCurrWeek = today.clone().set('day', i);
 

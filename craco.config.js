@@ -7,6 +7,7 @@ module.exports = {
       api: path.resolve(__dirname, './src/api'),
       components: path.resolve(__dirname, './src/components'),
       constants: path.resolve(__dirname, './src/constants'),
+      hooks: path.resolve(__dirname, './src/hooks'),
       pages: path.resolve(__dirname, './src/pages'),
       routers: path.resolve(__dirname, './src/routers'),
       store: path.resolve(__dirname, './src/store'),

@@ -1,6 +1,3 @@
-import type { ChangeEvent, FC, Key, KeyboardEvent } from 'react';
-import { Fragment, useState } from 'react';
-
 import { Add, Cancel, Delete, DirectionsRun, Edit, Save } from '@mui/icons-material';
 import {
   Chip,
@@ -14,12 +11,15 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-
+import type { ChangeEvent, FC, Key, KeyboardEvent } from 'react';
+import { Fragment, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import type { IExercise, ISet } from 'api/workouts';
+
 import { ExerciseName } from 'components/ExerciseList/components/ExerciseName';
 import { ESetsActions, SetsList } from 'components/SetsList';
+
 import { isArrayNonEmpty } from 'utils/is-array-non-empty';
 
 import {
@@ -51,8 +51,8 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
     const isNewExercise = newExercises.map(({ id }) => id).includes(exerciseObjId);
 
     if (isNewExercise) {
-      setNewExercises((oldExercises) =>
-        oldExercises.map((oldExercise) => {
+      setNewExercises(oldExercises =>
+        oldExercises.map(oldExercise => {
           const { id } = oldExercise;
 
           const isTargetExercise = id === exerciseObjId;
@@ -67,7 +67,7 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
     } else {
       onExerciseChange(exerciseObj, EExercisesAction.Update);
     }
-    setEditingExercises((oldExercises) => oldExercises.filter(({ id }) => id !== exerciseObjId));
+    setEditingExercises(oldExercises => oldExercises.filter(({ id }) => id !== exerciseObjId));
   };
 
   /**
@@ -102,8 +102,8 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
       const handleExerciseInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
         const { value, name } = event.target;
 
-        setEditingExercises((oldEditingExercises) =>
-          oldEditingExercises.map((oldEditingExercise) => {
+        setEditingExercises(oldEditingExercises =>
+          oldEditingExercises.map(oldEditingExercise => {
             const { id } = oldEditingExercise;
             const isTargetExercise = id === editedExerciseId;
 
@@ -121,7 +121,7 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
       };
 
       const cancelExerciseEdit = (): void => {
-        setEditingExercises((oldExercises) => oldExercises.filter(({ id }) => id !== editedExerciseId));
+        setEditingExercises(oldExercises => oldExercises.filter(({ id }) => id !== editedExerciseId));
       };
 
       const isSaveAvailable = !!editedExerciseName;
@@ -154,11 +154,11 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
     }
 
     const toggleExerciseExpand = (): void => {
-      setExpandedExercises((oldExpanded) => {
+      setExpandedExercises(oldExpanded => {
         const isExpanded = oldExpanded.includes(targetExerciseId);
 
         if (isExpanded) {
-          return oldExpanded.filter((x) => x !== targetExerciseId);
+          return oldExpanded.filter(x => x !== targetExerciseId);
         }
 
         return oldExpanded.concat(targetExerciseId);
@@ -166,13 +166,13 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
     };
 
     const editExercise = (): void => {
-      setEditingExercises((oldExercises) => oldExercises.concat(exercise));
-      setExpandedExercises((oldExercises) => oldExercises.filter((exerciseId) => exerciseId !== targetExerciseId));
+      setEditingExercises(oldExercises => oldExercises.concat(exercise));
+      setExpandedExercises(oldExercises => oldExercises.filter(exerciseId => exerciseId !== targetExerciseId));
     };
 
     const deleteExercise = (): void => {
       onExerciseChange(exercise, EExercisesAction.Delete);
-      setExpandedExercises((oldExercises) => oldExercises.filter((exerciseId) => exerciseId !== targetExerciseId));
+      setExpandedExercises(oldExercises => oldExercises.filter(exerciseId => exerciseId !== targetExerciseId));
     };
 
     const isNewExercise = typeof targetExerciseId === 'string';
@@ -202,7 +202,7 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
   };
 
   const addNewExercise = (): void => {
-    setNewExercises((oldExercises) =>
+    setNewExercises(oldExercises =>
       oldExercises.concat({
         id: uuid(),
         name: '',
@@ -226,7 +226,7 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
       </Typography>
       <List>
         {hasExercises ? (
-          exercises.map((exercise) => {
+          exercises.map(exercise => {
             const { id, sets } = exercise;
 
             const isExerciseExpanded = expandedExercises.includes(id);
@@ -242,7 +242,7 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
                   break;
                 case ESetsActions.Update:
                   updateSets = (sets: ISet[]): ISet[] =>
-                    sets.map((prevSet) => {
+                    sets.map(prevSet => {
                       const { id } = prevSet;
 
                       const isTargetSet = id === targetSetId;
@@ -286,7 +286,7 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
             </Typography>
           </ListItem>
         )}
-        {newExercises.map((newExercise) => {
+        {newExercises.map(newExercise => {
           const { id: newExerciseId, name } = newExercise;
 
           const handleEnterPress = (event: KeyboardEvent<HTMLInputElement>): void => {
@@ -298,8 +298,8 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
           const handleNameChange = (event: ChangeEvent<HTMLInputElement>): void => {
             const { value } = event.target;
 
-            setNewExercises((oldExercises) =>
-              oldExercises.map((oldExercise) => {
+            setNewExercises(oldExercises =>
+              oldExercises.map(oldExercise => {
                 const { id } = oldExercise;
 
                 const isTargetExercise = id === newExerciseId;
@@ -318,7 +318,7 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
           };
 
           const cancelExerciseCreation = (): void => {
-            setNewExercises((oldExercises) => oldExercises.filter(({ id }) => id !== newExerciseId));
+            setNewExercises(oldExercises => oldExercises.filter(({ id }) => id !== newExerciseId));
           };
 
           const isSaveAvailable = !!name;

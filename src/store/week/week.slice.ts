@@ -1,7 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-
 import { EWeekTypes } from './week.constants';
 import type { IWeekState } from './week.types';
 import { getCurrentWeek } from './week.utils';
