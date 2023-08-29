@@ -11,7 +11,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import type { ChangeEvent, FC, Key, KeyboardEvent } from 'react';
+import type { ChangeEvent, FC, KeyboardEvent } from 'react';
 import { Fragment, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
@@ -37,7 +37,7 @@ import type { IExerciseListProps } from './ExerciseList.types';
 import { ExerciseName } from './components/ExerciseName';
 
 const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) => {
-  const [expandedExercises, setExpandedExercises] = useState<Key[]>([]);
+  const [expandedExercises, setExpandedExercises] = useState<IExercise['id'][]>([]);
   const [editingExercises, setEditingExercises] = useState<IExercise[]>([]);
   const [newExercises, setNewExercises] = useState<IExercise[]>([]);
 
