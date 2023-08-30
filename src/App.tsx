@@ -1,3 +1,4 @@
+import { GlobalStyles } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { ruRU } from '@mui/x-date-pickers/locales';
@@ -11,6 +12,7 @@ import { store } from './store';
 
 const App: FC = () => (
   <Provider store={store}>
+    <GlobalStyles styles={{ body: { margin: 0 } }} />
     <LocalizationProvider
       dateAdapter={AdapterMoment}
       localeText={ruRU.components.MuiLocalizationProvider.defaultProps.localeText}
