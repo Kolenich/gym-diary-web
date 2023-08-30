@@ -35,13 +35,13 @@ const WorkoutModal: FC = () => {
 
   const isEditMode = workoutId !== 'add';
 
-  const { data: workout = DEFAULT_WORKOUT as IWorkout, isLoading: isLoadingWorkout } = useGetWorkout(+workoutId, {
+  const { data: workout, isLoading: isLoadingWorkout } = useGetWorkout(+workoutId, {
     skip: !isEditMode,
   });
   const [createWorkout, { isLoading: isCreatingWorkout }] = useCreateWorkout();
   const [updateWorkout, { isLoading: isUpdatingWorkout }] = useUpdateWorkout();
 
-  const [localWorkout, setLocalWorkout] = useState(workout);
+  const [localWorkout, setLocalWorkout] = useState<IWorkout>(DEFAULT_WORKOUT);
 
   const dispatch = useAppDispatch();
 
@@ -50,7 +50,11 @@ const WorkoutModal: FC = () => {
   const hasWorkoutDay = !!workoutDay;
 
   useEffect(() => {
-    setLocalWorkout(workout);
+    const hasServerWorkout = !!workout;
+
+    if (hasServerWorkout) {
+      setLocalWorkout(workout);
+    }
   }, [workout]);
 
   const isRenderAvailable = hasWorkoutDay || isEditMode;
