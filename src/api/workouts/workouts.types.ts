@@ -20,6 +20,8 @@ export interface ISet {
   repeats: number;
 }
 
-export type TGetWorkoutsParams<GWorkoutKey extends keyof IWorkout> = {
-  [Key in GWorkoutKey as `${Key}__${'gte' | 'lte'}`]: string;
+export type TFilterLookups = 'gte' | 'lte' | 'lt' | 'gt';
+
+export type TGetWorkoutsParams<GWorkoutKey extends keyof IWorkout, GFieldLookups extends TFilterLookups> = {
+  [Key in GWorkoutKey as `${Key}__${GFieldLookups}`]: string;
 };
