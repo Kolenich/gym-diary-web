@@ -20,6 +20,6 @@ export interface ISet {
   repeats: number;
 }
 
-export type TGetWorkoutsParams = {
-  [Key in keyof Pick<IWorkout, 'date'> as `${Key}__${'gte' | 'lte'}`]: string;
+export type TGetWorkoutsParams<GWorkoutKey extends keyof IWorkout> = {
+  [Key in GWorkoutKey as `${Key}__${'gte' | 'lte'}`]: string;
 };

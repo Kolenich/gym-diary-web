@@ -32,5 +32,5 @@ export const selectWeekWorkoutsParams = createSelector(
     ({
       date__gte: currentWeek[0].format(DJANGO_DATE_FORMAT),
       date__lte: [...currentWeek].reverse()[0].format(DJANGO_DATE_FORMAT),
-    }) as TGetWorkoutsParams,
+    }) as TGetWorkoutsParams<'date'>,
 );

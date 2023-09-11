@@ -14,7 +14,7 @@ const workoutsApiSlice = createApi({
   }),
   tagTypes: [EWorkoutsApiTags.Workouts, EWorkoutsApiTags.Exercises, EWorkoutsApiTags.Sets],
   endpoints: builder => ({
-    getWorkouts: builder.query<IWorkout[], TGetWorkoutsParams>({
+    getWorkouts: builder.query<IWorkout[], TGetWorkoutsParams<'date'>>({
       query: params => ({
         url: 'workouts/',
         params,
