@@ -2,13 +2,14 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 import { EWeekTypes, INITIAL_STATE } from './week.constants';
+import type { IWeekState } from './week.types';
 import { getCurrentWeek } from './week.utils';
 
 const weekSlice = createSlice({
   name: 'week',
   initialState: INITIAL_STATE,
   reducers: {
-    setWorkoutDay(state, action: PayloadAction<string | null>) {
+    setWorkoutDay(state, action: PayloadAction<IWeekState['workoutDay']>) {
       state.workoutDay = action.payload;
     },
     goToPreviousWeek(state) {
@@ -25,4 +26,4 @@ const weekSlice = createSlice({
 
 export const { setWorkoutDay, goToPreviousWeek, goToCurrentWeek, goToNextWeek } = weekSlice.actions;
 
-export default weekSlice.reducer;
+export default weekSlice;

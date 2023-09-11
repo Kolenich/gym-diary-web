@@ -8,7 +8,7 @@ import { weekSlice } from './week';
 const store = configureStore({
   reducer: {
     [workoutsApiSlice.reducerPath]: workoutsApiSlice.reducer,
-    week: weekSlice,
+    [weekSlice.name]: weekSlice.reducer,
   },
   middleware: getDefaultMiddleware => [...getDefaultMiddleware(), workoutsApiSlice.middleware],
 });
