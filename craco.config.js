@@ -13,16 +13,14 @@ module.exports = {
       store: path.resolve(__dirname, './src/store'),
       utils: path.resolve(__dirname, './src/utils'),
     },
-    plugins: {
-      add: [
-        new CircularDependencyPlugin({
-          exclude: /a\.js|node_modules/,
-          include: /src/,
-          failOnError: true,
-          allowAsyncCycles: false,
-          cwd: process.cwd(),
-        }),
-      ],
-    },
+    plugins: [
+      new CircularDependencyPlugin({
+        exclude: /a\.js|node_modules/,
+        include: /src/,
+        failOnError: true,
+        allowAsyncCycles: false,
+        cwd: process.cwd(),
+      }),
+    ],
   },
 };

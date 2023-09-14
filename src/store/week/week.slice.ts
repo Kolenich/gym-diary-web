@@ -1,13 +1,16 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import { EWeekTypes, INITIAL_STATE } from './week.constants';
+import { EWeekTypes } from './week.constants';
 import type { IWeekState } from './week.types';
 import { getCurrentWeek } from './week.utils';
 
 const weekSlice = createSlice({
   name: 'week',
-  initialState: INITIAL_STATE,
+  initialState: {
+    currentWeek: getCurrentWeek([], EWeekTypes.Current),
+    workoutDay: null,
+  } as IWeekState,
   reducers: {
     setWorkoutDay(state, action: PayloadAction<IWeekState['workoutDay']>) {
       state.workoutDay = action.payload;
