@@ -16,7 +16,7 @@ const workoutsApiSlice = createApi({
   endpoints: builder => ({
     getWorkouts: builder.query<IWorkout[], TGetWorkoutsParams<'date', 'gte' | 'lte'>>({
       query: params => ({
-        url: 'workouts/',
+        url: 'workouts',
         params,
       }),
       providesTags: (result = []) => [
@@ -25,12 +25,12 @@ const workoutsApiSlice = createApi({
       ],
     }),
     getWorkout: builder.query<IWorkout, IWorkout['id']>({
-      query: workoutId => `workouts/${workoutId}/`,
+      query: workoutId => `workouts/${workoutId}`,
       providesTags: (result, error, arg) => [{ type: EWorkoutsApiTags.Workouts, id: arg }],
     }),
     createWorkout: builder.mutation<IWorkout, IWorkout>({
       query: workout => ({
-        url: 'workouts/',
+        url: 'workouts',
         method: EApiMethods.Post,
         body: workout,
       }),
@@ -38,7 +38,7 @@ const workoutsApiSlice = createApi({
     }),
     updateWorkout: builder.mutation<IWorkout, Partial<IWorkout> & Pick<IWorkout, 'id'>>({
       query: workout => ({
-        url: `workouts/${workout.id}/`,
+        url: `workouts/${workout.id}`,
         method: EApiMethods.Put,
         body: workout,
       }),
@@ -46,7 +46,7 @@ const workoutsApiSlice = createApi({
     }),
     deleteWorkout: builder.mutation<void, IWorkout['id']>({
       query: workoutId => ({
-        url: `workouts/${workoutId}/`,
+        url: `workouts/${workoutId}`,
         method: EApiMethods.Delete,
       }),
       invalidatesTags: (result, error, arg) => [{ type: EWorkoutsApiTags.Workouts, id: arg }],
