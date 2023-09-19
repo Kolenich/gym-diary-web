@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -22,6 +22,9 @@
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
+    "commit:patch": "npm version patch --no-git-tag-version --force && git add --all",
+    "commit:minor": "npm version minor --no-git-tag-version --force && git add --all",
+    "commit:major": "npm version major --no-git-tag-version --force && git add --all",
     "prepare": "husky install"
   },
   "lint-staged": {
