@@ -7,7 +7,9 @@ const { commonPlugins } = require('./helpers');
 
 module.exports = merge(commonConfig, {
   mode: 'production',
-  devtool: false,
+  performance: {
+    hints: false,
+  },
   output: {
     publicPath: 'auto',
     path: path.resolve(__dirname, '..', 'build'),

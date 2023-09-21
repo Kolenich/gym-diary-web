@@ -1,4 +1,5 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const { folders } = require('./helpers');
 
@@ -31,7 +32,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: 'css-loader',
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
         test: /\.html$/,

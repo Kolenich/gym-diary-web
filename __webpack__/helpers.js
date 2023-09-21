@@ -1,12 +1,14 @@
 const path = require('path');
 const { ModuleFederationPlugin } = require('webpack').container;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const { dependencies: deps } = require('../package.json');
 
 module.exports = {
   folders: ['api', 'components', 'constants', 'hooks', 'pages', 'routers', 'store', 'utils'],
   commonPlugins: [
+    new MiniCssExtractPlugin(),
     new ModuleFederationPlugin({
       name: 'gym_diary',
       library: { type: 'var', name: 'gym_diary' },
