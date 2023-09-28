@@ -15,7 +15,7 @@ module.exports = merge(commonConfig, {
     assetModuleFilename: 'assets/[hash][ext][query]',
     clean: true,
     filename: '[name].js',
-    publicPath: '/',
+    publicPath: 'auto',
   },
   devtool: 'inline-source-map',
   devServer: {

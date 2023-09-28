@@ -11,11 +11,13 @@ module.exports = {
     new MiniCssExtractPlugin(),
     new ModuleFederationPlugin({
       name: 'gym_diary',
-      library: { type: 'var', name: 'gym_diary' },
+      filename: 'remoteEntry.js',
       exposes: {
         './WorkoutsSchedule': path.resolve(__dirname, '..', 'src', 'App'),
       },
-      filename: 'remoteEntry.js',
+      remotes: {
+        remote_app: 'remote_app@http://localhost:4000/remoteEntry.js',
+      },
       shared: {
         ...deps,
         react: { singleton: true, requiredVersion: deps.react },
