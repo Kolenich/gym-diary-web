@@ -2,8 +2,6 @@ const { merge } = require('webpack-merge');
 const path = require('path');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 
-const { dependencies: deps } = require('../package.json');
-
 const commonConfig = require('./common.config');
 const { commonPlugins } = require('./helpers');
 
