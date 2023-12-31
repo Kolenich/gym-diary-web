@@ -19,14 +19,17 @@ const workoutsApiSlice = createApi({
         url: 'workouts',
         params,
       }),
-      providesTags: (result = []) => [
-        { type: EWorkoutsApiTags.Workouts, id: LIST_TAG_ID },
-        ...result.map(({ id }) => ({ type: EWorkoutsApiTags.Workouts, id })),
-      ],
+      providesTags: result =>
+        result
+          ? [
+              { type: EWorkoutsApiTags.Workouts, id: LIST_TAG_ID },
+              ...result.map(({ id }) => ({ type: EWorkoutsApiTags.Workouts, id })),
+            ]
+          : [],
     }),
     getWorkout: builder.query<IWorkout, IWorkout['id']>({
       query: workoutId => `workouts/${workoutId}`,
-      providesTags: (result, error, arg) => [{ type: EWorkoutsApiTags.Workouts, id: arg }],
+      providesTags: result => (result ? [{ type: EWorkoutsApiTags.Workouts, id: result.id }] : []),
     }),
     createWorkout: builder.mutation<IWorkout, IWorkout>({
       query: workout => ({
@@ -42,14 +45,27 @@ const workoutsApiSlice = createApi({
         method: EApiMethods.Put,
         body: workout,
       }),
-      invalidatesTags: (result, error, arg) => [{ type: EWorkoutsApiTags.Workouts, id: arg.id }],
+      invalidatesTags: result =>
+        result
+          ? [
+              {
+                type: EWorkoutsApiTags.Workouts,
+                id: result.id,
+              },
+            ]
+          : [],
     }),
     deleteWorkout: builder.mutation<void, IWorkout['id']>({
       query: workoutId => ({
         url: `workouts/${workoutId}`,
         method: EApiMethods.Delete,
       }),
-      invalidatesTags: (result, error, arg) => [{ type: EWorkoutsApiTags.Workouts, id: arg }],
+      invalidatesTags: (_result, _error, arg) => [
+        {
+          type: EWorkoutsApiTags.Workouts,
+          id: arg,
+        },
+      ],
     }),
   }),
 });
