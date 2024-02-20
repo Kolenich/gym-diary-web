@@ -24,7 +24,7 @@ module.exports = merge(commonConfig, {
       directory: path.join(__dirname, '..', 'build', 'static'),
     },
     proxy: {
-      '/api/*': {
+      '/api': {
         target: 'http://localhost:8000',
         pathRewrite: {
           '^/api': '',
