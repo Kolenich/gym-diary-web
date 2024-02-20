@@ -10,7 +10,7 @@ const store = configureStore({
     [workoutsApiSlice.reducerPath]: workoutsApiSlice.reducer,
     [weekSlice.name]: weekSlice.reducer,
   },
-  middleware: getDefaultMiddleware => [...getDefaultMiddleware(), workoutsApiSlice.middleware],
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(workoutsApiSlice.middleware),
 });
 
 setupListeners(store.dispatch);
