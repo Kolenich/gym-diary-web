@@ -22,8 +22,18 @@ module.exports = {
         use: ['babel-loader', 'ts-loader'],
       },
       {
-        test: /\.(jpg|jpeg|png|gif|mp3|svg)$/,
-        use: 'file-loader',
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext][query]',
+        },
+      },
+      {
+        test: /\.(svg|webp|jpg|jpeg|png|gif|mp3)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'static/assets/[hash][ext][query]',
+        },
       },
       {
         test: /\.css$/,

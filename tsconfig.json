@@ -3,7 +3,7 @@
     "target": "ES2019",
     "module": "esnext",
     "declaration": true,
-    "outDir": "./build",
+    "outDir": "./dist",
     "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,

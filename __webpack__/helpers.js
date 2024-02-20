@@ -5,10 +5,15 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const { dependencies: deps } = require('../package.json');
 
+const CONTENT_HASH = '.[contenthash:8]';
+
 module.exports = {
   folders: ['api', 'components', 'constants', 'hooks', 'pages', 'routers', 'store', 'utils'],
   commonPlugins: [
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: `static/css/[name]${CONTENT_HASH}.css`,
+      chunkFilename: `static/css/[name]${CONTENT_HASH}.css`,
+    }),
     new ModuleFederationPlugin({
       name: 'gym_diary',
       filename: 'remoteEntry.js',
