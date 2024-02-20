@@ -23,6 +23,16 @@ module.exports = merge(commonConfig, {
     static: {
       directory: path.join(__dirname, '..', 'build', 'static'),
     },
+    proxy: {
+      '/api/*': {
+        target: 'http://localhost:8000',
+        pathRewrite: {
+          '^/api': '',
+        },
+        secure: false,
+        changeOrigin: true,
+      },
+    },
     open: true,
   },
   plugins: [

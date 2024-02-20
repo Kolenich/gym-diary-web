@@ -1,15 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { BASE_URL } from 'constants/url';
-
-import { DEFAULT_API_TIMEOUT, EApiMethods } from '../api.constants';
+import { API_PREFIX, DEFAULT_API_TIMEOUT, EApiMethods } from '../api.constants';
 import { EWorkoutsApiTags, EWorkoutsEndpoints, LIST_TAG_ID } from './workouts.constants';
 import type { IWorkout, TGetWorkoutsParams } from './workouts.types';
 
 const workoutsApiSlice = createApi({
   reducerPath: 'workoutsApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${BASE_URL}/${EWorkoutsEndpoints.WorkoutsApi}`,
+    baseUrl: `${API_PREFIX}/${EWorkoutsEndpoints.WorkoutsApi}`,
     timeout: DEFAULT_API_TIMEOUT,
   }),
   tagTypes: [EWorkoutsApiTags.Workouts, EWorkoutsApiTags.Exercises, EWorkoutsApiTags.Sets],
