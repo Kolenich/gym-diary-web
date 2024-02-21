@@ -9,7 +9,7 @@ module.exports = merge(commonConfig, {
   mode: 'development',
   entry: path.resolve(__dirname, '..', 'src', 'index.ts'),
   output: {
-    path: path.resolve(__dirname, '..', 'build'),
+    path: path.resolve(__dirname, '..', 'dist'),
     assetModuleFilename: 'assets/[hash][ext][query]',
     clean: true,
     filename: '[name].js',
@@ -22,7 +22,7 @@ module.exports = merge(commonConfig, {
     historyApiFallback: true,
     compress: true,
     static: {
-      directory: path.join(__dirname, '..', 'build', 'static'),
+      directory: path.join(__dirname, '..', 'dist', 'static'),
     },
     proxy: [
       {
