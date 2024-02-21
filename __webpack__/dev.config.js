@@ -20,19 +20,17 @@ module.exports = merge(commonConfig, {
     port: 3000,
     hot: true,
     historyApiFallback: true,
+    compress: true,
     static: {
       directory: path.join(__dirname, '..', 'build', 'static'),
     },
-    proxy: {
-      '/api': {
+    proxy: [
+      {
+        context: ['/api'],
         target: 'http://localhost:8000',
-        pathRewrite: {
-          '^/api': '',
-        },
-        secure: false,
-        changeOrigin: true,
+        pathRewrite: { '^/api': '' },
       },
-    },
+    ],
     open: true,
   },
   plugins: [
