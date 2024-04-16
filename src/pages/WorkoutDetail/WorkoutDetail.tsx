@@ -1,20 +1,17 @@
+import { useEffect, useMemo, useState, type FC } from 'react';
+
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
+
 import { Cancel, Save, Timeline } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import { TimePicker } from '@mui/x-date-pickers';
-import type { Moment } from 'moment';
-import moment from 'moment';
-import type { FC } from 'react';
-import { useEffect, useMemo, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
-import type { IExercise, IWorkout } from 'api/workouts';
-import { useCreateWorkout, useGetWorkout, useUpdateWorkout } from 'api/workouts';
+import moment, { type Moment } from 'moment';
 
+import { useCreateWorkout, useGetWorkout, useUpdateWorkout, type IExercise, type IWorkout } from 'api/workouts';
 import { EExercisesAction, ExerciseList } from 'components/ExerciseList';
 import { Loading } from 'components/Loading';
-
 import { DATE_DISPLAY_FORMAT, DJANGO_DATE_FORMAT, DJANGO_TIME_FORMAT } from 'constants/datetime';
-
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { selectWorkoutDay, setWorkoutDay } from 'store/week';
 

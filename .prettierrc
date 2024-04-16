@@ -4,25 +4,17 @@
   "tabWidth": 2,
   "singleQuote": true,
   "bracketSpacing": true,
-  "jsxBracketSameLine": false,
   "useTabs": false,
   "arrowParens": "avoid",
   "jsxSingleQuote": true,
   "trailingComma": "all",
   "endOfLine": "auto",
-  "importOrder": [
-    "^api/(.*)$",
-    "^components/(.*)$",
-    "^constants/(.*)$",
-    "^hooks/(.*)$",
-    "^pages/(.*)$",
-    "^routers/(.*)$",
-    "^store/(.*)$",
-    "^utils/(.*)$",
-    "^[../]",
-    "^[./]"
-  ],
-  "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true,
-  "plugins": ["@trivago/prettier-plugin-sort-imports"]
+  "overrides": [
+    {
+      "files": "*.module.css.d.ts",
+      "options": {
+        "quoteProps": "preserve"
+      }
+    }
+  ]
 }

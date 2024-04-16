@@ -1,9 +1,10 @@
+import { type FC } from 'react';
+
 import { Tooltip } from '@mui/material';
-import type { FC } from 'react';
 
 import { useMobile } from 'hooks/use-mobile';
 
-import type { IExerciseNameProps } from './ExerciseName.types';
+import { type IExerciseNameProps } from './ExerciseName.types';
 
 const ExerciseName: FC<IExerciseNameProps> = ({ name }) => {
   const isMobile = useMobile();

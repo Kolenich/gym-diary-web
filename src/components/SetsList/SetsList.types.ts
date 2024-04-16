@@ -1,6 +1,6 @@
-import type { ISet } from 'api/workouts';
+import { type ISet } from 'api/workouts';
 
-import type { ESetsActions } from './SetsList.constants';
+import { type ESetsActions } from './SetsList.constants';
 
 export interface ISetsProps {
   sets: ISet[];

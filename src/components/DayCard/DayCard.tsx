@@ -1,5 +1,9 @@
+import { useMemo, type FC } from 'react';
+
+import { Link, useNavigate } from 'react-router-dom';
+
 import { Delete, Edit, FitnessCenter } from '@mui/icons-material';
-import type { Theme } from '@mui/material';
+import { type Theme } from '@mui/material';
 import {
   Card,
   CardActionArea,
@@ -13,13 +17,10 @@ import {
   Typography,
   Zoom,
 } from '@mui/material';
+
 import moment from 'moment';
-import type { FC } from 'react';
-import { useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 
 import { useDeleteWorkout, useGetWorkouts } from 'api/workouts';
-
 import {
   DATE_DISPLAY_FORMAT,
   DJANGO_DATE_FORMAT,
@@ -28,14 +29,12 @@ import {
   TODAY_DATE,
 } from 'constants/datetime';
 import { TODAY } from 'constants/texts';
-
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import { selectWeekWorkoutsParams, setWorkoutDay } from 'store/week';
-
 import { capitalize } from 'utils/capitalize';
 
 import { DELETE_WORKOUT, EDIT_WORKOUT, NO_WORKOUTS, NO_WORKOUT_TIME, WORKOUT } from './DayCard.constants';
-import type { IDayCardProps } from './DayCard.types';
+import { type IDayCardProps } from './DayCard.types';
 
 const DayCard: FC<IDayCardProps> = ({ day }) => {
   const weekWorkoutsParams = useAppSelector(selectWeekWorkoutsParams);

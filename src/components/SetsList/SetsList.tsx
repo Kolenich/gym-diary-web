@@ -1,3 +1,5 @@
+import { useState, type ChangeEvent, type FC } from 'react';
+
 import { Add, Cancel, Delete, Edit, Save } from '@mui/icons-material';
 import {
   Chip,
@@ -10,14 +12,11 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import type { ChangeEvent, FC } from 'react';
-import { useState } from 'react';
+
 import { v4 as uuid } from 'uuid';
 
-import type { ISet } from 'api/workouts';
-
+import { type ISet } from 'api/workouts';
 import { useMobile } from 'hooks/use-mobile';
-
 import { isArrayNonEmpty } from 'utils/is-array-non-empty';
 
 import {
@@ -34,7 +33,7 @@ import {
   SETS,
   WEIGHT,
 } from './SetsList.constants';
-import type { ISetsProps } from './SetsList.types';
+import { type ISetsProps } from './SetsList.types';
 
 const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
   const isMobile = useMobile();

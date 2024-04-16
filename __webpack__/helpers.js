@@ -18,16 +18,14 @@ module.exports = {
       name: 'gym_diary',
       filename: 'remoteEntry.js',
       exposes: {
-        './WorkoutsSchedule': path.resolve(__dirname, '..', 'src', 'App'),
+        './WorkoutsSchedule': path.resolve(__dirname, '..', 'src', 'pages', 'WeeksSchedule', 'WeeksSchedule'),
       },
       remotes: {
-        remote_app: 'remote_app@http://localhost:4000/remoteEntry.js',
+        test_remote: 'test_remote@http://localhost:3002/remoteEntry.js',
       },
       shared: {
-        ...deps,
-        react: { singleton: true, requiredVersion: deps.react },
-        'react-dom': { singleton: true, requiredVersion: deps['react-dom'] },
-        'react-router-dom': { singleton: true, requiredVersion: deps['react-router-dom'] },
+        react: { singleton: true, eager: true, requiredVersion: deps.react },
+        'react-dom': { singleton: true, eager: true, requiredVersion: deps['react-dom'] },
       },
     }),
     new HtmlWebpackPlugin({

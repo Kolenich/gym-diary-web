@@ -1,3 +1,5 @@
+import { Fragment, useState, type ChangeEvent, type FC, type KeyboardEvent } from 'react';
+
 import { Add, Cancel, Delete, DirectionsRun, Edit, Save } from '@mui/icons-material';
 import {
   Chip,
@@ -11,16 +13,14 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import type { ChangeEvent, FC, KeyboardEvent } from 'react';
-import { Fragment, useState } from 'react';
+
 import { v4 as uuid } from 'uuid';
 
-import type { IExercise, ISet } from 'api/workouts';
-
+import { type IExercise, type ISet } from 'api/workouts';
 import { ESetsActions, SetsList } from 'components/SetsList';
-
 import { isArrayNonEmpty } from 'utils/is-array-non-empty';
 
+import { ExerciseName } from './components/ExerciseName';
 import {
   ADD_EXERCISE,
   CANCEL,
@@ -33,8 +33,7 @@ import {
   NO_EXERCISES,
   SAVE,
 } from './ExerciseList.constants';
-import type { IExerciseListProps } from './ExerciseList.types';
-import { ExerciseName } from './components/ExerciseName';
+import { type IExerciseListProps } from './ExerciseList.types';
 
 const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) => {
   const [expandedExercises, setExpandedExercises] = useState<IExercise['id'][]>([]);
