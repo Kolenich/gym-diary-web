@@ -4,6 +4,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import 'moment/locale/ru';
 import { StrictMode } from 'react';
+
 import { createRoot } from 'react-dom/client';
 
 import App from './App';
