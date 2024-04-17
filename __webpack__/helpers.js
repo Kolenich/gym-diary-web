@@ -1,5 +1,6 @@
 const path = require('path');
 const { ModuleFederationPlugin } = require('webpack').container;
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 

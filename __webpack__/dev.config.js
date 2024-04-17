@@ -31,10 +31,9 @@ module.exports = merge(commonConfig, {
         pathRewrite: { '^/api': '' },
       },
       {
-        context: ['/ws-workout'],
+        context: ['/websocket'],
         target: 'ws://localhost:8000',
         ws: true,
-        pathRewrite: { '^/ws-workout': '' },
       },
     ],
     open: true,
