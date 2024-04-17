@@ -18,20 +18,19 @@ module.exports = {
       name: 'gym_diary',
       filename: 'remoteEntry.js',
       exposes: {
-        './WorkoutsSchedule': path.resolve(__dirname, '..', 'src', 'pages', 'WeeksSchedule', 'WeeksSchedule'),
-      },
-      remotes: {
-        test_remote: 'test_remote@http://localhost:3002/remoteEntry.js',
+        './WorkoutsSchedule': path.resolve(process.cwd(), 'src/pages/WeeksSchedule/WeeksSchedule'),
       },
       shared: {
-        react: { singleton: true, eager: true, requiredVersion: deps.react },
-        'react-dom': { singleton: true, eager: true, requiredVersion: deps['react-dom'] },
+        ...deps,
+        react: { singleton: true, requiredVersion: deps.react },
+        'react-dom': { singleton: true, requiredVersion: deps['react-dom'] },
+        'react-router-dom': { singleton: true, requiredVersion: deps['react-router-dom'] },
       },
     }),
     new HtmlWebpackPlugin({
       inject: true,
-      template: path.resolve(__dirname, '..', 'public', 'index.html'),
-      favicon: path.resolve(__dirname, '..', 'public', 'favicon.ico'),
+      template: path.resolve(process.cwd(), 'public/index.html'),
+      favicon: path.resolve(process.cwd(), 'public/favicon.ico'),
       minify: {
         removeComments: true,
         collapseWhitespace: true,

@@ -9,7 +9,7 @@ module.exports = {
     alias: folders.reduce(
       (aliases, folder) => ({
         ...aliases,
-        [folder]: path.resolve(__dirname, '..', 'src', folder),
+        [folder]: path.resolve(process.cwd(), `src/${folder}`),
       }),
       {},
     ),
@@ -17,9 +17,14 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|ts)x?$/,
+        test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: ['babel-loader', 'ts-loader'],
+        use: 'ts-loader',
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        use: 'babel-loader',
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
