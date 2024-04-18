@@ -18,7 +18,8 @@ export default merge(commonConfig, {
   devtool: 'inline-source-map',
   devServer: {
     port: 3000,
-    hot: true,
+    hot: false,
+    liveReload: true,
     historyApiFallback: true,
     compress: true,
     static: {
@@ -31,7 +32,7 @@ export default merge(commonConfig, {
         pathRewrite: { '^/api': '' },
       },
       {
-        context: ['/websocket'],
+        context: ['/wss'],
         target: 'ws://localhost:8000',
         ws: true,
       },

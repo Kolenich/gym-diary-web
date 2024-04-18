@@ -4,7 +4,7 @@ export const useWebsocket = (url: string, onMessage?: (data: MessageEvent) => vo
   const websocket = useRef<WebSocket>();
 
   useLayoutEffect(() => {
-    websocket.current = new WebSocket(`websocket/${url}`);
+    websocket.current = new WebSocket(`wss/${url}`);
 
     const hasOnMessageHandler = !!onMessage;
 
