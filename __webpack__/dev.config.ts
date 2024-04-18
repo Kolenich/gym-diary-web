@@ -1,15 +1,15 @@
-const { merge } = require('webpack-merge');
-const path = require('path');
-const CircularDependencyPlugin = require('circular-dependency-plugin');
+import CircularDependencyPlugin from 'circular-dependency-plugin';
+import { type Configuration } from 'webpack';
+import { merge } from 'webpack-merge';
 
-const commonConfig = require('./common.config');
-const { commonPlugins } = require('./helpers');
+import commonConfig from './common.config';
+import { commonPlugins, resolvePath } from './helpers';
 
-module.exports = merge(commonConfig, {
+export default merge(commonConfig, {
   mode: 'development',
-  entry: path.resolve(__dirname, '..', 'src', 'index.ts'),
+  entry: resolvePath('src/index.ts'),
   output: {
-    path: path.resolve(__dirname, '..', 'dist'),
+    path: resolvePath('dist'),
     assetModuleFilename: 'assets/[hash][ext][query]',
     clean: true,
     filename: '[name].js',
@@ -22,7 +22,7 @@ module.exports = merge(commonConfig, {
     historyApiFallback: true,
     compress: true,
     static: {
-      directory: path.join(__dirname, '..', 'dist', 'static'),
+      directory: resolvePath('dist/static'),
     },
     proxy: [
       {
@@ -48,4 +48,4 @@ module.exports = merge(commonConfig, {
       cwd: process.cwd(),
     }),
   ],
-});
+} as Configuration);

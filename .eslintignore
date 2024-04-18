@@ -3,6 +3,3 @@
 .idea
 node_modules
 public
-**/*.json
-**/*.d.ts
-*.js

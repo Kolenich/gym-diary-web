@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -19,8 +19,8 @@
     "uuid": "^9.0.1"
   },
   "scripts": {
-    "start": "webpack serve --config __webpack__/dev.config.js",
-    "build": "webpack --config __webpack__/prod.config.js",
+    "start": "webpack serve --config __webpack__/dev.config.ts",
+    "build": "webpack --config __webpack__/prod.config.ts",
     "test": "craco test",
     "commit:patch": "npm version patch --no-git-tag-version --force && git add --all",
     "commit:minor": "npm version minor --no-git-tag-version --force && git add --all",
@@ -53,11 +53,13 @@
     "@testing-library/react": "^14.2.1",
     "@testing-library/user-event": "^14.5.2",
     "@trivago/prettier-plugin-sort-imports": "^1.4.4",
+    "@types/circular-dependency-plugin": "^5.0.8",
     "@types/node": "^18.19.17",
     "@types/react": "^18.2.57",
     "@types/react-dom": "^18.2.19",
     "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^9.0.8",
+    "@types/webpack-dev-server": "^4.7.2",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "babel-loader": "^9.1.3",
     "circular-dependency-plugin": "^5.2.2",
@@ -74,6 +76,7 @@
     "prettier": "^3.2.5",
     "terser-webpack-plugin": "^5.3.10",
     "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4",

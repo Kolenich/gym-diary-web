@@ -1,18 +1,17 @@
-const { merge } = require('webpack-merge');
-const TerserPlugin = require('terser-webpack-plugin');
-const path = require('path');
+import TerserPlugin from 'terser-webpack-plugin';
+import { merge } from 'webpack-merge';
 
-const commonConfig = require('./common.config');
-const { commonPlugins } = require('./helpers');
+import commonConfig from './common.config';
+import { commonPlugins, resolvePath } from './helpers';
 
-module.exports = merge(commonConfig, {
+export default merge(commonConfig, {
   mode: 'production',
   performance: {
     hints: false,
   },
   output: {
     publicPath: 'auto',
-    path: path.resolve(__dirname, '..', 'build'),
+    path: resolvePath('build'),
     filename: 'static/js/[name].[contenthash:8].js',
     chunkFilename: 'static/js/[name].[contenthash:8].js',
     assetModuleFilename: 'static/media/[name].[contenthash:8][ext]',
@@ -37,11 +36,10 @@ module.exports = merge(commonConfig, {
           sourceMap: false,
           keep_fnames: true,
           parse: {
-            ecma: 8,
+            ecma: 2020,
           },
           compress: {
             ecma: 5,
-            warnings: false,
             comparisons: false,
             inline: 2,
           },

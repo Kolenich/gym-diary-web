@@ -1,15 +1,15 @@
-const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+import { loader as miniCssLoader } from 'mini-css-extract-plugin';
+import { type Configuration } from 'webpack';
 
-const { folders } = require('./helpers');
+import { folders, resolvePath } from './helpers';
 
-module.exports = {
+const commonConfig: Configuration = {
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: folders.reduce(
       (aliases, folder) => ({
         ...aliases,
-        [folder]: path.resolve(process.cwd(), `src/${folder}`),
+        [folder]: resolvePath(`src/${folder}`),
       }),
       {},
     ),
@@ -42,8 +42,10 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        use: [miniCssLoader, 'css-loader'],
       },
     ],
   },
 };
+
+export default commonConfig;
