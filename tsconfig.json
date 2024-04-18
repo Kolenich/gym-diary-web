@@ -3,6 +3,8 @@
     "target": "es6",
     "module": "esnext",
     "declaration": true,
+    "outDir": "./dist",
+    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
