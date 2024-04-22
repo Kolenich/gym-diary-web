@@ -8,16 +8,14 @@ const { ModuleFederationPlugin } = container;
 
 import { dependencies as deps } from '../package.json';
 
-const CONTENT_HASH = '.[contenthash:8]';
-
 export const resolvePath = (path: string): string => resolve(process.cwd(), path);
 
 export const folders = ['api', 'components', 'constants', 'hooks', 'pages', 'routers', 'store', 'utils'];
 
 export const commonPlugins = [
   new MiniCssExtractPlugin({
-    filename: `static/css/[name]${CONTENT_HASH}.css`,
-    chunkFilename: `static/css/[name]${CONTENT_HASH}.css`,
+    filename: 'static/css/[name].[contenthash:8].css',
+    chunkFilename: 'static/css/[name].[contenthash:8].css',
   }),
   new ModuleFederationPlugin({
     name: 'gym_diary',
