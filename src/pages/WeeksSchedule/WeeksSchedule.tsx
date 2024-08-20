@@ -1,5 +1,7 @@
 import { useEffect, type FC } from 'react';
 
+import { type FetchBaseQueryError } from '@reduxjs/toolkit/query';
+
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { AppBar, Fab, Grid, Toolbar, Tooltip, Typography, Zoom, type Theme } from '@mui/material';
 
@@ -37,7 +39,13 @@ const WeeksSchedule: FC = () => {
     const hasError = !!error;
 
     if (hasError) {
-      enqueueSnackbar(getErrorSentence((error as any).message), { variant: 'error' });
+      const { data } = error as FetchBaseQueryError;
+
+      const isPlainText = typeof data === 'string';
+
+      if (isPlainText) {
+        enqueueSnackbar(getErrorSentence(data), { variant: 'error' });
+      }
     }
   }, [error, enqueueSnackbar]);
 
