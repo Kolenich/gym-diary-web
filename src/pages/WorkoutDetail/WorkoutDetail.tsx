@@ -12,7 +12,7 @@ import { useCreateWorkout, useGetWorkout, useUpdateWorkout, type IExercise, type
 import { EExercisesAction, ExerciseList } from 'components/ExerciseList';
 import { Loading } from 'components/Loading';
 import { DATE_DISPLAY_FORMAT, DJANGO_DATE_FORMAT, DJANGO_TIME_FORMAT } from 'constants/datetime';
-import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { useAppDispatch, useAppSelector } from 'store/store.hooks';
 import { selectWorkoutDay, setWorkoutDay } from 'store/week';
 
 import {

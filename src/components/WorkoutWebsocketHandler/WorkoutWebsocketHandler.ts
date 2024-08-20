@@ -2,7 +2,7 @@ import { type FC } from 'react';
 
 import { useGetWorkouts } from 'api/workouts';
 import { useWebsocket } from 'hooks/use-websocket';
-import { useAppSelector } from 'store/hooks';
+import { useAppSelector } from 'store/store.hooks';
 import { selectWeekWorkoutsParams } from 'store/week';
 
 import { EWorkoutActions } from './WorkoutWebsocketHandler.constants';

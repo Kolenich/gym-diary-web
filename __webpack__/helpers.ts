@@ -22,8 +22,6 @@ export const publicFolders = readdirSync('public', { withFileTypes: true })
 const tsConfigPathsString = readFileSync('tsconfig.json', 'utf8');
 const tsConfigPaths = JSON.parse(tsConfigPathsString);
 
-console.log(tsConfigPathsString);
-
 tsConfigPaths.compilerOptions.paths = {
   ...publicFolders.reduce(
     (prevPaths, currFolder) => ({

@@ -29,7 +29,7 @@ import {
   TODAY_DATE,
 } from 'constants/datetime';
 import { TODAY } from 'constants/texts';
-import { useAppDispatch, useAppSelector } from 'store/hooks';
+import { useAppDispatch, useAppSelector } from 'store/store.hooks';
 import { selectWeekWorkoutsParams, setWorkoutDay } from 'store/week';
 import { capitalize } from 'utils/capitalize';
 

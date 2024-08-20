@@ -13,7 +13,7 @@ import { SnackbarProvider } from 'notistack';
 
 import { WorkoutWebsocketHandler } from './components/WorkoutWebsocketHandler';
 import { RootRouter } from './routers/RootRouter';
-import { store } from './store';
+import store from './store/store';
 
 const App: FC = () => (
   <Provider store={store}>

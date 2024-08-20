@@ -1,9 +1,3 @@
-export {
-  default as workoutsApiSlice,
-  useGetWorkouts,
-  useGetWorkout,
-  useDeleteWorkout,
-  useCreateWorkout,
-  useUpdateWorkout,
-} from './workouts.api';
-export type { IWorkout, IExercise, ISet, TGetWorkoutsParams } from './workouts.types';
+export { default as workoutsApiSlice } from './workouts.api';
+export * from './workouts.api';
+export * from './workouts.types';

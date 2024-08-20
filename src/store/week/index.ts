@@ -1,3 +1,5 @@
-export { default as weekSlice, setWorkoutDay, goToPreviousWeek, goToCurrentWeek, goToNextWeek } from './week.slice';
-export type { IWeekState } from './week.types';
-export { selectWorkoutDay, selectCurrentWeek, selectWeekWorkoutsParams } from './week.selectors';
+export { default as weekSlice } from './week.slice';
+export * from './week.slice';
+export * from './week.types';
+export * from './week.selectors';
+export * from './week.constants';

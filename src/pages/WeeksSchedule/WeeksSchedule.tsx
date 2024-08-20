@@ -1,9 +1,9 @@
-import { useEffect, type FC } from 'react';
+import { type FC, useEffect } from 'react';
 
 import { type FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
-import { AppBar, Fab, Grid, Toolbar, Tooltip, Typography, Zoom, type Theme } from '@mui/material';
+import { AppBar, Fab, Grid, type Theme, Toolbar, Tooltip, Typography, Zoom } from '@mui/material';
 
 import { useSnackbar } from 'notistack';
 
@@ -12,14 +12,8 @@ import { DayCard } from 'components/DayCard';
 import { Loading } from 'components/Loading';
 import { DATE_DISPLAY_FORMAT, TODAY_DATE } from 'constants/datetime';
 import { TODAY } from 'constants/texts';
-import { useAppDispatch, useAppSelector } from 'store/hooks';
-import {
-  goToCurrentWeek,
-  goToNextWeek,
-  goToPreviousWeek,
-  selectCurrentWeek,
-  selectWeekWorkoutsParams,
-} from 'store/week';
+import { useAppDispatch, useAppSelector } from 'store/store.hooks';
+import { EWeekTypes, goToWeek, selectCurrentWeek, selectWeekWorkoutsParams } from 'store/week';
 import { getErrorSentence } from 'utils/get-error-sentence';
 
 import { NEXT_WEEK, PREVIOUS_WEEK, PUMPER_DIARY, WORKOUT_DAYS } from './WeekSchedule.constants';
@@ -33,12 +27,10 @@ const WeeksSchedule: FC = () => {
 
   const weekWorkoutsParams = useAppSelector(selectWeekWorkoutsParams);
 
-  const { error, isLoading } = useGetWorkouts(weekWorkoutsParams);
+  const { error, isLoading, isError } = useGetWorkouts(weekWorkoutsParams);
 
   useEffect(() => {
-    const hasError = !!error;
-
-    if (hasError) {
+    if (isError) {
       const { data } = error as FetchBaseQueryError;
 
       const isPlainText = typeof data === 'string';
@@ -50,15 +42,15 @@ const WeeksSchedule: FC = () => {
   }, [error, enqueueSnackbar]);
 
   const goPreviousWeek = (): void => {
-    dispatch(goToPreviousWeek());
+    dispatch(goToWeek(EWeekTypes.Previous));
   };
 
   const goCurrentWeek = (): void => {
-    dispatch(goToCurrentWeek());
+    dispatch(goToWeek(EWeekTypes.Current));
   };
 
   const goNextWeek = (): void => {
-    dispatch(goToNextWeek());
+    dispatch(goToWeek(EWeekTypes.Next));
   };
 
   const currentYear = (currentWeek.filter(day => day.day() === TODAY_DATE.day())[0] || TODAY_DATE).year();

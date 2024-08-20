@@ -14,18 +14,12 @@ const weekSlice = createSlice({
     setWorkoutDay(state, action: PayloadAction<IWeekState['workoutDay']>) {
       state.workoutDay = action.payload;
     },
-    goToPreviousWeek(state) {
-      state.currentWeek = getCurrentWeek(state.currentWeek, EWeekTypes.Previous);
-    },
-    goToCurrentWeek(state) {
-      state.currentWeek = getCurrentWeek(state.currentWeek, EWeekTypes.Current);
-    },
-    goToNextWeek(state) {
-      state.currentWeek = getCurrentWeek(state.currentWeek, EWeekTypes.Next);
+    goToWeek(state, action: PayloadAction<EWeekTypes>) {
+      state.currentWeek = getCurrentWeek(state.currentWeek, action.payload);
     },
   },
 });
 
-export const { setWorkoutDay, goToPreviousWeek, goToCurrentWeek, goToNextWeek } = weekSlice.actions;
+export const { setWorkoutDay, goToWeek } = weekSlice.actions;
 
 export default weekSlice;
