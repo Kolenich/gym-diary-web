@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.1.28",
+  "version": "0.1.29",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -16,7 +16,7 @@
     "react-dom": "^18.2.0",
     "react-redux": "^9.1.0",
     "react-router-dom": "^6.15.0",
-    "uuid": "^9.0.1"
+    "uuid": "^10.0.0"
   },
   "scripts": {
     "start": "webpack serve --config __webpack__/dev.config.ts",
