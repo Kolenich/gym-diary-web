@@ -1,18 +1,27 @@
 import { loader as miniCssLoader } from 'mini-css-extract-plugin';
 import { type Configuration } from 'webpack';
 
-import { folders, resolvePath } from './helpers';
+import { srcFolders, publicFolders, resolvePath } from './helpers';
 
-const commonConfig: Configuration = {
+export default {
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    alias: folders.reduce(
-      (aliases, folder) => ({
-        ...aliases,
-        [folder]: resolvePath(`src/${folder}`),
-      }),
-      {},
-    ),
+    alias: {
+      ...publicFolders.reduce(
+        (aliases, folder) => ({
+          ...aliases,
+          [folder]: resolvePath(`public/${folder}`),
+        }),
+        {},
+      ),
+      ...srcFolders.reduce(
+        (aliases, folder) => ({
+          ...aliases,
+          [folder]: resolvePath(`src/${folder}`),
+        }),
+        {},
+      ),
+    },
   },
   module: {
     rules: [
@@ -46,6 +55,4 @@ const commonConfig: Configuration = {
       },
     ],
   },
-};
-
-export default commonConfig;
+} as Configuration;
