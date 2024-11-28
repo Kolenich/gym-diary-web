@@ -5,7 +5,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { container } from 'webpack';
 
-import { dependencies as deps } from '../package.json';
+import { dependencies as deps, name } from '../package.json';
 
 const { ModuleFederationPlugin } = container;
 
@@ -47,7 +47,7 @@ export const commonPlugins = [
     chunkFilename: 'static/css/[name].[contenthash:8].css',
   }),
   new ModuleFederationPlugin({
-    name: 'gym_diary',
+    name,
     filename: 'remoteEntry.js',
     exposes: {
       './WorkoutsSchedule': resolvePath('src/pages/WeeksSchedule/WeeksSchedule'),
