@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 
-export const useWebsocket = (url: string, onMessage?: (data: MessageEvent) => void): WebSocket | undefined => {
-  const websocket = useRef<WebSocket>();
+export const useWebsocket = (url: string, onMessage?: (data: MessageEvent) => void): WebSocket | null => {
+  const websocket = useRef<WebSocket | null>(null);
 
   useLayoutEffect(() => {
     websocket.current = new WebSocket(`wss/${url}`);

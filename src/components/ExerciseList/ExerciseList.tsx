@@ -1,4 +1,4 @@
-import { Fragment, useState, type ChangeEvent, type FC, type KeyboardEvent } from 'react';
+import { Fragment, useState, type ChangeEvent, type FC, type KeyboardEvent, type ReactNode } from 'react';
 
 import { Add, Cancel, Delete, DirectionsRun, Edit, Save } from '@mui/icons-material';
 import {
@@ -70,7 +70,7 @@ const ExerciseList: FC<IExerciseListProps> = ({ exercises, onExerciseChange }) =
     setNewExercises([]);
   };
 
-  const renderExercise = (exercise: IExercise): JSX.Element => {
+  const renderExercise = (exercise: IExercise): ReactNode => {
     const { id: targetExerciseId, name: targetExerciseName } = exercise;
     const editedExercise = editingExercises.find(({ id }) => id === targetExerciseId);
 

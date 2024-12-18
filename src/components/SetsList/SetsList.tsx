@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FC } from 'react';
+import { useState, type ChangeEvent, type FC, type ReactNode } from 'react';
 
 import { Add, Cancel, Delete, Edit, Save } from '@mui/icons-material';
 import {
@@ -41,7 +41,7 @@ const SetsList: FC<ISetsProps> = ({ sets, onSetChange }) => {
   const [newSets, setNewSets] = useState<ISet[]>([]);
   const [editingSets, setEditingSets] = useState<ISet[]>([]);
 
-  const renderSet = (set: ISet): JSX.Element => {
+  const renderSet = (set: ISet): ReactNode => {
     const { id: targetSetId, weight: targetSetWeight, repeats: targetSetRepeats } = set;
 
     const editedSet = editingSets.find(({ id }) => id === targetSetId);
