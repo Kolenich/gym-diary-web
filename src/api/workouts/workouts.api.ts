@@ -28,7 +28,7 @@ const workoutsApiSlice = createApi({
     }),
     getWorkout: builder.query<IWorkout, IWorkout['id']>({
       query: workoutId => `workouts/${workoutId}`,
-      providesTags: result => (result ? [{ type: EWorkoutsApiTags.Workouts, id: result.id }] : []),
+      providesTags: (_result, _error, arg) => [{ type: EWorkoutsApiTags.Workouts, id: arg }],
     }),
     createWorkout: builder.mutation<IWorkout, IWorkout>({
       query: workout => ({
@@ -44,15 +44,7 @@ const workoutsApiSlice = createApi({
         method: EApiMethods.Put,
         body: workout,
       }),
-      invalidatesTags: result =>
-        result
-          ? [
-              {
-                type: EWorkoutsApiTags.Workouts,
-                id: result.id,
-              },
-            ]
-          : [],
+      invalidatesTags: (_result, _error, { id }) => [{ type: EWorkoutsApiTags.Workouts, id }],
     }),
     deleteWorkout: builder.mutation<void, IWorkout['id']>({
       query: workoutId => ({
