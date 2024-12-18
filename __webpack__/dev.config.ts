@@ -1,6 +1,10 @@
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import CircularDependencyPlugin from 'circular-dependency-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { type Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
+
+import { name } from '../package.json';
 
 import commonConfig from './common.config';
 import { commonPlugins, resolvePath } from './helpers';
@@ -18,8 +22,8 @@ export default merge(commonConfig, {
   devtool: 'inline-source-map',
   devServer: {
     port: 3000,
-    hot: false,
-    liveReload: true,
+    hot: true,
+    liveReload: false,
     historyApiFallback: true,
     compress: true,
     static: {
@@ -47,6 +51,18 @@ export default merge(commonConfig, {
       failOnError: true,
       allowAsyncCycles: false,
       cwd: process.cwd(),
+    }),
+    new ReactRefreshWebpackPlugin({
+      overlay: false,
+      exclude: [/node_modules/, /bootstrap\.tsx$/],
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      publicPath: '/',
+      inject: true,
+      template: resolvePath('public/index.html'),
+      favicon: resolvePath('public/favicon.ico'),
+      excludeChunks: [name],
     }),
   ],
 } as Configuration);

@@ -1,3 +1,4 @@
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import { merge } from 'webpack-merge';
 
@@ -57,5 +58,24 @@ export default merge(commonConfig, {
     ],
     runtimeChunk: false,
   },
-  plugins: commonPlugins,
+  plugins: [
+    ...commonPlugins,
+    new HtmlWebpackPlugin({
+      inject: true,
+      template: resolvePath('public/index.html'),
+      favicon: resolvePath('public/favicon.ico'),
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true,
+      },
+    }),
+  ],
 });

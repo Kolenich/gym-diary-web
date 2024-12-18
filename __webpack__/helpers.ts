@@ -1,7 +1,6 @@
 import { readdirSync, readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { container } from 'webpack';
 
@@ -57,23 +56,6 @@ export const commonPlugins = [
       react: { singleton: true, requiredVersion: deps.react },
       'react-dom': { singleton: true, requiredVersion: deps['react-dom'] },
       'react-router-dom': { singleton: true, requiredVersion: deps['react-router-dom'] },
-    },
-  }),
-  new HtmlWebpackPlugin({
-    inject: true,
-    template: resolvePath('public/index.html'),
-    favicon: resolvePath('public/favicon.ico'),
-    minify: {
-      removeComments: true,
-      collapseWhitespace: true,
-      removeRedundantAttributes: true,
-      useShortDoctype: true,
-      removeEmptyAttributes: true,
-      removeStyleLinkTypeAttributes: true,
-      keepClosingSlash: true,
-      minifyJS: true,
-      minifyCSS: true,
-      minifyURLs: true,
     },
   }),
 ];
