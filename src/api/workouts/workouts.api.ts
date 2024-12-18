@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { API_PREFIX, DEFAULT_API_TIMEOUT, EApiMethods } from '../api.constants';
+import { API_PREFIX, DEFAULT_API_TIMEOUT } from '../api.constants';
 
 import { EWorkoutsApiTags, EWorkoutsEndpoints, LIST_TAG_ID } from './workouts.constants';
 import { type IWorkout, type TGetWorkoutsParams } from './workouts.types';
@@ -18,30 +18,27 @@ const workoutsApiSlice = createApi({
         url: 'workouts',
         params,
       }),
-      providesTags: result =>
-        result
-          ? [
-              { type: EWorkoutsApiTags.Workouts, id: LIST_TAG_ID },
-              ...result.map(({ id }) => ({ type: EWorkoutsApiTags.Workouts, id })),
-            ]
-          : [],
+      providesTags: (result = []) => [
+        { type: EWorkoutsApiTags.Workouts, id: LIST_TAG_ID },
+        ...result.map(({ id }) => ({ type: EWorkoutsApiTags.Workouts, id })),
+      ],
     }),
     getWorkout: builder.query<IWorkout, IWorkout['id']>({
       query: workoutId => `workouts/${workoutId}`,
       providesTags: (_result, _error, arg) => [{ type: EWorkoutsApiTags.Workouts, id: arg }],
     }),
     createWorkout: builder.mutation<IWorkout, IWorkout>({
-      query: workout => ({
+      query: body => ({
+        body,
         url: 'workouts',
-        method: EApiMethods.Post,
-        body: workout,
+        method: 'POST',
       }),
       invalidatesTags: [{ type: EWorkoutsApiTags.Workouts, id: LIST_TAG_ID }],
     }),
     updateWorkout: builder.mutation<IWorkout, Partial<IWorkout> & Pick<IWorkout, 'id'>>({
       query: workout => ({
         url: `workouts/${workout.id}`,
-        method: EApiMethods.Put,
+        method: 'PUT',
         body: workout,
       }),
       invalidatesTags: (_result, _error, { id }) => [{ type: EWorkoutsApiTags.Workouts, id }],
@@ -49,7 +46,7 @@ const workoutsApiSlice = createApi({
     deleteWorkout: builder.mutation<void, IWorkout['id']>({
       query: workoutId => ({
         url: `workouts/${workoutId}`,
-        method: EApiMethods.Delete,
+        method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, arg) => [
         {
