@@ -1,27 +1,28 @@
-import { type Key } from 'react';
-
 export interface IWorkout {
-  readonly id?: number;
-  date: string | null;
-  start: string | null;
-  end: string | null;
-  exercises: IExercise[];
+  id: number;
+  start: string;
+  end: string;
 }
 
 export interface IExercise {
-  id: Key;
+  id: number;
   name: string;
-  sets: ISet[];
+  workout_id: IWorkout['id'];
 }
 
 export interface ISet {
-  id: Key;
+  id: number;
   weight: number;
   repeats: number;
+  exercise_id: IExercise['id'];
 }
 
 export type TFilterLookups = 'gte' | 'lte' | 'lt' | 'gt';
 
-export type TGetWorkoutsParams<GWorkoutKey extends keyof IWorkout, GFieldLookups extends TFilterLookups> = {
-  [Key in GWorkoutKey as `${Key}__${GFieldLookups}`]: string;
+export type TGetWorkoutsParams<GWorkoutKey extends keyof Omit<IWorkout, 'id'>, GFieldLookups extends TFilterLookups> = {
+  [Key in GWorkoutKey as `${Key}__${GFieldLookups}`]?: string;
 };
+
+export type TGetExercisesParams = Pick<IExercise, 'workout_id'>;
+
+export type TGetSetsParams = Pick<ISet, 'exercise_id'>;

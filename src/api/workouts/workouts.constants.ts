@@ -1,11 +1,19 @@
 export enum EWorkoutsApiTags {
   Workouts = 'Workouts',
+  // Independent exercises tag
   Exercises = 'Exercises',
+  // Workout related exercises tag
+  WorkoutExercises = 'WorkoutExercises',
+  // Independent sets tag
   Sets = 'Sets',
+  // Exercise related sets tag
+  ExerciseSets = 'ExerciseSets',
 }
 
 export enum EWorkoutsEndpoints {
   WorkoutsApi = 'workouts-api',
 }
 
-export const LIST_TAG_ID = 'List';
+export enum ECommonTagIds {
+  List = 'List',
+}

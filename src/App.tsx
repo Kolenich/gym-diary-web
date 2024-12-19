@@ -11,14 +11,12 @@ import { ruRU } from '@mui/x-date-pickers/locales';
 
 import { SnackbarProvider } from 'notistack';
 
-import { WorkoutWebsocketHandler } from './components/WorkoutWebsocketHandler';
 import { RootRouter } from './routers/RootRouter';
 import store from './store/store';
 
 const App: FC = () => (
   <Provider store={store}>
     <GlobalStyles styles={{ body: { margin: 0 } }} />
-    <WorkoutWebsocketHandler />
     <LocalizationProvider
       dateAdapter={AdapterMoment}
       localeText={ruRU.components.MuiLocalizationProvider.defaultProps.localeText}
