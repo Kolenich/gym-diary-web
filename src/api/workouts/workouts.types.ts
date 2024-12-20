@@ -1,7 +1,9 @@
 export interface IWorkout {
   id: number;
-  start: string;
-  end: string;
+  date: string;
+  start_time: string;
+  duration_hours: number;
+  focus_area: string | null;
 }
 
 export interface IExercise {
@@ -17,10 +19,10 @@ export interface ISet {
   exercise_id: IExercise['id'];
 }
 
-export type TFilterLookups = 'gte' | 'lte' | 'lt' | 'gt';
+export type TStringFilterLookups = 'icontains';
 
-export type TGetWorkoutsParams<GWorkoutKey extends keyof Omit<IWorkout, 'id'>, GFieldLookups extends TFilterLookups> = {
-  [Key in GWorkoutKey as `${Key}__${GFieldLookups}`]?: string;
+export type TGetWorkoutsParams = Pick<IWorkout, 'date'> & {
+  [Key in keyof Pick<IWorkout, 'focus_area'> as `${Key}__${TStringFilterLookups}`]?: string;
 };
 
 export type TGetExercisesParams = Pick<IExercise, 'workout_id'>;

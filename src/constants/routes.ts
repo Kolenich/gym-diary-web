@@ -1,5 +1,6 @@
 export enum ERoutePaths {
   Home = '/',
-  Workouts = 'workouts',
+  WorkoutsSchedule = 'workouts',
   WorkoutDetail = ':workoutId',
+  WorkoutCreate = 'create',
 }

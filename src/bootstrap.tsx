@@ -2,7 +2,6 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import 'moment/locale/ru';
 import { StrictMode } from 'react';
 
 import { createRoot } from 'react-dom/client';
@@ -14,6 +13,6 @@ const root = createRoot(container);
 
 root.render(
   <StrictMode>
-    <App />,
+    <App />
   </StrictMode>,
 );

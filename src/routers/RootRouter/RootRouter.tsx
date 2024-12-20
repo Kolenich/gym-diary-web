@@ -1,9 +1,8 @@
-import { Navigate, createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 
-import { WeeksSchedule } from 'pages/WeeksSchedule';
+import { ERoutePaths } from 'constants/routes';
 import { WorkoutDetail } from 'pages/WorkoutDetail';
-
-import { ERoutePaths } from './RootRouter.constants';
+import { WorkoutSchedule } from 'pages/WorkoutSchedule';
 
 const RootRouter = createBrowserRouter([
   {
@@ -11,14 +10,14 @@ const RootRouter = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to={ERoutePaths.Workouts} />,
+        element: <Navigate to={ERoutePaths.WorkoutsSchedule} />,
       },
       {
-        path: ERoutePaths.Workouts,
+        path: ERoutePaths.WorkoutsSchedule,
         children: [
           {
             index: true,
-            element: <WeeksSchedule />,
+            element: <WorkoutSchedule />,
           },
           {
             path: ERoutePaths.WorkoutDetail,

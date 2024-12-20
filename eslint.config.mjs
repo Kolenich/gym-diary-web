@@ -121,10 +121,6 @@ export default [{
         group: 'external',
         position: 'before',
       }, {
-        pattern: 'react-test-renderer',
-        group: 'external',
-        position: 'before',
-      }, {
         pattern: '@reduxjs/**',
         group: 'external',
         position: 'before',
@@ -141,7 +137,6 @@ export default [{
       pathGroupsExcludedImportTypes: ['builtin', 'react'],
       'newlines-between': 'always',
     }],
-
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 0,
@@ -161,7 +156,6 @@ export default [{
       object: true,
       array: true,
     }],
-
     semi: ['error', 'always'],
     'import/prefer-default-export': 'off',
   },

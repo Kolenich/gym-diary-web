@@ -49,7 +49,7 @@ export const commonPlugins = [
     name,
     filename: 'remoteEntry.js',
     exposes: {
-      './WorkoutsSchedule': resolvePath('src/pages/WeeksSchedule/WeeksSchedule'),
+      './WorkoutsSchedule': resolvePath('src/pages/WorkoutSchedule/WorkoutSchedule'),
     },
     shared: {
       ...deps,

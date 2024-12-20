@@ -3,8 +3,11 @@ import { setupListeners } from '@reduxjs/toolkit/query/react';
 
 import { workoutsApiSlice } from 'api/workouts';
 
+import { workoutsSlice } from './workouts';
+
 const store = configureStore({
   reducer: {
+    [workoutsSlice.name]: workoutsSlice.reducer,
     [workoutsApiSlice.reducerPath]: workoutsApiSlice.reducer,
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(workoutsApiSlice.middleware),

@@ -1,6 +1,6 @@
 {
   "name": "gym_diary",
-  "version": "0.1.38",
+  "version": "0.1.39",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -8,12 +8,10 @@
     "@fontsource/roboto": "^5.1.0",
     "@mui/icons-material": "^6.2.1",
     "@mui/material": "^6.2.1",
-    "@mui/x-date-pickers": "^7.23.2",
     "@reduxjs/toolkit": "^2.5.0",
-    "moment": "^2.30.1",
-    "notistack": "^3.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.54.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.0.2",
     "uuid": "^11.0.3"
@@ -21,10 +19,9 @@
   "scripts": {
     "start": "webpack serve --config __webpack__/dev.config.ts",
     "build": "webpack --config __webpack__/prod.config.ts",
-    "test": "craco test",
-    "commit:patch": "npm version patch --no-git-tag-version --force && git add --all",
-    "commit:minor": "npm version minor --no-git-tag-version --force && git add --all",
-    "commit:major": "npm version major --no-git-tag-version --force && git add --all",
+    "commit:patch": "npm version patch --no-git-tag-version --force && git add .",
+    "commit:minor": "npm version minor --no-git-tag-version --force && git add .",
+    "commit:major": "npm version major --no-git-tag-version --force && git add .",
     "prepare": "husky install"
   },
   "lint-staged": {
@@ -53,10 +50,6 @@
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.17.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.1.0",
-    "@testing-library/user-event": "^14.5.2",
-    "@trivago/prettier-plugin-sort-imports": "^5.2.0",
     "@types/circular-dependency-plugin": "^5.0.8",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.1",
