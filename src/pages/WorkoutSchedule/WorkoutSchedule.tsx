@@ -8,6 +8,8 @@ import { useGetWorkouts } from 'api/workouts';
 import { useAppDispatch, useAppSelector } from 'store/store.hooks';
 import { selectWorkoutDay, setWorkoutDate } from 'store/workouts';
 
+import { SCHEDULE_TITLE, WORKOUTS_TITLE } from './WorkoutSchedule.constants';
+
 const WorkoutSchedule: FC = () => {
   const workoutDate = useAppSelector(selectWorkoutDay);
 
@@ -25,8 +27,8 @@ const WorkoutSchedule: FC = () => {
     <>
       <Grid container spacing={2} alignItems='center'>
         <Grid size={12}>
-          <Typography variant='h1' color='primary' textAlign='center'>
-            План тренировок
+          <Typography variant='h1' fontWeight='bold' color='primary' textAlign='center'>
+            {SCHEDULE_TITLE}
           </Typography>
         </Grid>
         <Grid size='auto'>
@@ -39,7 +41,7 @@ const WorkoutSchedule: FC = () => {
           />
         </Grid>
       </Grid>
-      <Typography variant='body1'>Тренировки</Typography>
+      <Typography variant='body1'>{WORKOUTS_TITLE}</Typography>
       {workouts.map(workout => {
         const goToWorkout = (): void => {
           navigate(`${workout.id}`);
