@@ -48,12 +48,14 @@ const WorkoutSchedule: FC = () => {
       </Grid>
       <Typography variant='body1'>{WORKOUTS_TITLE}</Typography>
       {workouts.map(workout => {
-        const goToWorkout = (): void => {
-          navigate(workout.id.toString());
+        const { id: workoutId } = workout;
+
+        const goToWorkoutDetail = (): void => {
+          navigate(workoutId.toString());
         };
 
         return (
-          <Typography variant='caption' onClick={goToWorkout} key={workout.id}>
+          <Typography variant='caption' onClick={goToWorkoutDetail} key={workoutId}>
             <pre>{JSON.stringify(workout, null, 2)}</pre>
           </Typography>
         );

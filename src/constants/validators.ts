@@ -18,6 +18,10 @@ export const VALIDATE_WORKOUT_START_TIME: RegisterOptions<Omit<IWorkout, 'id'>, 
 
 export const VALIDATE_WORKOUT_DURATION_HOURS: RegisterOptions<Omit<IWorkout, 'id'>, 'duration_hours'> = {
   valueAsNumber: true,
+  required: {
+    value: true,
+    message: 'Укажите длительность тренировки',
+  },
   max: {
     value: 2,
     message: 'Тренировка не должна превышать 2 часа',

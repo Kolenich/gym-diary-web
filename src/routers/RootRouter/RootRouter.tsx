@@ -2,7 +2,6 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import { ERoutePaths } from 'constants/routes';
 import { WorkoutCreate } from 'pages/WorkoutCreate';
-import { WorkoutDetail } from 'pages/WorkoutDetail';
 import { WorkoutSchedule } from 'pages/WorkoutSchedule';
 
 const RootRouter = createBrowserRouter([
@@ -22,10 +21,6 @@ const RootRouter = createBrowserRouter([
           },
           {
             path: ERoutePaths.WorkoutDetail,
-            element: <WorkoutDetail />,
-          },
-          {
-            path: ERoutePaths.WorkoutCreate,
             element: <WorkoutCreate />,
           },
         ],

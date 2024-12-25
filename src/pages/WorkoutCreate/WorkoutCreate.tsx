@@ -1,12 +1,13 @@
-import { type FC } from 'react';
+import { type FC, useMemo } from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
-import { Button, Stack, TextField } from '@mui/material';
+import { Delete } from '@mui/icons-material';
+import { Button, Grid2 as Grid, IconButton, TextField } from '@mui/material';
 
 import { useForm } from 'react-hook-form';
 
-import { type IWorkout, useCreateWorkout } from 'api/workouts';
+import { type IWorkout, useCreateWorkout, useDeleteWorkout, useGetWorkout, useUpdateWorkout } from 'api/workouts';
 import { ERoutePaths } from 'constants/routes';
 import {
   VALIDATE_WORKOUT_DATE,
@@ -17,25 +18,92 @@ import {
 import { useAppSelector } from 'store/store.hooks';
 import { selectWorkoutDay } from 'store/workouts';
 
-import { BACK, CREATE, DEFAULT_WORKOUT } from './WorkoutCreate.constants';
+import { BACK, DEFAULT_WORKOUT, SAVE, WORKOUT_CREATE_ID } from './WorkoutCreate.constants';
 
 const WorkoutCreate: FC = () => {
+  const { workoutId = '' } = useParams();
+
   const workoutDate = useAppSelector(selectWorkoutDay);
+
+  const { data: workout } = useGetWorkout(+workoutId, {
+    skip: isNaN(+workoutId),
+  });
+
+  const isEditMode = !isNaN(+workoutId);
+  const isCreationMode = workoutId === WORKOUT_CREATE_ID;
 
   const {
     register,
     handleSubmit,
+
     formState: {
+      isDirty,
+      dirtyFields,
       errors: { duration_hours: durationHoursError, start_time: startTimeError, date: dateError },
     },
-  } = useForm<Omit<IWorkout, 'id'>>({ defaultValues: { ...DEFAULT_WORKOUT, date: workoutDate } });
+  } = useForm<Omit<IWorkout, 'id'>>({
+    defaultValues: isCreationMode
+      ? {
+          ...DEFAULT_WORKOUT,
+          date: workoutDate,
+        }
+      : undefined,
+    values: isEditMode ? workout : undefined,
+  });
 
   const [createWorkout, { isLoading: isCreatingWorkout }] = useCreateWorkout();
+  const [updateWorkout, { isLoading: isUpdatingWorkout }] = useUpdateWorkout();
+  const [deleteWorkout, { isLoading: isDeletingWorkout }] = useDeleteWorkout();
 
   const navigate = useNavigate();
 
+  const isValidWorkoutId = isEditMode || isCreationMode;
+
+  const isSaveButtonDisabled = useMemo(() => {
+    if (isCreationMode) {
+      return isCreatingWorkout;
+    }
+
+    if (isEditMode) {
+      return isUpdatingWorkout || !isDirty;
+    }
+  }, [isCreationMode, isCreatingWorkout, isUpdatingWorkout, isDirty]);
+
+  if (!isValidWorkoutId) {
+    return <Navigate to='..' />;
+  }
+
+  const submitDelete = (): void => {
+    deleteWorkout({ id: +workoutId, date: workout?.date as string })
+      .unwrap()
+      .then(goToSchedule);
+  };
+
   const submitWorkout = (data: Omit<IWorkout, 'id'>): void => {
-    createWorkout(data).unwrap().then(goToSchedule);
+    if (isCreationMode) {
+      createWorkout(data).unwrap().then(goToSchedule);
+
+      return;
+    }
+
+    if (isEditMode) {
+      const updatedFields = Object.keys(dirtyFields).reduce(
+        (prev, field) => {
+          const isDirtyField = dirtyFields[field as keyof Omit<IWorkout, 'id'>];
+
+          if (isDirtyField) {
+            return { ...prev, [field]: data[field as keyof Omit<IWorkout, 'id'>] };
+          }
+
+          return prev;
+        },
+        {} as Omit<IWorkout, 'id'>,
+      );
+
+      updateWorkout({ id: +workoutId, ...updatedFields });
+
+      return;
+    }
   };
 
   const goToSchedule = (): void => {
@@ -44,38 +112,67 @@ const WorkoutCreate: FC = () => {
 
   return (
     <form onSubmit={handleSubmit(submitWorkout)}>
-      <Stack direction='row' spacing={2} alignItems='flex-start'>
-        <TextField
-          {...register('date', VALIDATE_WORKOUT_DATE)}
-          type='date'
-          label='Дата тренировки'
-          slotProps={{ inputLabel: { shrink: true } }}
-          error={!!dateError}
-          helperText={dateError?.message}
-        />
-        <TextField
-          {...register('start_time', VALIDATE_WORKOUT_START_TIME)}
-          type='time'
-          label='Начало'
-          slotProps={{ inputLabel: { shrink: true } }}
-          error={!!startTimeError}
-          helperText={startTimeError?.message}
-        />
-        <TextField
-          type='number'
-          {...register('duration_hours', VALIDATE_WORKOUT_DURATION_HOURS)}
-          label='Длительность'
-          error={!!durationHoursError}
-          helperText={durationHoursError?.message}
-        />
-        <TextField {...register('focus_area', VALIDATE_WORKOUT_FOCUS_AREA)} label='Группа мышц' />
-        <Button variant='contained' disabled={isCreatingWorkout} type='submit'>
-          {CREATE}
-        </Button>
-        <Button variant='outlined' disabled={isCreatingWorkout} onClick={goToSchedule}>
-          {BACK}
-        </Button>
-      </Stack>
+      <Grid container spacing={2}>
+        <Grid size={2}>
+          <TextField
+            fullWidth
+            {...register('date', VALIDATE_WORKOUT_DATE)}
+            type='date'
+            label='Дата тренировки'
+            slotProps={{ inputLabel: { shrink: true } }}
+            error={!!dateError}
+            helperText={dateError?.message}
+          />
+        </Grid>
+        <Grid size={2}>
+          <TextField
+            fullWidth
+            {...register('start_time', VALIDATE_WORKOUT_START_TIME)}
+            type='time'
+            label='Начало'
+            slotProps={{ inputLabel: { shrink: true } }}
+            error={!!startTimeError}
+            helperText={startTimeError?.message}
+          />
+        </Grid>
+        <Grid size={2}>
+          <TextField
+            fullWidth
+            type='number'
+            {...register('duration_hours', VALIDATE_WORKOUT_DURATION_HOURS)}
+            label='Длительность (часов)'
+            slotProps={{ inputLabel: { shrink: true } }}
+            error={!!durationHoursError}
+            helperText={durationHoursError?.message}
+          />
+        </Grid>
+        <Grid size={2}>
+          <TextField
+            {...register('focus_area', VALIDATE_WORKOUT_FOCUS_AREA)}
+            label='Группа мышц'
+            slotProps={{ inputLabel: { shrink: true } }}
+          />
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid size='auto'>
+          <Button variant='contained' disabled={isSaveButtonDisabled} type='submit'>
+            {SAVE}
+          </Button>
+        </Grid>
+        <Grid size='auto'>
+          <Button variant='outlined' disabled={isCreatingWorkout} onClick={goToSchedule}>
+            {BACK}
+          </Button>
+        </Grid>
+        {isEditMode && (
+          <Grid size='auto'>
+            <IconButton disabled={isDeletingWorkout} color='error' onClick={submitDelete}>
+              <Delete />
+            </IconButton>
+          </Grid>
+        )}
+      </Grid>
     </form>
   );
 };
