@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { API_PREFIX, DEFAULT_API_TIMEOUT } from '../api.constants';
 
-import { ECommonTagIds, EWorkoutsApiTags, EWorkoutsEndpoints } from './workouts.constants';
+import { EWorkoutsApiTags, EWorkoutsEndpoints } from './workouts.constants';
 import {
   type IExercise,
   type ISet,
@@ -25,8 +25,8 @@ const workoutsApiSlice = createApi({
         params: workoutParams,
         url: 'workouts',
       }),
-      providesTags: (result = []) => [
-        { type: EWorkoutsApiTags.Workouts, id: ECommonTagIds.List },
+      providesTags: (result = [], _error, { date: workoutDate }) => [
+        { type: EWorkoutsApiTags.WorkoutsByDay, id: workoutDate },
         ...result.map(({ id: workoutId }) => ({ type: EWorkoutsApiTags.Workouts, id: workoutId })),
       ],
     }),
@@ -40,7 +40,12 @@ const workoutsApiSlice = createApi({
         url: 'workouts',
         method: 'POST',
       }),
-      invalidatesTags: [{ type: EWorkoutsApiTags.Workouts, id: ECommonTagIds.List }],
+      invalidatesTags: (_result, _error, { date: workoutDate }) => [
+        {
+          type: EWorkoutsApiTags.WorkoutsByDay,
+          id: workoutDate,
+        },
+      ],
     }),
     updateWorkout: builder.mutation<IWorkout, Partial<IWorkout> & Required<Pick<IWorkout, 'id'>>>({
       query: ({ id: workoutId, ...workoutBody }) => ({
@@ -55,15 +60,15 @@ const workoutsApiSlice = createApi({
         },
       ],
     }),
-    deleteWorkout: builder.mutation<void, IWorkout['id']>({
-      query: workoutId => ({
+    deleteWorkout: builder.mutation<void, Pick<IWorkout, 'id' | 'date'>>({
+      query: ({ id: workoutId }) => ({
         url: `workouts/${workoutId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _error, arg) => [
+      invalidatesTags: (_result, _error, { date: workoutDate }) => [
         {
-          type: EWorkoutsApiTags.Workouts,
-          id: arg,
+          type: EWorkoutsApiTags.WorkoutsByDay,
+          id: workoutDate,
         },
       ],
     }),
@@ -110,15 +115,15 @@ const workoutsApiSlice = createApi({
         },
       ],
     }),
-    deleteExercise: builder.mutation<void, IExercise['id']>({
-      query: exerciseId => ({
+    deleteExercise: builder.mutation<void, Pick<IExercise, 'id' | 'workout_id'>>({
+      query: ({ id: exerciseId }) => ({
         url: `exercises/${exerciseId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _error, arg) => [
+      invalidatesTags: (_result, _error, { workout_id: workoutId }) => [
         {
-          type: EWorkoutsApiTags.Exercises,
-          id: arg,
+          type: EWorkoutsApiTags.WorkoutExercises,
+          id: workoutId,
         },
       ],
     }),
@@ -165,15 +170,15 @@ const workoutsApiSlice = createApi({
         },
       ],
     }),
-    deleteSet: builder.mutation<void, ISet['id']>({
-      query: setId => ({
+    deleteSet: builder.mutation<void, Pick<ISet, 'id' | 'exercise_id'>>({
+      query: ({ id: setId }) => ({
         url: `sets/${setId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _error, arg) => [
+      invalidatesTags: (_result, _error, { exercise_id: exerciseId }) => [
         {
-          type: EWorkoutsApiTags.Sets,
-          id: arg,
+          type: EWorkoutsApiTags.ExerciseSets,
+          id: exerciseId,
         },
       ],
     }),

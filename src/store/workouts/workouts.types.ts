@@ -1,3 +1,5 @@
 import { type IWorkout } from 'api/workouts';
 
-export type TWorkoutsState = Pick<IWorkout, 'date'>;
+export interface IWorkoutsState {
+  workoutDate: IWorkout['date'];
+}

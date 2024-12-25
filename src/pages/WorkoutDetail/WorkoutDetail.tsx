@@ -2,11 +2,12 @@ import { type FC } from 'react';
 
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
-import { Button, TextField, Stack } from '@mui/material';
+import { Delete } from '@mui/icons-material';
+import { Button, TextField, Stack, IconButton } from '@mui/material';
 
 import { useForm } from 'react-hook-form';
 
-import { type IWorkout, useGetWorkout, useUpdateWorkout } from 'api/workouts';
+import { type IWorkout, useDeleteWorkout, useGetWorkout, useUpdateWorkout } from 'api/workouts';
 import { ERoutePaths } from 'constants/routes';
 
 import { getFieldRegisterOptions } from './WorkoutDetail.utils';
@@ -20,12 +21,12 @@ const WorkoutModal: FC = () => {
     skip: isNaN(+workoutId),
   });
 
-  const [updateWorkout, { isLoading }] = useUpdateWorkout();
+  const [updateWorkout, { isLoading: isUpdatingWorkout }] = useUpdateWorkout();
+  const [deleteWorkout, { isLoading: isDeletingWorkout }] = useDeleteWorkout();
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: {
       isDirty,
       dirtyFields,
@@ -60,8 +61,8 @@ const WorkoutModal: FC = () => {
     updateWorkout({ id: +workoutId, ...updatedFields });
   };
 
-  const resetForm = (): void => {
-    reset();
+  const submitDelete = (): void => {
+    deleteWorkout({ id: +workoutId, date: workout.date }).unwrap().then(goToSchedule);
   };
 
   const goToSchedule = (): void => {
@@ -81,13 +82,13 @@ const WorkoutModal: FC = () => {
           helperText={durationHoursError?.message}
         />
         <TextField {...register('focus_area', getFieldRegisterOptions('focus_area'))} label='Группа мышц' />
-        <Button variant='contained' disabled={isLoading || !isDirty} type='submit'>
+        <Button variant='contained' disabled={isUpdatingWorkout || !isDirty} type='submit'>
           Сохранить
         </Button>
-        <Button variant='contained' disabled={!isDirty} onClick={resetForm}>
-          Сбросить
-        </Button>
-        <Button variant='outlined' disabled={isLoading} onClick={goToSchedule}>
+        <IconButton onClick={submitDelete}>
+          <Delete />
+        </IconButton>
+        <Button variant='outlined' disabled={isDeletingWorkout} onClick={goToSchedule}>
           Назад
         </Button>
       </Stack>
