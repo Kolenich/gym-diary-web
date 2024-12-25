@@ -49,7 +49,7 @@ const WorkoutSchedule: FC = () => {
       <Typography variant='body1'>{WORKOUTS_TITLE}</Typography>
       {workouts.map(workout => {
         const goToWorkout = (): void => {
-          navigate(`${workout.id}`);
+          navigate(workout.id.toString());
         };
 
         return (

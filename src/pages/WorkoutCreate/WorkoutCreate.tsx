@@ -42,8 +42,6 @@ const WorkoutCreate: FC = () => {
     navigate(`/${ERoutePaths.WorkoutsSchedule}`);
   };
 
-  console.log(startTimeError);
-
   return (
     <form onSubmit={handleSubmit(submitWorkout)}>
       <Stack direction='row' spacing={2} alignItems='flex-start'>
