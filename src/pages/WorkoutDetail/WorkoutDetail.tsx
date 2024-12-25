@@ -9,8 +9,9 @@ import { useForm } from 'react-hook-form';
 
 import { type IWorkout, useDeleteWorkout, useGetWorkout, useUpdateWorkout } from 'api/workouts';
 import { ERoutePaths } from 'constants/routes';
+import { VALIDATE_WORKOUT_DURATION_HOURS, VALIDATE_WORKOUT_FOCUS_AREA } from 'constants/validators';
 
-import { getFieldRegisterOptions } from './WorkoutDetail.utils';
+import { BACK, SAVE } from './WorkoutDetail.constants';
 
 const WorkoutModal: FC = () => {
   const { workoutId = '' } = useParams();
@@ -71,26 +72,40 @@ const WorkoutModal: FC = () => {
 
   return (
     <form onSubmit={handleSubmit(submitForm)}>
-      <Stack direction='row' spacing={2} alignItems='flex-start'>
-        <TextField {...register('date')} type='date' label='Дата тренировки' />
-        <TextField {...register('start_time')} type='time' label='Начало' />
-        <TextField
-          type='number'
-          {...register('duration_hours', getFieldRegisterOptions('duration_hours'))}
-          label='Длительность'
-          error={!!durationHoursError}
-          helperText={durationHoursError?.message}
-        />
-        <TextField {...register('focus_area', getFieldRegisterOptions('focus_area'))} label='Группа мышц' />
-        <Button variant='contained' disabled={isUpdatingWorkout || !isDirty} type='submit'>
-          Сохранить
-        </Button>
-        <IconButton onClick={submitDelete}>
-          <Delete />
-        </IconButton>
-        <Button variant='outlined' disabled={isDeletingWorkout} onClick={goToSchedule}>
-          Назад
-        </Button>
+      <Stack spacing={2}>
+        <Stack direction='row' spacing={2} alignItems='flex-start'>
+          <TextField
+            {...register('date')}
+            type='date'
+            label='Дата тренировки'
+            slotProps={{ inputLabel: { shrink: true } }}
+          />
+          <TextField
+            {...register('start_time')}
+            type='time'
+            label='Начало'
+            slotProps={{ inputLabel: { shrink: true } }}
+          />
+          <TextField
+            type='number'
+            {...register('duration_hours', VALIDATE_WORKOUT_DURATION_HOURS)}
+            label='Длительность'
+            error={!!durationHoursError}
+            helperText={durationHoursError?.message}
+          />
+          <TextField {...register('focus_area', VALIDATE_WORKOUT_FOCUS_AREA)} label='Группа мышц' />
+        </Stack>
+        <Stack direction='row' spacing={2}>
+          <Button variant='contained' disabled={isUpdatingWorkout || !isDirty} type='submit'>
+            {SAVE}
+          </Button>
+          <Button variant='outlined' disabled={isDeletingWorkout} onClick={goToSchedule}>
+            {BACK}
+          </Button>
+          <IconButton color='error' onClick={submitDelete}>
+            <Delete />
+          </IconButton>
+        </Stack>
       </Stack>
     </form>
   );

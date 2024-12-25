@@ -2,13 +2,14 @@ import { type ChangeEvent, type FC } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
-import { Grid2 as Grid, TextField, Typography } from '@mui/material';
+import { Button, Grid2 as Grid, TextField, Typography } from '@mui/material';
 
 import { useGetWorkouts } from 'api/workouts';
+import { ERoutePaths } from 'constants/routes';
 import { useAppDispatch, useAppSelector } from 'store/store.hooks';
 import { selectWorkoutDay, setWorkoutDate } from 'store/workouts';
 
-import { SCHEDULE_TITLE, WORKOUTS_TITLE } from './WorkoutSchedule.constants';
+import { CREATE_WORKOUT, SCHEDULE_TITLE, WORKOUTS_TITLE } from './WorkoutSchedule.constants';
 
 const WorkoutSchedule: FC = () => {
   const workoutDate = useAppSelector(selectWorkoutDay);
@@ -21,6 +22,10 @@ const WorkoutSchedule: FC = () => {
 
   const updateWorkoutDate = (event: ChangeEvent<HTMLInputElement>): void => {
     dispatch(setWorkoutDate(event.target.value));
+  };
+
+  const goToWorkoutCreate = (): void => {
+    navigate(ERoutePaths.WorkoutCreate);
   };
 
   return (
@@ -53,6 +58,9 @@ const WorkoutSchedule: FC = () => {
           </Typography>
         );
       })}
+      <Button variant='contained' color='primary' onClick={goToWorkoutCreate}>
+        {CREATE_WORKOUT}
+      </Button>
     </>
   );
 };
