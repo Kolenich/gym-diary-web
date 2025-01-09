@@ -18,9 +18,9 @@ import {
 import { useAppSelector } from 'store/store.hooks';
 import { selectWorkoutDay } from 'store/workouts';
 
-import { BACK, DEFAULT_WORKOUT, SAVE, WORKOUT_CREATE_ID } from './WorkoutCreate.constants';
+import { BACK, DEFAULT_WORKOUT, SAVE } from './WorkoutDetail.constants';
 
-const WorkoutCreate: FC = () => {
+const WorkoutDetail: FC = () => {
   const { workoutId = '' } = useParams();
 
   const workoutDate = useAppSelector(selectWorkoutDay);
@@ -30,12 +30,11 @@ const WorkoutCreate: FC = () => {
   });
 
   const isEditMode = !isNaN(+workoutId);
-  const isCreationMode = workoutId === WORKOUT_CREATE_ID;
+  const isCreationMode = workoutId === ERoutePaths.WorkoutCreate;
 
   const {
     register,
     handleSubmit,
-
     formState: {
       isDirty,
       dirtyFields,
@@ -88,16 +87,18 @@ const WorkoutCreate: FC = () => {
 
     if (isEditMode) {
       const updatedFields = Object.keys(dirtyFields).reduce(
-        (prev, field) => {
-          const isDirtyField = dirtyFields[field as keyof Omit<IWorkout, 'id'>];
+        (prevUpdatedFields, currDirtyField) => {
+          const typedCurrDirtyField = currDirtyField as keyof Omit<IWorkout, 'id'>;
+
+          const isDirtyField = dirtyFields[typedCurrDirtyField];
 
           if (isDirtyField) {
-            return { ...prev, [field]: data[field as keyof Omit<IWorkout, 'id'>] };
+            return { ...prevUpdatedFields, [typedCurrDirtyField]: data[typedCurrDirtyField] };
           }
 
-          return prev;
+          return prevUpdatedFields;
         },
-        {} as Omit<IWorkout, 'id'>,
+        {} as Partial<Omit<IWorkout, 'id'>>,
       );
 
       updateWorkout({ id: +workoutId, ...updatedFields });
@@ -161,7 +162,7 @@ const WorkoutCreate: FC = () => {
           </Button>
         </Grid>
         <Grid size='auto'>
-          <Button variant='outlined' disabled={isCreatingWorkout} onClick={goToSchedule}>
+          <Button variant='outlined' onClick={goToSchedule}>
             {BACK}
           </Button>
         </Grid>
@@ -177,4 +178,4 @@ const WorkoutCreate: FC = () => {
   );
 };
 
-export default WorkoutCreate;
+export default WorkoutDetail;

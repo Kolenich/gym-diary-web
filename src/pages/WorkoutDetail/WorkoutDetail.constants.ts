@@ -8,4 +8,3 @@ export const DEFAULT_WORKOUT: Omit<IWorkout, 'id' | 'date'> = {
 
 export const SAVE = 'Сохранить';
 export const BACK = 'Назад';
-export const WORKOUT_CREATE_ID = 'create';

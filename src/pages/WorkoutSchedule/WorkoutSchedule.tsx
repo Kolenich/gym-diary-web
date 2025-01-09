@@ -9,7 +9,7 @@ import { ERoutePaths } from 'constants/routes';
 import { useAppDispatch, useAppSelector } from 'store/store.hooks';
 import { selectWorkoutDay, setWorkoutDate } from 'store/workouts';
 
-import { CREATE_WORKOUT, SCHEDULE_TITLE, WORKOUTS_TITLE } from './WorkoutSchedule.constants';
+import { CHOOSE_DATE, CREATE_WORKOUT, SCHEDULE_TITLE, WORKOUTS_TITLE } from './WorkoutSchedule.constants';
 
 const WorkoutSchedule: FC = () => {
   const workoutDate = useAppSelector(selectWorkoutDay);
@@ -41,7 +41,7 @@ const WorkoutSchedule: FC = () => {
             value={workoutDate}
             onChange={updateWorkoutDate}
             type='date'
-            label='Выбрать дату'
+            label={CHOOSE_DATE}
             slotProps={{ inputLabel: { shrink: true } }}
           />
         </Grid>
