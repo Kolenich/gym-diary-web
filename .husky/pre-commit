@@ -4,6 +4,3 @@
 npx tsc --noEmit --skipLibCheck -p tsconfig.json
 npx lint-staged
 npm run commit:patch
-docker build -t web .
-docker tag web kolenich/diary:web
-docker push kolenich/diary:web

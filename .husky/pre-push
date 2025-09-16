@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+docker build -t web .
+docker tag web kolenich/diary:web
+docker push kolenich/diary:web
