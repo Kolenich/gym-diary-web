@@ -1,21 +1,13 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useUnmountEffect } from 'hooks/use-unmount-effect';
 
-export const useWebsocket = (url: string, onMessage?: (data: MessageEvent) => void): WebSocket | null => {
-  const websocket = useRef<WebSocket | null>(null);
+export const useWebsocket = (url: string, onMessage?: (data: MessageEvent) => void): WebSocket => {
+  const websocket = new WebSocket(`wss/${url}`);
 
-  useLayoutEffect(() => {
-    websocket.current = new WebSocket(`wss/${url}`);
+  if (onMessage) {
+    websocket.addEventListener('message', onMessage);
+  }
 
-    const hasOnMessageHandler = !!onMessage;
+  useUnmountEffect(websocket.close);
 
-    if (hasOnMessageHandler) {
-      websocket.current.addEventListener('message', onMessage);
-    }
-
-    return (): void => {
-      websocket.current?.close();
-    };
-  }, [url]);
-
-  return websocket.current;
+  return websocket;
 };
