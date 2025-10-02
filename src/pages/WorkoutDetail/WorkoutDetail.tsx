@@ -108,7 +108,7 @@ const WorkoutDetail: FC = () => {
   };
 
   const goToSchedule = (): void => {
-    navigate(`/${ERoutePaths.WorkoutsSchedule}`);
+    navigate('..');
   };
 
   return (
