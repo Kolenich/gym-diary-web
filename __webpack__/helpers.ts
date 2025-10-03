@@ -52,7 +52,6 @@ export const commonPlugins = [
       './WorkoutsSchedule': resolvePath('src/pages/WorkoutSchedule/WorkoutSchedule'),
     },
     shared: {
-      ...deps,
       react: { singleton: true, requiredVersion: deps.react },
       'react-dom': { singleton: true, requiredVersion: deps['react-dom'] },
       'react-router-dom': { singleton: true, requiredVersion: deps['react-router-dom'] },

@@ -3,7 +3,7 @@ import { type FC, useMemo } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
 import { Delete } from '@mui/icons-material';
-import { Button, Grid2 as Grid, IconButton, TextField } from '@mui/material';
+import { Button, Grid, IconButton, TextField } from '@mui/material';
 
 import { useForm } from 'react-hook-form';
 

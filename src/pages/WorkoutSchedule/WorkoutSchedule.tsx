@@ -2,7 +2,7 @@ import { type ChangeEvent, type FC } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
-import { Button, Grid2 as Grid, TextField, Typography } from '@mui/material';
+import { Button, Grid, TextField, Typography } from '@mui/material';
 
 import { useGetWorkouts } from 'api/workouts';
 import { ERoutePaths } from 'constants/routes';
