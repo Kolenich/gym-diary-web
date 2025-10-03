@@ -19,11 +19,14 @@ export interface ISet {
   exercise_id: IExercise['id'];
 }
 
-export type TStringFilterLookups = '__icontains' | '';
+export type TDateFilterLookups = '__gte' | '__lte' | '';
+export type TFocusAreaFilterLookups = '__icontains';
 export type TOrderingPrefixes = '-' | '';
 
 export type TGetWorkoutsFilteringParams = {
-  [Key in keyof Pick<IWorkout, 'focus_area' | 'date'> as `${Key}${TStringFilterLookups}`]?: string;
+  [Key in keyof Pick<IWorkout, 'date'> as `${Key}${TDateFilterLookups}`]?: string;
+} & {
+  [Key in keyof Pick<IWorkout, 'focus_area'> as `${Key}${TFocusAreaFilterLookups}`]?: string;
 };
 export type TGetWorkoutsOrderingParams = {
   ordering?: `${TOrderingPrefixes}${keyof Pick<IWorkout, 'date' | 'start_time'>}`;
