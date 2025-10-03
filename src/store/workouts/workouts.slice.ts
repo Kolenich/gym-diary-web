@@ -1,11 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import { TODAY_DATE_UTC_STRING } from 'constants/date';
+import { TODAY } from 'constants/date';
+import { toIsoString } from 'utils/iso-to-datetime-local';
 
 import { type IWorkoutsState } from './workouts.types';
 
 const INITIAL_STATE: IWorkoutsState = {
-  workoutDate: TODAY_DATE_UTC_STRING,
+  workoutDate: toIsoString(TODAY).split('T')[0],
 };
 
 const workoutsSlice = createSlice({

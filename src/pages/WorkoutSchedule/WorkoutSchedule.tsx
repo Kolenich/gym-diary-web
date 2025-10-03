@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Grid, TextField, Typography } from '@mui/material';
 
 import { useGetWorkouts } from 'api/workouts';
+import { TODAY } from 'constants/date';
 import { ERoutePaths } from 'constants/routes';
 import { useAppDispatch, useAppSelector } from 'store/store.hooks';
 import { selectWorkoutDay, setWorkoutDate } from 'store/workouts';
+import { toIsoString } from 'utils/iso-to-datetime-local';
 
 import { CHOOSE_DATE, CREATE_WORKOUT, SCHEDULE_TITLE, WORKOUTS_TITLE } from './WorkoutSchedule.constants';
 
@@ -16,7 +18,7 @@ const WorkoutSchedule: FC = () => {
 
   const dispatch = useAppDispatch();
 
-  const { data: workouts = [] } = useGetWorkouts({ date: workoutDate }, { skip: !workoutDate });
+  const { data: workouts = [] } = useGetWorkouts({ date: workoutDate });
 
   const navigate = useNavigate();
 
@@ -42,7 +44,7 @@ const WorkoutSchedule: FC = () => {
             onChange={updateWorkoutDate}
             type='date'
             label={CHOOSE_DATE}
-            slotProps={{ inputLabel: { shrink: true } }}
+            slotProps={{ inputLabel: { shrink: true }, htmlInput: { min: toIsoString(TODAY).split('T')[0] } }}
           />
         </Grid>
       </Grid>
