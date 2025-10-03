@@ -10,7 +10,7 @@ const store = configureStore({
     [workoutsSlice.name]: workoutsSlice.reducer,
     [workoutsApiSlice.reducerPath]: workoutsApiSlice.reducer,
   },
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(workoutsApiSlice.middleware),
+  middleware: gDM => gDM().concat(workoutsApiSlice.middleware),
 });
 
 setupListeners(store.dispatch);
