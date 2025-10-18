@@ -36,10 +36,10 @@ const workoutsApiSlice = createApi({
         const { data: newWorkout } = await queryFulfilled;
 
         dispatch(
-          updateQueryData('getWorkouts', { date: newWorkout.date }, draftWorkouts => {
-            draftWorkouts.push(newWorkout);
-          }),
+          updateQueryData('getWorkouts', { date: newWorkout.date }, draftWorkouts => draftWorkouts.concat(newWorkout)),
         );
+
+        dispatch(upsertQueryData('getWorkout', newWorkout.id, newWorkout));
       },
     }),
     updateWorkout: builder.mutation<IWorkout, IWorkout>({
@@ -116,10 +116,12 @@ const workoutsApiSlice = createApi({
         const { data: newExercise } = await queryFulfilled;
 
         dispatch(
-          updateQueryData('getExercises', { workout_id: newExercise.workout_id }, draftExercises => {
-            draftExercises.push(newExercise);
-          }),
+          updateQueryData('getExercises', { workout_id: newExercise.workout_id }, draftExercises =>
+            draftExercises.concat(newExercise),
+          ),
         );
+
+        dispatch(upsertQueryData('getExercise', newExercise.id, newExercise));
       },
     }),
     updateExercise: builder.mutation<IExercise, IExercise>({
@@ -200,13 +202,15 @@ const workoutsApiSlice = createApi({
             draftSets.push(newSet);
           }),
         );
+
+        dispatch(upsertQueryData('getSet', newSet.id, newSet));
       },
     }),
     updateSet: builder.mutation<ISet, ISet>({
       query: ({ id: setId, ...setBody }) => ({
         body: setBody,
         url: `sets/${setId}`,
-        method: 'PATCH',
+        method: 'PUT',
       }),
       onQueryStarted: async (updatedSet, { dispatch, queryFulfilled }) => {
         const setUpdate = dispatch(
@@ -261,7 +265,7 @@ const workoutsApiSlice = createApi({
 });
 
 export const {
-  util: { updateQueryData },
+  util: { updateQueryData, upsertQueryData },
   useGetWorkoutsQuery: useGetWorkouts,
   useGetWorkoutQuery: useGetWorkout,
   useCreateWorkoutMutation: useCreateWorkout,
