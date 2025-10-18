@@ -37,7 +37,6 @@ const WorkoutDetail: FC = () => {
     handleSubmit,
     formState: {
       isDirty,
-      dirtyFields,
       errors: { duration_hours: durationHoursError, start_time: startTimeError, date: dateError },
     },
   } = useForm<Omit<IWorkout, 'id'>>({
@@ -86,22 +85,7 @@ const WorkoutDetail: FC = () => {
     }
 
     if (isEditMode) {
-      const updatedFields = Object.keys(dirtyFields).reduce(
-        (prevUpdatedFields, currDirtyField) => {
-          const typedCurrDirtyField = currDirtyField as keyof Omit<IWorkout, 'id'>;
-
-          const isDirtyField = dirtyFields[typedCurrDirtyField];
-
-          if (isDirtyField) {
-            return { ...prevUpdatedFields, [typedCurrDirtyField]: data[typedCurrDirtyField] };
-          }
-
-          return prevUpdatedFields;
-        },
-        {} as Partial<Omit<IWorkout, 'id'>>,
-      );
-
-      updateWorkout({ id: +workoutId, ...updatedFields });
+      updateWorkout({ id: +workoutId, ...data });
 
       return;
     }

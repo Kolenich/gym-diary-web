@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { API_PREFIX, DEFAULT_API_TIMEOUT } from '../api.constants';
 
-import { EWorkoutsApiTags, EWorkoutsEndpoints } from './workouts.constants';
+import { EWorkoutsEndpoints } from './workouts.constants';
 import {
   type IExercise,
   type ISet,
@@ -18,21 +18,15 @@ const workoutsApiSlice = createApi({
     baseUrl: `${API_PREFIX}/${EWorkoutsEndpoints.WorkoutsApi}`,
     timeout: DEFAULT_API_TIMEOUT,
   }),
-  tagTypes: Object.values(EWorkoutsApiTags),
   endpoints: builder => ({
     getWorkouts: builder.query<IWorkout[], TGetWorkoutsParams>({
       query: workoutParams => ({
         params: workoutParams,
         url: 'workouts',
       }),
-      providesTags: (result = [], _error, { date: workoutDate }) => [
-        { type: EWorkoutsApiTags.WorkoutsByDay, id: workoutDate },
-        ...result.map(({ id: workoutId }) => ({ type: EWorkoutsApiTags.Workouts, id: workoutId })),
-      ],
     }),
     getWorkout: builder.query<IWorkout, IWorkout['id']>({
       query: workoutId => `workouts/${workoutId}`,
-      providesTags: (_result, _error, arg) => [{ type: EWorkoutsApiTags.Workouts, id: arg }],
     }),
     createWorkout: builder.mutation<IWorkout, Omit<IWorkout, 'id'>>({
       query: workoutBody => ({
@@ -40,57 +34,79 @@ const workoutsApiSlice = createApi({
         url: 'workouts',
         method: 'POST',
       }),
-      invalidatesTags: (_result, _error, { date: workoutDate }) => [
-        {
-          type: EWorkoutsApiTags.WorkoutsByDay,
-          id: workoutDate,
-        },
-      ],
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        const { data: newWorkout } = await queryFulfilled;
+
+        dispatch(
+          updateQueryData('getWorkouts', { date: newWorkout.date }, draftWorkouts => {
+            draftWorkouts.push(newWorkout);
+          }),
+        );
+      },
     }),
-    updateWorkout: builder.mutation<IWorkout, Partial<IWorkout> & Required<Pick<IWorkout, 'id'>>>({
+    updateWorkout: builder.mutation<IWorkout, IWorkout>({
       query: ({ id: workoutId, ...workoutBody }) => ({
         body: workoutBody,
         url: `workouts/${workoutId}`,
-        method: 'PATCH',
+        method: 'PUT',
       }),
-      invalidatesTags: (_result, _error, { id: workoutId }) => [
-        {
-          type: EWorkoutsApiTags.Workouts,
-          id: workoutId,
-        },
-      ],
+      onQueryStarted: async (updatedWorkout, { dispatch, queryFulfilled }) => {
+        const workoutUpdate = dispatch(
+          updateQueryData('getWorkout', updatedWorkout.id, draftWorkout => ({
+            ...draftWorkout,
+            ...updatedWorkout,
+          })),
+        );
+
+        const workoutListUpdate = dispatch(
+          updateQueryData('getWorkouts', { date: updatedWorkout.date }, draftWorkouts =>
+            draftWorkouts.map(draftWorkout => {
+              const isTargetWorkout = draftWorkout.id === updatedWorkout.id;
+
+              if (isTargetWorkout) {
+                return { ...draftWorkout, ...updatedWorkout };
+              }
+
+              return draftWorkout;
+            }),
+          ),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          workoutUpdate.undo();
+          workoutListUpdate.undo();
+        }
+      },
     }),
     deleteWorkout: builder.mutation<void, Pick<IWorkout, 'id' | 'date'>>({
       query: ({ id: workoutId }) => ({
         url: `workouts/${workoutId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _error, { date: workoutDate }) => [
-        {
-          type: EWorkoutsApiTags.WorkoutsByDay,
-          id: workoutDate,
-        },
-      ],
+      onQueryStarted: async (deletedWorkout, { dispatch, queryFulfilled }) => {
+        const workoutListUpdate = dispatch(
+          updateQueryData('getWorkouts', { date: deletedWorkout.date }, draftWorkouts =>
+            draftWorkouts.filter(draftWorkout => draftWorkout.id !== deletedWorkout.id),
+          ),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          workoutListUpdate.undo();
+        }
+      },
     }),
     getExercises: builder.query<IExercise[], TGetExercisesParams>({
       query: exerciseParams => ({
         params: exerciseParams,
         url: 'exercises',
       }),
-      providesTags: (result = [], _error, { workout_id: workoutId }) => [
-        {
-          type: EWorkoutsApiTags.WorkoutExercises,
-          id: workoutId,
-        },
-        ...result.map(({ id: exerciseId }) => ({
-          type: EWorkoutsApiTags.Exercises,
-          id: exerciseId,
-        })),
-      ],
     }),
     getExercise: builder.query<IExercise, IExercise['id']>({
       query: exerciseId => `exercises/${exerciseId}`,
-      providesTags: (_result, _error, arg) => [{ type: EWorkoutsApiTags.Exercises, id: arg }],
     }),
     createExercise: builder.mutation<IExercise, Omit<IExercise, 'id'>>({
       query: exerciseBody => ({
@@ -98,51 +114,79 @@ const workoutsApiSlice = createApi({
         url: 'exercises',
         method: 'POST',
       }),
-      invalidatesTags: (_result, _error, { workout_id: workoutId }) => [
-        { type: EWorkoutsApiTags.WorkoutExercises, id: workoutId },
-      ],
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        const { data: newExercise } = await queryFulfilled;
+
+        dispatch(
+          updateQueryData('getExercises', { workout_id: newExercise.workout_id }, draftExercises => {
+            draftExercises.push(newExercise);
+          }),
+        );
+      },
     }),
-    updateExercise: builder.mutation<IExercise, Partial<IExercise> & Required<Pick<IExercise, 'id'>>>({
+    updateExercise: builder.mutation<IExercise, IExercise>({
       query: ({ id: exerciseId, ...exerciseBody }) => ({
         body: exerciseBody,
         url: `exercises/${exerciseId}`,
-        method: 'PATCH',
+        method: 'PUT',
       }),
-      invalidatesTags: (_result, _error, { id: exerciseId }) => [
-        {
-          type: EWorkoutsApiTags.Exercises,
-          id: exerciseId,
-        },
-      ],
+      onQueryStarted: async (updatedExercise, { dispatch, queryFulfilled }) => {
+        const exerciseUpdate = dispatch(
+          updateQueryData('getExercise', updatedExercise.id, draftExercise => ({
+            ...draftExercise,
+            ...updatedExercise,
+          })),
+        );
+
+        const exerciseListUpdate = dispatch(
+          updateQueryData('getExercises', { workout_id: updatedExercise.workout_id }, draftExercises =>
+            draftExercises.map(draftExercise => {
+              const isTargetExercise = draftExercise.id === updatedExercise.id;
+
+              if (isTargetExercise) {
+                return { ...draftExercise, ...updatedExercise };
+              }
+
+              return draftExercise;
+            }),
+          ),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          exerciseUpdate.undo();
+          exerciseListUpdate.undo();
+        }
+      },
     }),
     deleteExercise: builder.mutation<void, Pick<IExercise, 'id' | 'workout_id'>>({
       query: ({ id: exerciseId }) => ({
         url: `exercises/${exerciseId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _error, { workout_id: workoutId }) => [
-        {
-          type: EWorkoutsApiTags.WorkoutExercises,
-          id: workoutId,
-        },
-      ],
+      onQueryStarted: async (deletedExercise, { dispatch, queryFulfilled }) => {
+        const exerciseListUpdate = dispatch(
+          updateQueryData('getExercises', { workout_id: deletedExercise.workout_id }, draftExercises =>
+            draftExercises.filter(draftExercise => draftExercise.id !== deletedExercise.id),
+          ),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          exerciseListUpdate.undo();
+        }
+      },
     }),
     getSets: builder.query<ISet[], TGetSetsParams>({
       query: setParams => ({
         params: setParams,
         url: 'sets',
       }),
-      providesTags: (result = [], _error, { exercise_id: exerciseId }) => [
-        {
-          type: EWorkoutsApiTags.ExerciseSets,
-          id: exerciseId,
-        },
-        ...result.map(({ id: setId }) => ({ type: EWorkoutsApiTags.Sets, id: setId })),
-      ],
     }),
     getSet: builder.query<ISet, ISet['id']>({
       query: setId => `sets/${setId}`,
-      providesTags: (_result, _error, arg) => [{ type: EWorkoutsApiTags.Sets, id: arg }],
     }),
     createSet: builder.mutation<ISet, Omit<ISet, 'id'>>({
       query: setBody => ({
@@ -150,42 +194,76 @@ const workoutsApiSlice = createApi({
         url: 'sets',
         method: 'POST',
       }),
-      invalidatesTags: (_result, _error, { exercise_id: exerciseId }) => [
-        {
-          type: EWorkoutsApiTags.ExerciseSets,
-          id: exerciseId,
-        },
-      ],
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        const { data: newSet } = await queryFulfilled;
+
+        dispatch(
+          updateQueryData('getSets', { exercise_id: newSet.exercise_id }, draftSets => {
+            draftSets.push(newSet);
+          }),
+        );
+      },
     }),
-    updateSet: builder.mutation<ISet, Partial<ISet> & Required<Pick<ISet, 'id'>>>({
+    updateSet: builder.mutation<ISet, ISet>({
       query: ({ id: setId, ...setBody }) => ({
         body: setBody,
         url: `sets/${setId}`,
         method: 'PATCH',
       }),
-      invalidatesTags: (_result, _error, { id: setId }) => [
-        {
-          type: EWorkoutsApiTags.Sets,
-          id: setId,
-        },
-      ],
+      onQueryStarted: async (updatedSet, { dispatch, queryFulfilled }) => {
+        const setUpdate = dispatch(
+          updateQueryData('getSet', updatedSet.id, draftSet => ({
+            ...draftSet,
+            ...updatedSet,
+          })),
+        );
+
+        const setListUpdate = dispatch(
+          updateQueryData('getSets', { exercise_id: updatedSet.exercise_id }, draftSets =>
+            draftSets.map(draftSet => {
+              const isTargetSet = draftSet.id === updatedSet.id;
+
+              if (isTargetSet) {
+                return { ...draftSet, ...updatedSet };
+              }
+
+              return draftSet;
+            }),
+          ),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          setUpdate.undo();
+          setListUpdate.undo();
+        }
+      },
     }),
     deleteSet: builder.mutation<void, Pick<ISet, 'id' | 'exercise_id'>>({
       query: ({ id: setId }) => ({
         url: `sets/${setId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _error, { exercise_id: exerciseId }) => [
-        {
-          type: EWorkoutsApiTags.ExerciseSets,
-          id: exerciseId,
-        },
-      ],
+      onQueryStarted: async (deletedSet, { dispatch, queryFulfilled }) => {
+        const setListUpdate = dispatch(
+          updateQueryData('getSets', { exercise_id: deletedSet.exercise_id }, draftSets =>
+            draftSets.filter(draftSet => draftSet.id !== deletedSet.id),
+          ),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          setListUpdate.undo();
+        }
+      },
     }),
   }),
 });
 
 export const {
+  util: { updateQueryData },
   useGetWorkoutsQuery: useGetWorkouts,
   useGetWorkoutQuery: useGetWorkout,
   useCreateWorkoutMutation: useCreateWorkout,
