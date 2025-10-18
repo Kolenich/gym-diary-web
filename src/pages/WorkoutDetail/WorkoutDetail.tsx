@@ -7,18 +7,21 @@ import { Button, Grid, IconButton, TextField } from '@mui/material';
 
 import { useForm } from 'react-hook-form';
 
-import { type IWorkout, useCreateWorkout, useDeleteWorkout, useGetWorkout, useUpdateWorkout } from 'api/workouts';
 import { ERoutePaths } from 'constants/routes';
+import { useCreateWorkout, useDeleteWorkout, useGetWorkout, useUpdateWorkout } from 'store/api';
+import { useAppSelector } from 'store/store.hooks';
+import { selectWorkoutDay } from 'store/workouts';
+
 import {
+  BACK,
+  DEFAULT_WORKOUT,
+  SAVE,
   VALIDATE_WORKOUT_DATE,
   VALIDATE_WORKOUT_DURATION_HOURS,
   VALIDATE_WORKOUT_FOCUS_AREA,
   VALIDATE_WORKOUT_START_TIME,
-} from 'constants/validators';
-import { useAppSelector } from 'store/store.hooks';
-import { selectWorkoutDay } from 'store/workouts';
-
-import { BACK, DEFAULT_WORKOUT, SAVE } from './WorkoutDetail.constants';
+} from './WorkoutDetail.constants';
+import { type TFormValues } from './WorkoutDetail.types';
 
 const WorkoutDetail: FC = () => {
   const { workoutId = '' } = useParams();
@@ -39,7 +42,7 @@ const WorkoutDetail: FC = () => {
       isDirty,
       errors: { duration_hours: durationHoursError, start_time: startTimeError, date: dateError },
     },
-  } = useForm<Omit<IWorkout, 'id'>>({
+  } = useForm<TFormValues>({
     defaultValues: isCreationMode
       ? {
           ...DEFAULT_WORKOUT,
@@ -77,7 +80,7 @@ const WorkoutDetail: FC = () => {
       .then(goToSchedule);
   };
 
-  const submitWorkout = (data: Omit<IWorkout, 'id'>): void => {
+  const submitWorkout = (data: TFormValues): void => {
     if (isCreationMode) {
       createWorkout(data).unwrap().then(goToSchedule);
 

@@ -1,6 +1,6 @@
 {
   "name": "gym_diary",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -19,9 +19,9 @@
   "scripts": {
     "start": "webpack serve --config __webpack__/dev.config.ts",
     "build": "webpack --config __webpack__/prod.config.ts",
-    "commit:patch": "npm version patch --no-git-tag-version --force && git add .",
-    "commit:minor": "npm version minor --no-git-tag-version --force && git add .",
-    "commit:major": "npm version major --no-git-tag-version --force && git add .",
+    "commit:patch": "npm version patch --no-git-tag-version && git update-index --add package.json --add package-lock.json",
+    "update:minor": "ts-node scripts/update-minor.ts",
+    "update:major": "ts-node scripts/update-major.ts",
     "prepare": "husky install"
   },
   "lint-staged": {

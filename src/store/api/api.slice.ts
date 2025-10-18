@@ -1,8 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { API_PREFIX, DEFAULT_API_TIMEOUT } from '../api.constants';
-
-import { EWorkoutsEndpoints } from './workouts.constants';
+import { API_PREFIX, DEFAULT_API_TIMEOUT, EWorkoutsEndpoints } from './api.constants';
 import {
   type IExercise,
   type ISet,
@@ -10,10 +8,10 @@ import {
   type TGetExercisesParams,
   type TGetSetsParams,
   type TGetWorkoutsParams,
-} from './workouts.types';
+} from './api.types';
 
 const workoutsApiSlice = createApi({
-  reducerPath: 'workoutsApi',
+  reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     baseUrl: `${API_PREFIX}/${EWorkoutsEndpoints.WorkoutsApi}`,
     timeout: DEFAULT_API_TIMEOUT,

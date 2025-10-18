@@ -1,8 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
 
-import { workoutsApiSlice } from 'api/workouts';
-
+import { workoutsApiSlice } from './api';
 import { workoutsSlice } from './workouts';
 
 const store = configureStore({
