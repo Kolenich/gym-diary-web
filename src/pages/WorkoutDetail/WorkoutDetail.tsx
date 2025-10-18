@@ -2,6 +2,8 @@ import { type FC, useMemo } from 'react';
 
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 
+import { type FetchBaseQueryError } from '@reduxjs/toolkit/query';
+
 import { Delete } from '@mui/icons-material';
 import { Button, Grid, IconButton, TextField } from '@mui/material';
 
@@ -28,7 +30,11 @@ const WorkoutDetail: FC = () => {
 
   const workoutDate = useAppSelector(selectWorkoutDay);
 
-  const { data: workout } = useGetWorkout(+workoutId, {
+  const {
+    data: workout,
+    isError: isWorkoutError,
+    error: workoutError,
+  } = useGetWorkout(+workoutId, {
     skip: isNaN(+workoutId),
   });
 
@@ -66,29 +72,43 @@ const WorkoutDetail: FC = () => {
     }
 
     if (isEditMode) {
-      return isUpdatingWorkout || !isDirty;
+      return isUpdatingWorkout || isDeletingWorkout || !isDirty;
     }
+
+    return false;
   }, [isCreationMode, isCreatingWorkout, isUpdatingWorkout, isDirty]);
 
   if (!isValidWorkoutId) {
     return <Navigate to='..' />;
   }
 
-  const submitDelete = (): void => {
-    deleteWorkout({ id: +workoutId, date: workout?.date as string })
-      .unwrap()
-      .then(goToSchedule);
+  if (isWorkoutError) {
+    const { status } = workoutError as FetchBaseQueryError;
+
+    const isNotFound = status === 404;
+
+    if (isNotFound) {
+      return <Navigate to='..' />;
+    }
+  }
+
+  const submitDelete = async (): Promise<void> => {
+    await deleteWorkout({ id: +workoutId, date: workout?.date as string }).unwrap();
+
+    goToSchedule();
   };
 
-  const submitWorkout = (data: TFormValues): void => {
+  const submitWorkout = async (data: TFormValues): Promise<void> => {
     if (isCreationMode) {
-      createWorkout(data).unwrap().then(goToSchedule);
+      await createWorkout(data).unwrap();
+
+      goToSchedule();
 
       return;
     }
 
     if (isEditMode) {
-      updateWorkout({ id: +workoutId, ...data });
+      await updateWorkout({ id: +workoutId, ...data }).unwrap();
 
       return;
     }
