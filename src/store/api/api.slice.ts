@@ -22,6 +22,19 @@ const workoutsApiSlice = createApi({
         params: workoutParams,
         url: 'workouts',
       }),
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        const { data: workouts } = await queryFulfilled;
+
+        dispatch(
+          upsertQueryEntries(
+            workouts.map(workout => ({
+              endpointName: 'getWorkout',
+              arg: workout.id,
+              value: workout,
+            })),
+          ),
+        );
+      },
     }),
     getWorkout: builder.query<IWorkout, IWorkout['id']>({
       query: workoutId => `workouts/${workoutId}`,
@@ -102,6 +115,19 @@ const workoutsApiSlice = createApi({
         params: exerciseParams,
         url: 'exercises',
       }),
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        const { data: exercises } = await queryFulfilled;
+
+        dispatch(
+          upsertQueryEntries(
+            exercises.map(exercise => ({
+              endpointName: 'getExercise',
+              arg: exercise.id,
+              value: exercise,
+            })),
+          ),
+        );
+      },
     }),
     getExercise: builder.query<IExercise, IExercise['id']>({
       query: exerciseId => `exercises/${exerciseId}`,
@@ -184,6 +210,19 @@ const workoutsApiSlice = createApi({
         params: setParams,
         url: 'sets',
       }),
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        const { data: sets } = await queryFulfilled;
+
+        dispatch(
+          upsertQueryEntries(
+            sets.map(set => ({
+              endpointName: 'getSet',
+              arg: set.id,
+              value: set,
+            })),
+          ),
+        );
+      },
     }),
     getSet: builder.query<ISet, ISet['id']>({
       query: setId => `sets/${setId}`,
@@ -198,9 +237,7 @@ const workoutsApiSlice = createApi({
         const { data: newSet } = await queryFulfilled;
 
         dispatch(
-          updateQueryData('getSets', { exercise_id: newSet.exercise_id }, draftSets => {
-            draftSets.push(newSet);
-          }),
+          updateQueryData('getSets', { exercise_id: newSet.exercise_id }, draftSets => draftSets.concat(newSet)),
         );
 
         dispatch(upsertQueryData('getSet', newSet.id, newSet));
@@ -265,7 +302,7 @@ const workoutsApiSlice = createApi({
 });
 
 export const {
-  util: { updateQueryData, upsertQueryData },
+  util: { updateQueryData, upsertQueryData, upsertQueryEntries },
   useGetWorkoutsQuery: useGetWorkouts,
   useGetWorkoutQuery: useGetWorkout,
   useCreateWorkoutMutation: useCreateWorkout,
