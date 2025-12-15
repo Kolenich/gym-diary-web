@@ -31,12 +31,11 @@ export default merge(commonConfig, {
     },
     proxy: [
       {
-        context: ['/api'],
+        context: [process.env.API_PREFIX],
         target: 'http://localhost:8000',
-        pathRewrite: { '^/api': '' },
       },
       {
-        context: ['/wss'],
+        context: [process.env.WEBSOCKET_PREFIX],
         target: 'ws://localhost:8000',
         ws: true,
       },

@@ -1,12 +1,15 @@
 import { readdirSync, readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 
+import dotenv from 'dotenv';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import { container } from 'webpack';
+import { container, DefinePlugin } from 'webpack';
 
 import { dependencies as deps, name } from '../package.json';
 
 const { ModuleFederationPlugin } = container;
+
+dotenv.config();
 
 export const resolvePath = (path: string): string => resolve(process.cwd(), path);
 
@@ -44,6 +47,9 @@ export const commonPlugins = [
   new MiniCssExtractPlugin({
     filename: 'static/css/[name].[contenthash:8].css',
     chunkFilename: 'static/css/[name].[contenthash:8].css',
+  }),
+  new DefinePlugin({
+    'process.env': JSON.stringify(process.env),
   }),
   new ModuleFederationPlugin({
     name,

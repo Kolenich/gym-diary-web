@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { API_PREFIX, DEFAULT_API_TIMEOUT, EWorkoutsEndpoints } from './api.constants';
+import { DEFAULT_API_TIMEOUT } from './api.constants';
 import {
   type IExercise,
   type ISet,
@@ -13,7 +13,7 @@ import {
 const workoutsApiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${API_PREFIX}/${EWorkoutsEndpoints.WorkoutsApi}`,
+    baseUrl: process.env.API_PREFIX,
     timeout: DEFAULT_API_TIMEOUT,
   }),
   endpoints: builder => ({

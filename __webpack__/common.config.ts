@@ -1,7 +1,7 @@
 import { loader as miniCssLoader } from 'mini-css-extract-plugin';
 import { type Configuration } from 'webpack';
 
-import { srcFolders, publicFolders, resolvePath } from './helpers';
+import { publicFolders, resolvePath, srcFolders } from './helpers';
 
 export default {
   resolve: {
