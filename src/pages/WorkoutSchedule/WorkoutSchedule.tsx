@@ -6,7 +6,7 @@ import { Button, Grid, TextField, Typography } from '@mui/material';
 
 import { TODAY } from 'constants/date';
 import { ERoutePaths } from 'constants/routes';
-import { useGetWorkouts } from 'store/api';
+import { type IWorkout, useGetWorkouts } from 'store/api';
 import { useAppDispatch, useAppSelector } from 'store/store.hooks';
 import { selectWorkoutDay, setWorkoutDate } from 'store/workouts';
 import { toIsoString } from 'utils/iso-to-datetime-local';
@@ -18,7 +18,7 @@ const WorkoutSchedule: FC = () => {
 
   const dispatch = useAppDispatch();
 
-  const { data: workouts = [] } = useGetWorkouts({ date: workoutDate });
+  const { data: workouts = {} as Record<IWorkout['id'], IWorkout> } = useGetWorkouts({ date: workoutDate });
 
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ const WorkoutSchedule: FC = () => {
         </Grid>
       </Grid>
       <Typography variant='body1'>{WORKOUTS_TITLE}</Typography>
-      {workouts.map(workout => {
+      {Object.values(workouts).map(workout => {
         const { id: workoutId } = workout;
 
         const goToWorkoutDetail = (): void => {

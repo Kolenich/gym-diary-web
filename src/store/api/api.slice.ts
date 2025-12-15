@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+import { groupBy } from 'utils/group-by';
+
 import { DEFAULT_API_TIMEOUT } from './api.constants';
 import {
   type IExercise,
@@ -17,17 +19,18 @@ const workoutsApiSlice = createApi({
     timeout: DEFAULT_API_TIMEOUT,
   }),
   endpoints: builder => ({
-    getWorkouts: builder.query<IWorkout[], TGetWorkoutsParams>({
+    getWorkouts: builder.query<Record<IWorkout['id'], IWorkout>, TGetWorkoutsParams>({
       query: workoutParams => ({
         params: workoutParams,
         url: 'workouts',
       }),
+      transformResponse: (workouts: IWorkout[]): Record<IWorkout['id'], IWorkout> => groupBy(workouts, 'id'),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         const { data: workouts } = await queryFulfilled;
 
         dispatch(
           upsertQueryEntries(
-            workouts.map(workout => ({
+            Object.values(workouts).map(workout => ({
               endpointName: 'getWorkout',
               arg: workout.id,
               value: workout,
@@ -48,11 +51,15 @@ const workoutsApiSlice = createApi({
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         const { data: newWorkout } = await queryFulfilled;
 
+        const { id, date } = newWorkout;
+
         dispatch(
-          updateQueryData('getWorkouts', { date: newWorkout.date }, draftWorkouts => draftWorkouts.concat(newWorkout)),
+          updateQueryData('getWorkouts', { date }, draftWorkouts => {
+            draftWorkouts[id] = newWorkout;
+          }),
         );
 
-        dispatch(upsertQueryData('getWorkout', newWorkout.id, newWorkout));
+        dispatch(upsertQueryData('getWorkout', id, newWorkout));
       },
     }),
     updateWorkout: builder.mutation<IWorkout, IWorkout>({
@@ -62,25 +69,19 @@ const workoutsApiSlice = createApi({
         method: 'PUT',
       }),
       onQueryStarted: async (updatedWorkout, { dispatch, queryFulfilled }) => {
+        const { id, date } = updatedWorkout;
+
         const workoutUpdate = dispatch(
-          updateQueryData('getWorkout', updatedWorkout.id, draftWorkout => ({
+          updateQueryData('getWorkout', id, draftWorkout => ({
             ...draftWorkout,
             ...updatedWorkout,
           })),
         );
 
         const workoutListUpdate = dispatch(
-          updateQueryData('getWorkouts', { date: updatedWorkout.date }, draftWorkouts =>
-            draftWorkouts.map(draftWorkout => {
-              const isTargetWorkout = draftWorkout.id === updatedWorkout.id;
-
-              if (isTargetWorkout) {
-                return { ...draftWorkout, ...updatedWorkout };
-              }
-
-              return draftWorkout;
-            }),
-          ),
+          updateQueryData('getWorkouts', { date }, draftWorkouts => {
+            draftWorkouts[id] = updatedWorkout;
+          }),
         );
 
         try {
@@ -97,10 +98,12 @@ const workoutsApiSlice = createApi({
         method: 'DELETE',
       }),
       onQueryStarted: async (deletedWorkout, { dispatch, queryFulfilled }) => {
+        const { id, date } = deletedWorkout;
+
         const workoutListUpdate = dispatch(
-          updateQueryData('getWorkouts', { date: deletedWorkout.date }, draftWorkouts =>
-            draftWorkouts.filter(draftWorkout => draftWorkout.id !== deletedWorkout.id),
-          ),
+          updateQueryData('getWorkouts', { date }, draftWorkouts => {
+            delete draftWorkouts[id];
+          }),
         );
 
         try {
@@ -110,17 +113,18 @@ const workoutsApiSlice = createApi({
         }
       },
     }),
-    getExercises: builder.query<IExercise[], TGetExercisesParams>({
+    getExercises: builder.query<Record<IExercise['id'], IExercise>, TGetExercisesParams>({
       query: exerciseParams => ({
         params: exerciseParams,
         url: 'exercises',
       }),
+      transformResponse: (exercises: IExercise[]): Record<IExercise['id'], IExercise> => groupBy(exercises, 'id'),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         const { data: exercises } = await queryFulfilled;
 
         dispatch(
           upsertQueryEntries(
-            exercises.map(exercise => ({
+            Object.values(exercises).map(exercise => ({
               endpointName: 'getExercise',
               arg: exercise.id,
               value: exercise,
@@ -141,13 +145,15 @@ const workoutsApiSlice = createApi({
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         const { data: newExercise } = await queryFulfilled;
 
+        const { id, workout_id: workoutId } = newExercise;
+
         dispatch(
-          updateQueryData('getExercises', { workout_id: newExercise.workout_id }, draftExercises =>
-            draftExercises.concat(newExercise),
-          ),
+          updateQueryData('getExercises', { workout_id: workoutId }, draftExercises => {
+            draftExercises[id] = newExercise;
+          }),
         );
 
-        dispatch(upsertQueryData('getExercise', newExercise.id, newExercise));
+        dispatch(upsertQueryData('getExercise', id, newExercise));
       },
     }),
     updateExercise: builder.mutation<IExercise, IExercise>({
@@ -157,25 +163,19 @@ const workoutsApiSlice = createApi({
         method: 'PUT',
       }),
       onQueryStarted: async (updatedExercise, { dispatch, queryFulfilled }) => {
+        const { id, workout_id: workoutId } = updatedExercise;
+
         const exerciseUpdate = dispatch(
-          updateQueryData('getExercise', updatedExercise.id, draftExercise => ({
+          updateQueryData('getExercise', id, draftExercise => ({
             ...draftExercise,
             ...updatedExercise,
           })),
         );
 
         const exerciseListUpdate = dispatch(
-          updateQueryData('getExercises', { workout_id: updatedExercise.workout_id }, draftExercises =>
-            draftExercises.map(draftExercise => {
-              const isTargetExercise = draftExercise.id === updatedExercise.id;
-
-              if (isTargetExercise) {
-                return { ...draftExercise, ...updatedExercise };
-              }
-
-              return draftExercise;
-            }),
-          ),
+          updateQueryData('getExercises', { workout_id: workoutId }, draftExercises => {
+            draftExercises[id] = updatedExercise;
+          }),
         );
 
         try {
@@ -192,10 +192,12 @@ const workoutsApiSlice = createApi({
         method: 'DELETE',
       }),
       onQueryStarted: async (deletedExercise, { dispatch, queryFulfilled }) => {
+        const { id, workout_id: workoutId } = deletedExercise;
+
         const exerciseListUpdate = dispatch(
-          updateQueryData('getExercises', { workout_id: deletedExercise.workout_id }, draftExercises =>
-            draftExercises.filter(draftExercise => draftExercise.id !== deletedExercise.id),
-          ),
+          updateQueryData('getExercises', { workout_id: workoutId }, draftExercises => {
+            delete draftExercises[id];
+          }),
         );
 
         try {
@@ -205,17 +207,18 @@ const workoutsApiSlice = createApi({
         }
       },
     }),
-    getSets: builder.query<ISet[], TGetSetsParams>({
+    getSets: builder.query<Record<ISet['id'], ISet>, TGetSetsParams>({
       query: setParams => ({
         params: setParams,
         url: 'sets',
       }),
+      transformResponse: (sets: ISet[]): Record<ISet['id'], ISet> => groupBy(sets, 'id'),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         const { data: sets } = await queryFulfilled;
 
         dispatch(
           upsertQueryEntries(
-            sets.map(set => ({
+            Object.values(sets).map(set => ({
               endpointName: 'getSet',
               arg: set.id,
               value: set,
@@ -236,8 +239,12 @@ const workoutsApiSlice = createApi({
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         const { data: newSet } = await queryFulfilled;
 
+        const { id, exercise_id: exerciseId } = newSet;
+
         dispatch(
-          updateQueryData('getSets', { exercise_id: newSet.exercise_id }, draftSets => draftSets.concat(newSet)),
+          updateQueryData('getSets', { exercise_id: exerciseId }, draftSets => {
+            draftSets[id] = newSet;
+          }),
         );
 
         dispatch(upsertQueryData('getSet', newSet.id, newSet));
@@ -250,25 +257,19 @@ const workoutsApiSlice = createApi({
         method: 'PUT',
       }),
       onQueryStarted: async (updatedSet, { dispatch, queryFulfilled }) => {
+        const { id, exercise_id: exerciseId } = updatedSet;
+
         const setUpdate = dispatch(
-          updateQueryData('getSet', updatedSet.id, draftSet => ({
+          updateQueryData('getSet', id, draftSet => ({
             ...draftSet,
             ...updatedSet,
           })),
         );
 
         const setListUpdate = dispatch(
-          updateQueryData('getSets', { exercise_id: updatedSet.exercise_id }, draftSets =>
-            draftSets.map(draftSet => {
-              const isTargetSet = draftSet.id === updatedSet.id;
-
-              if (isTargetSet) {
-                return { ...draftSet, ...updatedSet };
-              }
-
-              return draftSet;
-            }),
-          ),
+          updateQueryData('getSets', { exercise_id: exerciseId }, draftSets => {
+            draftSets[id] = updatedSet;
+          }),
         );
 
         try {
@@ -285,10 +286,12 @@ const workoutsApiSlice = createApi({
         method: 'DELETE',
       }),
       onQueryStarted: async (deletedSet, { dispatch, queryFulfilled }) => {
+        const { id, exercise_id: exerciseId } = deletedSet;
+
         const setListUpdate = dispatch(
-          updateQueryData('getSets', { exercise_id: deletedSet.exercise_id }, draftSets =>
-            draftSets.filter(draftSet => draftSet.id !== deletedSet.id),
-          ),
+          updateQueryData('getSets', { exercise_id: exerciseId }, draftSets => {
+            delete draftSets[id];
+          }),
         );
 
         try {
